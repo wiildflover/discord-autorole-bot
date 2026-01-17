@@ -56,14 +56,11 @@ class AutoRoleBot {
     logger.info('BOT-STATUS', `Target user: ${this.config.targetUserId}`);
     
     this.client.user.setPresence({
-      activities: [{ 
-        name: 'Wildflover',
-        type: 0
-      }],
+      activities: [],
       status: 'online'
     });
     
-    logger.info('BOT-PRESENCE', 'Custom presence set: Playing Wildflover');
+    logger.info('BOT-PRESENCE', 'Presence cleared - no activity shown');
   }
 
   async onMessageCreate(message) {
@@ -144,9 +141,9 @@ class AutoRoleBot {
         setTimeout(async () => {
           try {
             await responseMessage.delete();
-            logger.info('MESSAGE-DELETED', `Response message deleted after ${this.config.deleteMessageDelay}ms`);
+            logger.info('MESSAGE-DELETED', `Warning message deleted after ${this.config.deleteMessageDelay}ms`);
           } catch (error) {
-            logger.warn('DELETE-ERROR', 'Failed to delete response message');
+            logger.warn('DELETE-ERROR', 'Failed to delete warning message');
           }
         }, this.config.deleteMessageDelay);
         
