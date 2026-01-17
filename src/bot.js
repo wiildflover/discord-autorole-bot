@@ -97,16 +97,32 @@ class AutoRoleBot {
 
   async processRoleAssignment(message, mentionedUser) {
     const guild = message.guild;
+    
+    logger.info('ROLE-PROCESS', `Fetching member: ${mentionedUser.id}`);
     const member = await guild.members.fetch(mentionedUser.id);
+    
+    logger.info('ROLE-PROCESS', `Fetching role: ${this.config.roleId}`);
     const role = guild.roles.cache.get(this.config.roleId);
 
     if (!role) {
-      logger.error('ROLE-ERROR', 'Specified role not found in guild');
+      logger.error('ROLE-ERROR', `Role not found: ${this.config.roleId}`);
+      logger.error('ROLE-ERROR', `Available roles: ${guild.roles.cache.map(r => `${r.name}(${r.id})`).join(', ')}`);
       return;
     }
 
+    logger.info('ROLE-FOUND', `Role found: ${role.name} (${role.id})`);
+
     if (!guild.members.me.permissions.has(PermissionFlagsBits.ManageRoles)) {
       logger.error('PERMISSION-ERROR', 'Bot lacks MANAGE_ROLES permission');
+      return;
+    }
+
+    const botRole = guild.members.me.roles.highest;
+    logger.info('ROLE-HIERARCHY', `Bot highest role: ${botRole.name} (position: ${botRole.position})`);
+    logger.info('ROLE-HIERARCHY', `Target role: ${role.name} (position: ${role.position})`);
+
+    if (botRole.position <= role.position) {
+      logger.error('HIERARCHY-ERROR', `Bot role position (${botRole.position}) must be higher than target role (${role.position})`);
       return;
     }
 
@@ -114,8 +130,14 @@ class AutoRoleBot {
       await message.react('✅');
       logger.info('REACTION-ADDED', `Green check added to message ${message.id}`);
 
-      await member.roles.add(role);
-      logger.success('ROLE-ASSIGNED', `Role "${role.name}" assigned to ${mentionedUser.tag}`);
+      logger.info('ROLE-ADDING', `Attempting to add role ${role.name} to ${mentionedUser.tag}`);
+      
+      if (member.roles.cache.has(role.id)) {
+        logger.warn('ROLE-EXISTS', `User already has role ${role.name}`);
+      } else {
+        await member.roles.add(role);
+        logger.success('ROLE-ASSIGNED', `Role "${role.name}" assigned to ${mentionedUser.tag}`);
+      }
 
       const responseMessage = await message.reply({
         content: `<@${message.author.id}> **${this.config.roleName}** role has been assigned successfully.`,
@@ -132,7 +154,8 @@ class AutoRoleBot {
       }, this.config.deleteMessageDelay);
 
     } catch (error) {
-      logger.error('PROCESS-ERROR', error.message);
+      logger.error('PROCESS-ERROR', `Error: ${error.message}`);
+      logger.error('PROCESS-ERROR', `Stack: ${error.stack}`);
     }
   }
 
