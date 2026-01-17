@@ -68,12 +68,27 @@ class AutoRoleBot {
 
   async onMessageCreate(message) {
     try {
-      if (message.author.bot) return;
-      if (message.channel.id !== this.config.targetChannelId) return;
+      logger.info('MESSAGE-RECEIVED', `Message from ${message.author.tag} in channel ${message.channel.id}`);
+      
+      if (message.author.bot) {
+        logger.info('MESSAGE-SKIP', 'Message from bot, skipping');
+        return;
+      }
+      
+      if (message.channel.id !== this.config.targetChannelId) {
+        logger.info('MESSAGE-SKIP', `Wrong channel: ${message.channel.id} (expected: ${this.config.targetChannelId})`);
+        return;
+      }
 
       const mentionedUser = message.mentions.users.first();
-      if (!mentionedUser || mentionedUser.id !== this.config.targetUserId) return;
+      logger.info('MENTION-CHECK', `Mentioned user: ${mentionedUser ? mentionedUser.id : 'none'} (expected: ${this.config.targetUserId})`);
+      
+      if (!mentionedUser || mentionedUser.id !== this.config.targetUserId) {
+        logger.info('MESSAGE-SKIP', 'Target user not mentioned');
+        return;
+      }
 
+      logger.success('TRIGGER-DETECTED', 'All conditions met, processing role assignment');
       await this.processRoleAssignment(message, mentionedUser);
     } catch (error) {
       logger.error('MESSAGE-HANDLER', error.message);
