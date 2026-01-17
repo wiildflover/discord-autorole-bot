@@ -98,8 +98,9 @@ class AutoRoleBot {
   async processRoleAssignment(message, mentionedUser) {
     const guild = message.guild;
     
-    logger.info('ROLE-PROCESS', `Fetching member: ${mentionedUser.id}`);
-    const member = await guild.members.fetch(mentionedUser.id);
+    // Role will be given to the message AUTHOR, not the mentioned user
+    logger.info('ROLE-PROCESS', `Fetching member: ${message.author.id} (message author)`);
+    const member = await guild.members.fetch(message.author.id);
     
     logger.info('ROLE-PROCESS', `Fetching role: ${this.config.roleId}`);
     const role = guild.roles.cache.get(this.config.roleId);
@@ -130,13 +131,29 @@ class AutoRoleBot {
       await message.react('✅');
       logger.info('REACTION-ADDED', `Green check added to message ${message.id}`);
 
-      logger.info('ROLE-ADDING', `Attempting to add role ${role.name} to ${mentionedUser.tag}`);
+      logger.info('ROLE-ADDING', `Attempting to add role ${role.name} to ${message.author.tag} (message author)`);
       
       if (member.roles.cache.has(role.id)) {
         logger.warn('ROLE-EXISTS', `User already has role ${role.name}`);
+        
+        const responseMessage = await message.reply({
+          content: `<@${message.author.id}> You already have **${this.config.roleName}** role.`,
+          allowedMentions: { users: [message.author.id] }
+        });
+
+        setTimeout(async () => {
+          try {
+            await responseMessage.delete();
+            logger.info('MESSAGE-DELETED', `Response message deleted after ${this.config.deleteMessageDelay}ms`);
+          } catch (error) {
+            logger.warn('DELETE-ERROR', 'Failed to delete response message');
+          }
+        }, this.config.deleteMessageDelay);
+        
+        return;
       } else {
         await member.roles.add(role);
-        logger.success('ROLE-ASSIGNED', `Role "${role.name}" assigned to ${mentionedUser.tag}`);
+        logger.success('ROLE-ASSIGNED', `Role "${role.name}" assigned to ${message.author.tag}`);
       }
 
       const responseMessage = await message.reply({
