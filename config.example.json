@@ -1,0 +1,9 @@
+{
+  "token": "YOUR_BOT_TOKEN_HERE",
+  "clientId": "YOUR_CLIENT_ID_HERE",
+  "targetChannelId": "TARGET_CHANNEL_ID_HERE",
+  "targetUserId": "TARGET_USER_ID_HERE",
+  "roleId": "ROLE_ID_TO_GIVE_HERE",
+  "roleName": "Verified",
+  "deleteMessageDelay": 3500
+}

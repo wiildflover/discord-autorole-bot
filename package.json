@@ -1,0 +1,31 @@
+{
+  "name": "discord-autorole-bot",
+  "version": "1.0.0",
+  "description": "Professional Discord bot with automated role assignment system",
+  "main": "index.js",
+  "author": "Wildflover",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "deploy": "node index.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.4.1",
+    "chalk": "^4.1.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "automation",
+    "role-management",
+    "discord.js"
+  ]
+}
