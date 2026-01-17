@@ -154,8 +154,8 @@ class AutoRoleBot {
       }
 
       const responseMessage = await message.reply({
-        content: `<@${message.author.id}> **${this.config.roleName}** role has been assigned successfully.`,
-        allowedMentions: { users: [message.author.id] }
+        content: `<@${message.author.id}> <@&${role.id}> role has been assigned successfully.`,
+        allowedMentions: { users: [message.author.id], roles: [] }
       });
 
       setTimeout(async () => {
