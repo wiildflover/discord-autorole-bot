@@ -11,7 +11,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "deploy": "node index.js"
+    "deploy": "node index.js",
+    "setup-github": "node setup-github.js"
   },
   "dependencies": {
     "discord.js": "^14.14.1",
