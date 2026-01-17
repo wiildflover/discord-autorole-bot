@@ -10,6 +10,9 @@ const { Client, GatewayIntentBits, Events, PermissionFlagsBits } = require('disc
 const fs = require('fs');
 const path = require('path');
 const logger = require('./utils/logger');
+const CommandRegistry = require('./commands/register');
+const CommandHandlers = require('./commands/handlers');
+const commandDefinitions = require('./commands/definitions');
 
 // Load configuration with fallback to environment variables
 let config;
@@ -41,16 +44,18 @@ class AutoRoleBot {
     });
 
     this.config = config;
+    this.commandHandlers = new CommandHandlers(this);
     this.initialize();
   }
 
   initialize() {
     this.client.once(Events.ClientReady, () => this.onReady());
     this.client.on(Events.MessageCreate, (message) => this.onMessageCreate(message));
+    this.client.on(Events.InteractionCreate, (interaction) => this.onInteractionCreate(interaction));
     this.client.on(Events.Error, (error) => logger.error('CLIENT-ERROR', error));
   }
 
-  onReady() {
+  async onReady() {
     logger.success('BOT-READY', `Logged in as ${this.client.user.tag}`);
     logger.info('BOT-STATUS', `Monitoring channel: ${this.config.targetChannelId}`);
     logger.info('BOT-STATUS', `Target user: ${this.config.targetUserId}`);
@@ -61,6 +66,54 @@ class AutoRoleBot {
     });
     
     logger.info('BOT-PRESENCE', 'Presence cleared - no activity shown');
+
+    await this.registerSlashCommands();
+  }
+
+  async registerSlashCommands() {
+    try {
+      const registry = new CommandRegistry(this.config.token, this.config.clientId);
+      
+      registry.addCommand(commandDefinitions.ping);
+      registry.addCommand(commandDefinitions.info);
+      registry.addCommand(commandDefinitions.config);
+      registry.addCommand(commandDefinitions.help);
+
+      await registry.registerGlobally();
+    } catch (error) {
+      logger.error('COMMAND-SETUP', `Failed to register slash commands: ${error.message}`);
+    }
+  }
+
+  async onInteractionCreate(interaction) {
+    if (!interaction.isChatInputCommand()) return;
+
+    try {
+      logger.info('COMMAND-RECEIVED', `/${interaction.commandName} by ${interaction.user.tag}`);
+
+      switch (interaction.commandName) {
+        case 'ping':
+          await this.commandHandlers.handlePing(interaction);
+          break;
+        case 'info':
+          await this.commandHandlers.handleInfo(interaction);
+          break;
+        case 'config':
+          await this.commandHandlers.handleConfig(interaction);
+          break;
+        case 'help':
+          await this.commandHandlers.handleHelp(interaction);
+          break;
+        default:
+          await interaction.reply({ content: 'Unknown command.', ephemeral: true });
+      }
+    } catch (error) {
+      logger.error('COMMAND-ERROR', `Error executing ${interaction.commandName}: ${error.message}`);
+      
+      if (!interaction.replied && !interaction.deferred) {
+        await interaction.reply({ content: 'An error occurred while executing this command.', ephemeral: true });
+      }
+    }
   }
 
   async onMessageCreate(message) {
@@ -134,8 +187,8 @@ class AutoRoleBot {
         logger.warn('ROLE-EXISTS', `User already has role ${role.name}`);
         
         const responseMessage = await message.reply({
-          content: `<@${message.author.id}> You already have **${this.config.roleName}** role.`,
-          allowedMentions: { users: [message.author.id] }
+          content: `<@${message.author.id}> You already have <@&${role.id}> role.`,
+          allowedMentions: { users: [message.author.id], roles: [] }
         });
 
         setTimeout(async () => {
