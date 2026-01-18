@@ -1,12 +1,12 @@
 /**
  * File: welcomeCard.js
  * Author: Wildflover
- * Description: Welcome/Leave card generator using Canvacord
+ * Description: Welcome/Leave card generator using Canvacord Welcomer
  * Language: JavaScript (Node.js)
  */
 
 const { AttachmentBuilder } = require('discord.js');
-const { WelcomeCard } = require('canvacord');
+const canvacord = require('canvacord');
 const logger = require('../utils/logger');
 
 const BACKGROUND_URL = 'https://raw.githubusercontent.com/wiildflover/wildflover/main/public/assets/backgrounds/wildflover_bg.jpg';
@@ -16,20 +16,25 @@ class WelcomeCardGenerator {
     try {
       logger.info('WELCOME-CARD', `Generating ${type} card for ${member.user.tag}`);
       
-      const card = new WelcomeCard()
-        .setDisplayName(member.user.username)
-        .setUsername(`@${member.user.username}`)
+      const card = new canvacord.Welcomer()
+        .setUsername(member.user.username)
+        .setDiscriminator(member.user.discriminator || '0')
         .setAvatar(member.user.displayAvatarURL({ extension: 'png', size: 256 }))
-        .setMessage(type === 'welcome' ? 'Welcome to Wildflover Community!' : 'Thanks for being part of our community!')
+        .setColor('title', '#9B59B6')
+        .setColor('username-box', '#E91E63')
+        .setColor('discriminator-box', '#9B59B6')
+        .setColor('message-box', '#9B59B6')
+        .setColor('border', '#E91E63')
+        .setColor('avatar', '#9B59B6')
         .setBackground(BACKGROUND_URL)
-        .setOverlayOpacity(0.7);
+        .setMemberCount(member.guild.memberCount);
 
       if (type === 'welcome') {
         card.setTitle('WELCOME');
-        card.setSubtitle(`Member #${member.guild.memberCount}`);
+        card.setText('message', 'Welcome to Wildflover Community!');
       } else {
         card.setTitle('GOODBYE');
-        card.setSubtitle('We hope to see you again');
+        card.setText('message', 'Thanks for being part of our community!');
       }
 
       const image = await card.build();
