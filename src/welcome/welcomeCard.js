@@ -20,12 +20,12 @@ class WelcomeCardGenerator {
       const background = await loadImage(SPLASH_URL);
       ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      const avatarSize = 180;
-      const avatarX = canvas.width / 2;
-      const avatarY = 140;
+      const avatarSize = 140;
+      const avatarX = canvas.width - 150;
+      const avatarY = 120;
 
       ctx.save();
       ctx.beginPath();
@@ -46,29 +46,40 @@ class WelcomeCardGenerator {
 
       ctx.restore();
 
-      ctx.strokeStyle = '#5865F2';
-      ctx.lineWidth = 6;
+      ctx.strokeStyle = '#9B59B6';
+      ctx.lineWidth = 5;
       ctx.beginPath();
-      ctx.arc(avatarX, avatarY, avatarSize / 2 + 5, 0, Math.PI * 2);
+      ctx.arc(avatarX, avatarY, avatarSize / 2 + 4, 0, Math.PI * 2);
       ctx.stroke();
 
       const messageText = type === 'welcome' ? 'WELCOME' : 'GOODBYE';
-      ctx.font = 'bold 48px Arial';
+      ctx.font = 'bold 64px Arial';
       ctx.fillStyle = '#FFFFFF';
-      ctx.textAlign = 'center';
-      ctx.fillText(messageText, canvas.width / 2, 280);
+      ctx.textAlign = 'left';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+      ctx.shadowBlur = 10;
+      ctx.fillText(messageText, 60, 140);
+
+      ctx.shadowBlur = 0;
 
       const username = member.user.username;
-      ctx.font = 'bold 36px Arial';
-      ctx.fillStyle = '#5865F2';
-      ctx.fillText(username, canvas.width / 2, 330);
+      ctx.font = 'bold 42px Arial';
+      ctx.fillStyle = '#9B59B6';
+      ctx.fillText(username, 60, 200);
 
       const subText = type === 'welcome' 
+        ? `Welcome to Wildflover Community!` 
+        : 'Thanks for being part of our community!';
+      ctx.font = '28px Arial';
+      ctx.fillStyle = '#E0E0E0';
+      ctx.fillText(subText, 60, 250);
+
+      const memberCount = type === 'welcome' 
         ? `Member #${member.guild.memberCount}` 
-        : 'We hope to see you again!';
+        : 'We hope to see you again';
       ctx.font = '24px Arial';
-      ctx.fillStyle = '#CCCCCC';
-      ctx.fillText(subText, canvas.width / 2, 370);
+      ctx.fillStyle = '#AAAAAA';
+      ctx.fillText(memberCount, 60, 290);
 
       const attachment = new AttachmentBuilder(canvas.toBuffer('image/png'), {
         name: `${type}-${member.id}.png`
