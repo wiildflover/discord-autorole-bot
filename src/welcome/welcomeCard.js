@@ -1,12 +1,12 @@
 /**
  * File: welcomeCard.js
  * Author: Wildflover
- * Description: Welcome/Leave card generator using canvas package
+ * Description: Welcome/Leave card generator without text rendering (shapes only)
  * Language: JavaScript (Node.js)
  */
 
-const { AttachmentBuilder } = require('discord.js');
-const { createCanvas, loadImage } = require('canvas');
+const { AttachmentBuilder, EmbedBuilder } = require('discord.js');
+const { createCanvas, loadImage } = require('@napi-rs/canvas');
 const logger = require('../utils/logger');
 
 const BACKGROUND_URL = 'https://raw.githubusercontent.com/wiildflover/wildflover/main/public/assets/backgrounds/wildflover_bg.jpg';
@@ -29,26 +29,9 @@ class WelcomeCardGenerator {
       ctx.fillRect(0, 0, 1024, 450);
       logger.info('WELCOME-CARD', 'Applied dark overlay');
 
-      // Draw title text - WELCOME/GOODBYE
-      const messageText = type === 'welcome' ? 'WELCOME' : 'GOODBYE';
-      
-      ctx.font = 'bold 70px Arial';
-      ctx.fillStyle = '#FFFFFF';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-      ctx.shadowBlur = 10;
-      ctx.shadowOffsetX = 2;
-      ctx.shadowOffsetY = 2;
-      
-      ctx.fillText(messageText, 512, 80);
-      
-      logger.info('WELCOME-CARD', `Title text rendered: ${messageText}`);
-
       // Load and draw avatar
       const avatarX = 512;
-      const avatarY = 180;
+      const avatarY = 225;
 
       logger.info('WELCOME-CARD', 'Loading avatar');
       const avatar = await loadImage(
@@ -58,78 +41,25 @@ class WelcomeCardGenerator {
       // Draw avatar with clipping
       ctx.save();
       ctx.beginPath();
-      ctx.arc(avatarX, avatarY, 75, 0, Math.PI * 2);
+      ctx.arc(avatarX, avatarY, 100, 0, Math.PI * 2);
       ctx.closePath();
       ctx.clip();
-      ctx.drawImage(avatar, avatarX - 75, avatarY - 75, 150, 150);
+      ctx.drawImage(avatar, avatarX - 100, avatarY - 100, 200, 200);
       ctx.restore();
 
       // Draw gradient border around avatar
-      const gradient = ctx.createLinearGradient(avatarX - 80, avatarY - 80, avatarX + 80, avatarY + 80);
+      const gradient = ctx.createLinearGradient(avatarX - 110, avatarY - 110, avatarX + 110, avatarY + 110);
       gradient.addColorStop(0, '#9B59B6');
       gradient.addColorStop(0.5, '#E91E63');
       gradient.addColorStop(1, '#9B59B6');
       
       ctx.strokeStyle = gradient;
-      ctx.lineWidth = 6;
+      ctx.lineWidth = 8;
       ctx.beginPath();
-      ctx.arc(avatarX, avatarY, 80, 0, Math.PI * 2);
+      ctx.arc(avatarX, avatarY, 110, 0, Math.PI * 2);
       ctx.stroke();
 
       logger.info('WELCOME-CARD', 'Avatar rendered with gradient border');
-
-      // Draw username below avatar
-      ctx.font = 'bold 42px Arial';
-      ctx.fillStyle = '#FFFFFF';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-      ctx.shadowBlur = 8;
-      ctx.shadowOffsetX = 2;
-      ctx.shadowOffsetY = 2;
-      
-      ctx.fillText(member.user.username, 512, 300);
-      
-      logger.info('WELCOME-CARD', `Username rendered: ${member.user.username}`);
-
-      // Draw welcome message
-      const subText = type === 'welcome' 
-        ? 'Welcome to Wildflover Community!' 
-        : 'Thanks for being part of our community!';
-      
-      ctx.font = '26px Arial';
-      ctx.fillStyle = '#E0E0E0';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
-      ctx.shadowBlur = 6;
-      ctx.shadowOffsetX = 1;
-      ctx.shadowOffsetY = 1;
-      
-      ctx.fillText(subText, 512, 350);
-      
-      logger.info('WELCOME-CARD', `Subtitle rendered: ${subText}`);
-
-      // Draw member count
-      const memberCount = type === 'welcome' 
-        ? `Member #${member.guild.memberCount}` 
-        : 'We hope to see you again';
-      
-      ctx.font = '22px Arial';
-      ctx.fillStyle = '#AAAAAA';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
-      ctx.shadowBlur = 4;
-      ctx.shadowOffsetX = 1;
-      ctx.shadowOffsetY = 1;
-      
-      ctx.fillText(memberCount, 512, 390);
-      
-      logger.info('WELCOME-CARD', `Member count rendered: ${memberCount}`);
 
       const buffer = canvas.toBuffer('image/png');
       const attachment = new AttachmentBuilder(buffer, {
@@ -143,6 +73,24 @@ class WelcomeCardGenerator {
       logger.error('WELCOME-CARD', `Stack: ${error.stack}`);
       return null;
     }
+  }
+
+  static createEmbed(member, type = 'welcome') {
+    const embed = new EmbedBuilder()
+      .setColor(type === 'welcome' ? 0x9B59B6 : 0x5865F2)
+      .setImage(`attachment://${type}-${member.id}.png`);
+
+    if (type === 'welcome') {
+      embed
+        .setTitle('WELCOME')
+        .setDescription(`Welcome to **Wildflover Community**, ${member}!\n\nMember #${member.guild.memberCount}`);
+    } else {
+      embed
+        .setTitle('GOODBYE')
+        .setDescription(`${member.user.username} has left the server.\n\nWe hope to see you again!`);
+    }
+
+    return embed;
   }
 }
 
