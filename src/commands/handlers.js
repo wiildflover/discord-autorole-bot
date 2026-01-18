@@ -60,17 +60,17 @@ class CommandHandlers {
       .addFields(
         { 
           name: 'Developer', 
-          value: '`Wildflover`', 
+          value: 'Wildflover', 
           inline: true 
         },
         { 
           name: 'Server Members', 
-          value: `**${guild ? guild.memberCount : 'N/A'}**`, 
+          value: `${guild ? guild.memberCount : 'N/A'}`, 
           inline: true 
         },
         { 
           name: 'Verified Members', 
-          value: `**${verifiedCount}**`, 
+          value: `${verifiedCount}`, 
           inline: true 
         },
         { 
@@ -85,13 +85,13 @@ class CommandHandlers {
         },
         { 
           name: 'System Uptime', 
-          value: `\`${hours}h ${minutes}m ${seconds}s\``, 
+          value: `${hours}h ${minutes}m ${seconds}s`, 
           inline: true 
         }
       )
       .addFields({
         name: 'Core Features',
-        value: '> Automated role assignment system\n>\n> Welcome & leave card generator\n>\n> Multi-language tutorial system\n>\n> Configurable welcome channels',
+        value: '> Automated role assignment system\n> Welcome & leave card generator\n> Multi-language tutorial system\n> Configurable welcome channels',
         inline: false
       })
       .setImage('https://raw.githubusercontent.com/wiildflover/wildflover/main/public/assets/backgrounds/wildflover_splash_login.jpg')
