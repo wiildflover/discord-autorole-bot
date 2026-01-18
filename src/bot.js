@@ -248,6 +248,8 @@ class AutoRoleBot {
         return;
       }
 
+      const message = WelcomeCardGenerator.getMessage(member, 'welcome');
+
       let targetChannel = null;
       
       if (this.config.welcomeChannelId) {
@@ -263,7 +265,7 @@ class AutoRoleBot {
 
       if (targetChannel) {
         await targetChannel.send({
-          content: `<@${member.id}>`,
+          content: message,
           files: [welcomeCard]
         });
         logger.success('MEMBER-JOIN', `Welcome card sent for ${member.user.tag} to ${targetChannel.name}`);
@@ -286,6 +288,8 @@ class AutoRoleBot {
         return;
       }
 
+      const message = WelcomeCardGenerator.getMessage(member, 'leave');
+
       let targetChannel = null;
       
       if (this.config.welcomeChannelId) {
@@ -301,6 +305,7 @@ class AutoRoleBot {
 
       if (targetChannel) {
         await targetChannel.send({
+          content: message,
           files: [leaveCard]
         });
         logger.success('MEMBER-LEAVE', `Leave card sent for ${member.user.tag} to ${targetChannel.name}`);

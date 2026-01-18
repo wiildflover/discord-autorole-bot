@@ -1,12 +1,12 @@
 /**
  * File: welcomeCard.js
  * Author: Wildflover
- * Description: Welcome/Leave card generator using Canvacord Welcomer
+ * Description: Welcome/Leave card generator with Discord embed for text
  * Language: JavaScript (Node.js)
  */
 
 const { AttachmentBuilder } = require('discord.js');
-const canvacord = require('canvacord');
+const { createCanvas, loadImage } = require('@napi-rs/canvas');
 const logger = require('../utils/logger');
 
 const BACKGROUND_URL = 'https://raw.githubusercontent.com/wiildflover/wildflover/main/public/assets/backgrounds/wildflover_bg.jpg';
@@ -16,29 +16,48 @@ class WelcomeCardGenerator {
     try {
       logger.info('WELCOME-CARD', `Generating ${type} card for ${member.user.tag}`);
       
-      const card = new canvacord.Welcomer()
-        .setUsername(member.user.username)
-        .setDiscriminator(member.user.discriminator || '0')
-        .setAvatar(member.user.displayAvatarURL({ extension: 'png', size: 256 }))
-        .setColor('title', '#9B59B6')
-        .setColor('username-box', '#E91E63')
-        .setColor('discriminator-box', '#9B59B6')
-        .setColor('message-box', '#9B59B6')
-        .setColor('border', '#E91E63')
-        .setColor('avatar', '#9B59B6')
-        .setBackground(BACKGROUND_URL)
-        .setMemberCount(member.guild.memberCount);
+      const canvas = createCanvas(1024, 450);
+      const ctx = canvas.getContext('2d');
 
-      if (type === 'welcome') {
-        card.setTitle('WELCOME');
-        card.setText('message', 'Welcome to Wildflover Community!');
-      } else {
-        card.setTitle('GOODBYE');
-        card.setText('message', 'Thanks for being part of our community!');
-      }
+      // Load and draw background
+      const background = await loadImage(BACKGROUND_URL);
+      ctx.drawImage(background, 0, 0, 1024, 450);
 
-      const image = await card.build();
-      const attachment = new AttachmentBuilder(image, {
+      // Apply dark overlay
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      ctx.fillRect(0, 0, 1024, 450);
+
+      // Load and draw avatar
+      const avatarX = 512;
+      const avatarY = 225;
+
+      const avatar = await loadImage(
+        member.user.displayAvatarURL({ extension: 'png', size: 256 })
+      );
+
+      // Draw avatar with clipping
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(avatarX, avatarY, 100, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.clip();
+      ctx.drawImage(avatar, avatarX - 100, avatarY - 100, 200, 200);
+      ctx.restore();
+
+      // Draw gradient border around avatar
+      const gradient = ctx.createLinearGradient(avatarX - 110, avatarY - 110, avatarX + 110, avatarY + 110);
+      gradient.addColorStop(0, '#9B59B6');
+      gradient.addColorStop(0.5, '#E91E63');
+      gradient.addColorStop(1, '#9B59B6');
+      
+      ctx.strokeStyle = gradient;
+      ctx.lineWidth = 8;
+      ctx.beginPath();
+      ctx.arc(avatarX, avatarY, 110, 0, Math.PI * 2);
+      ctx.stroke();
+
+      const buffer = canvas.toBuffer('image/png');
+      const attachment = new AttachmentBuilder(buffer, {
         name: `${type}-${member.id}.png`
       });
 
@@ -48,6 +67,14 @@ class WelcomeCardGenerator {
       logger.error('WELCOME-CARD', `Error: ${error.message}`);
       logger.error('WELCOME-CARD', `Stack: ${error.stack}`);
       return null;
+    }
+  }
+
+  static getMessage(member, type = 'welcome') {
+    if (type === 'welcome') {
+      return `**WELCOME** ${member}\nWelcome to **Wildflover Community**!\nMember #${member.guild.memberCount}`;
+    } else {
+      return `**GOODBYE**\n${member.user.username} has left the server.\nWe hope to see you again!`;
     }
   }
 }
