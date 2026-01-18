@@ -72,9 +72,9 @@ class WelcomeCardGenerator {
 
   static getMessage(member, type = 'welcome') {
     if (type === 'welcome') {
-      return `**WELCOME** ${member}\nWelcome to **Wildflover Community**!\nMember #${member.guild.memberCount}`;
+      return `**WELCOME** ${member} Welcome to **Wildflover Community!**`;
     } else {
-      return `**GOODBYE**\n${member.user.username} has left the server.\nWe hope to see you again!`;
+      return `**GOODBYE** ${member.user.username} has left the server. We hope to see you again!`;
     }
   }
 }
