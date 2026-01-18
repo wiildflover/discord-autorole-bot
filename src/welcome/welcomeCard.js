@@ -6,7 +6,7 @@
  */
 
 const { AttachmentBuilder } = require('discord.js');
-const { createCanvas, loadImage } = require('@napi-rs/canvas');
+const { createCanvas, loadImage, GlobalFonts } = require('@napi-rs/canvas');
 const logger = require('../utils/logger');
 
 const BACKGROUND_URL = 'https://raw.githubusercontent.com/wiildflover/wildflover/main/public/assets/backgrounds/wildflover_bg.jpg';
@@ -16,33 +16,38 @@ class WelcomeCardGenerator {
     try {
       logger.info('WELCOME-CARD', `Starting card generation for ${member.user.tag}`);
       
-      const canvas = createCanvas(1024, 450);
+      const WIDTH = 1024;
+      const HEIGHT = 450;
+      const canvas = createCanvas(WIDTH, HEIGHT);
       const ctx = canvas.getContext('2d');
 
       logger.info('WELCOME-CARD', 'Loading background image');
       const background = await loadImage(BACKGROUND_URL);
-      ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(background, 0, 0, WIDTH, HEIGHT);
 
-      logger.info('WELCOME-CARD', 'Drawing overlay');
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.globalAlpha = 0.7;
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, WIDTH, HEIGHT);
+      ctx.globalAlpha = 1.0;
 
       logger.info('WELCOME-CARD', 'Drawing welcome text');
       const messageText = type === 'welcome' ? 'WELCOME' : 'GOODBYE';
-      ctx.save();
-      ctx.font = '70px Impact, sans-serif';
+      
       ctx.fillStyle = '#FFFFFF';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'top';
       ctx.strokeStyle = '#000000';
       ctx.lineWidth = 8;
-      ctx.strokeText(messageText, canvas.width / 2, 50);
-      ctx.fillText(messageText, canvas.width / 2, 50);
-      ctx.restore();
+      ctx.lineJoin = 'round';
+      ctx.miterLimit = 2;
+      ctx.font = 'bold 70px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      
+      ctx.strokeText(messageText, WIDTH / 2, 50);
+      ctx.fillText(messageText, WIDTH / 2, 50);
 
       logger.info('WELCOME-CARD', 'Loading and drawing avatar');
       const avatarSize = 150;
-      const avatarX = canvas.width / 2;
+      const avatarX = WIDTH / 2;
       const avatarY = 180;
 
       const avatar = await loadImage(
@@ -51,9 +56,10 @@ class WelcomeCardGenerator {
 
       ctx.save();
       ctx.beginPath();
-      ctx.arc(avatarX, avatarY, avatarSize / 2, 0, Math.PI * 2);
+      ctx.arc(avatarX, avatarY, avatarSize / 2, 0, Math.PI * 2, true);
       ctx.closePath();
       ctx.clip();
+      
       ctx.drawImage(
         avatar,
         avatarX - avatarSize / 2,
@@ -64,7 +70,6 @@ class WelcomeCardGenerator {
       ctx.restore();
 
       logger.info('WELCOME-CARD', 'Drawing avatar border');
-      ctx.save();
       const gradient = ctx.createLinearGradient(
         avatarX - avatarSize / 2,
         avatarY - avatarSize / 2,
@@ -74,52 +79,53 @@ class WelcomeCardGenerator {
       gradient.addColorStop(0, '#9B59B6');
       gradient.addColorStop(0.5, '#E91E63');
       gradient.addColorStop(1, '#9B59B6');
+      
       ctx.strokeStyle = gradient;
       ctx.lineWidth = 6;
       ctx.beginPath();
-      ctx.arc(avatarX, avatarY, avatarSize / 2 + 5, 0, Math.PI * 2);
+      ctx.arc(avatarX, avatarY, avatarSize / 2 + 5, 0, Math.PI * 2, true);
       ctx.stroke();
-      ctx.restore();
 
       logger.info('WELCOME-CARD', 'Drawing username');
       const username = member.user.username;
-      ctx.save();
-      ctx.font = '42px Impact, sans-serif';
+      
       ctx.fillStyle = '#FFFFFF';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'top';
       ctx.strokeStyle = '#000000';
       ctx.lineWidth = 6;
-      ctx.strokeText(username, canvas.width / 2, 280);
-      ctx.fillText(username, canvas.width / 2, 280);
-      ctx.restore();
+      ctx.lineJoin = 'round';
+      ctx.miterLimit = 2;
+      ctx.font = 'bold 42px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      
+      ctx.strokeText(username, WIDTH / 2, 280);
+      ctx.fillText(username, WIDTH / 2, 280);
 
       logger.info('WELCOME-CARD', 'Drawing welcome message');
       const subText = type === 'welcome' 
         ? 'Welcome to Wildflover Community!' 
         : 'Thanks for being part of our community!';
-      ctx.save();
-      ctx.font = '26px sans-serif';
+      
       ctx.fillStyle = '#E0E0E0';
+      ctx.font = '26px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
-      ctx.fillText(subText, canvas.width / 2, 340);
-      ctx.restore();
+      ctx.fillText(subText, WIDTH / 2, 340);
 
       logger.info('WELCOME-CARD', 'Drawing member count');
       const memberCount = type === 'welcome' 
         ? `Member #${member.guild.memberCount}` 
         : 'We hope to see you again';
-      ctx.save();
-      ctx.font = '22px sans-serif';
+      
       ctx.fillStyle = '#AAAAAA';
+      ctx.font = '22px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
-      ctx.fillText(memberCount, canvas.width / 2, 380);
-      ctx.restore();
+      ctx.fillText(memberCount, WIDTH / 2, 380);
 
       logger.info('WELCOME-CARD', 'Creating attachment');
-      const attachment = new AttachmentBuilder(canvas.toBuffer('image/png'), {
+      const buffer = canvas.toBuffer('image/png');
+      const attachment = new AttachmentBuilder(buffer, {
         name: `${type}-${member.id}.png`
       });
 
