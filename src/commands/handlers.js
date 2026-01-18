@@ -7,6 +7,7 @@
 
 const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 const logger = require('../utils/logger');
+const TutorialSystem = require('./tutorials');
 
 class CommandHandlers {
   constructor(bot) {
@@ -88,6 +89,7 @@ class CommandHandlers {
         { name: '/ping', value: 'Check bot response time and status', inline: false },
         { name: '/info', value: 'Display bot information and statistics', inline: false },
         { name: '/config', value: 'View current bot configuration (Admin only)', inline: false },
+        { name: '/tutorial', value: 'Complete Wildflover Skin Manager guide with screenshots', inline: false },
         { name: '/help', value: 'Display this help message', inline: false }
       )
       .addFields({
@@ -100,6 +102,55 @@ class CommandHandlers {
 
     await interaction.reply({ embeds: [embed], ephemeral: true });
     logger.info('COMMAND-HELP', `Executed by ${interaction.user.tag}`);
+  }
+
+  async handleTutorial(interaction) {
+    const topic = interaction.options.getString('topic');
+    let embed;
+
+    switch (topic) {
+      case 'menu':
+        embed = TutorialSystem.getMainMenu();
+        break;
+      case 'home':
+        embed = TutorialSystem.getHomeTutorial();
+        break;
+      case 'champions':
+        embed = TutorialSystem.getChampionsTutorial();
+        break;
+      case 'skinpage':
+        embed = TutorialSystem.getSkinPageTutorial();
+        break;
+      case 'chroma':
+        embed = TutorialSystem.getChromaTutorial();
+        break;
+      case 'marketplace':
+        embed = TutorialSystem.getMarketplaceTutorial();
+        break;
+      case 'filters':
+        embed = TutorialSystem.getMarketplaceFilterTutorial();
+        break;
+      case 'history':
+        embed = TutorialSystem.getDownloadHistoryTutorial();
+        break;
+      case 'customs':
+        embed = TutorialSystem.getCustomsTutorial();
+        break;
+      case 'activate':
+        embed = TutorialSystem.getActivationTutorial();
+        break;
+      case 'settings':
+        embed = TutorialSystem.getSettingsTutorial();
+        break;
+      case 'troubleshoot':
+        embed = TutorialSystem.getTroubleshooting();
+        break;
+      default:
+        embed = TutorialSystem.getMainMenu();
+    }
+
+    await interaction.reply({ embeds: [embed], ephemeral: true });
+    logger.info('COMMAND-TUTORIAL', `Topic: ${topic} by ${interaction.user.tag}`);
   }
 }
 

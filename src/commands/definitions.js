@@ -22,7 +22,29 @@ const commands = {
 
   help: new SlashCommandBuilder()
     .setName('help')
-    .setDescription('Display available commands and usage information')
+    .setDescription('Display available commands and usage information'),
+
+  tutorial: new SlashCommandBuilder()
+    .setName('tutorial')
+    .setDescription('Wildflover Skin Manager comprehensive guide')
+    .addStringOption(option =>
+      option.setName('topic')
+        .setDescription('Select tutorial topic')
+        .setRequired(true)
+        .addChoices(
+          { name: 'Main Menu', value: 'menu' },
+          { name: 'Home Screen', value: 'home' },
+          { name: 'Champions Library', value: 'champions' },
+          { name: 'Skin Details', value: 'skinpage' },
+          { name: 'Chroma System', value: 'chroma' },
+          { name: 'Marketplace', value: 'marketplace' },
+          { name: 'Marketplace Filters', value: 'filters' },
+          { name: 'Download History', value: 'history' },
+          { name: 'Custom Skins', value: 'customs' },
+          { name: 'Activation System', value: 'activate' },
+          { name: 'Settings', value: 'settings' },
+          { name: 'Troubleshooting', value: 'troubleshoot' }
+        ))
 };
 
 module.exports = commands;

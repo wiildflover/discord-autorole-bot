@@ -77,6 +77,7 @@ class AutoRoleBot {
       registry.addCommand(commandDefinitions.ping);
       registry.addCommand(commandDefinitions.info);
       registry.addCommand(commandDefinitions.config);
+      registry.addCommand(commandDefinitions.tutorial);
       registry.addCommand(commandDefinitions.help);
 
       await registry.registerGlobally();
@@ -100,6 +101,9 @@ class AutoRoleBot {
           break;
         case 'config':
           await this.commandHandlers.handleConfig(interaction);
+          break;
+        case 'tutorial':
+          await this.commandHandlers.handleTutorial(interaction);
           break;
         case 'help':
           await this.commandHandlers.handleHelp(interaction);
