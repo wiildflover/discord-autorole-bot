@@ -91,7 +91,7 @@ class CommandHandlers {
       )
       .addFields({
         name: 'Core Features',
-        value: '> Automated role assignment system\n> Welcome & leave card generator\n> Multi-language tutorial system\n> Configurable welcome channels',
+        value: '> Automated role assignment system\n>\n> Welcome & leave card generator\n>\n> Multi-language tutorial system\n>\n> Configurable welcome channels',
         inline: false
       })
       .setImage('https://raw.githubusercontent.com/wiildflover/wildflover/main/public/assets/backgrounds/wildflover_splash_login.jpg')
