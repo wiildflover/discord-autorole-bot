@@ -7,7 +7,7 @@
 
 const { EmbedBuilder } = require('discord.js');
 
-const TUTORIAL_BASE_URL = 'https://raw.githubusercontent.com/wiildflover/wildflover-skin-manager/main/public/assets/learning';
+const TUTORIAL_BASE_URL = 'https://raw.githubusercontent.com/wiildflover/wildflover/main/public/assets/learning';
 
 class TutorialSystem {
   static getMainMenu() {
