@@ -52,7 +52,15 @@ const commands = {
         .addChoices(
           { name: 'English', value: 'en' },
           { name: 'Türkçe', value: 'tr' }
-        ))
+        )),
+
+  setwelcome: new SlashCommandBuilder()
+    .setName('setwelcome')
+    .setDescription('Set welcome/leave message channel (Admin only)')
+    .addChannelOption(option =>
+      option.setName('channel')
+        .setDescription('Channel for welcome and leave messages')
+        .setRequired(true))
 };
 
 module.exports = commands;

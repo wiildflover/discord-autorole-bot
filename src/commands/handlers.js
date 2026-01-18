@@ -90,6 +90,7 @@ class CommandHandlers {
         { name: '/info', value: 'Display bot information and statistics', inline: false },
         { name: '/config', value: 'View current bot configuration (Admin only)', inline: false },
         { name: '/tutorial', value: 'Complete Wildflover Skin Manager guide with screenshots', inline: false },
+        { name: '/setwelcome', value: 'Set welcome/leave message channel (Admin only)', inline: false },
         { name: '/help', value: 'Display this help message', inline: false }
       )
       .addFields({
@@ -152,6 +153,67 @@ class CommandHandlers {
 
     await interaction.reply({ embeds: [embed], ephemeral: true });
     logger.info('COMMAND-TUTORIAL', `Topic: ${topic} (${language}) by ${interaction.user.tag}`);
+  }
+
+  async handleSetWelcome(interaction) {
+    if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+      await interaction.reply({ 
+        content: 'You need Administrator permission to use this command.', 
+        ephemeral: true 
+      });
+      return;
+    }
+
+    const channel = interaction.options.getChannel('channel');
+
+    if (!channel) {
+      await interaction.reply({
+        content: 'Channel not found. Please provide a valid channel.',
+        ephemeral: true
+      });
+      logger.warn('COMMAND-SETWELCOME', `Invalid channel provided by ${interaction.user.tag}`);
+      return;
+    }
+
+    if (channel.type !== 0) {
+      await interaction.reply({
+        content: 'Please select a text channel.',
+        ephemeral: true
+      });
+      logger.warn('COMMAND-SETWELCOME', `Non-text channel selected by ${interaction.user.tag}`);
+      return;
+    }
+
+    this.bot.config.welcomeChannelId = channel.id;
+
+    const fs = require('fs');
+    const path = require('path');
+    const configPath = path.join(__dirname, '../../config.json');
+    
+    try {
+      fs.writeFileSync(configPath, JSON.stringify(this.bot.config, null, 2));
+      
+      const embed = new EmbedBuilder()
+        .setColor(0x57F287)
+        .setTitle('Welcome Channel Configuration')
+        .setDescription('Welcome and leave messages channel has been successfully configured.')
+        .addFields(
+          { name: 'Channel Name', value: channel.name, inline: true },
+          { name: 'Channel ID', value: channel.id, inline: true },
+          { name: 'Channel Mention', value: `<#${channel.id}>`, inline: true }
+        )
+        .setFooter({ text: 'Welcome cards will be sent to this channel' })
+        .setTimestamp();
+
+      await interaction.reply({ embeds: [embed], ephemeral: true });
+      logger.success('COMMAND-SETWELCOME', `Welcome channel set to ${channel.name} (${channel.id}) by ${interaction.user.tag}`);
+    } catch (error) {
+      logger.error('COMMAND-SETWELCOME', `Failed to save configuration: ${error.message}`);
+      await interaction.reply({
+        content: 'Failed to save configuration. Please try again.',
+        ephemeral: true
+      });
+    }
   }
 }
 

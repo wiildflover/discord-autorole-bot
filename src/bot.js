@@ -82,6 +82,7 @@ class AutoRoleBot {
       registry.addCommand(commandDefinitions.config);
       registry.addCommand(commandDefinitions.tutorial);
       registry.addCommand(commandDefinitions.help);
+      registry.addCommand(commandDefinitions.setwelcome);
 
       await registry.registerGlobally();
     } catch (error) {
@@ -110,6 +111,9 @@ class AutoRoleBot {
           break;
         case 'help':
           await this.commandHandlers.handleHelp(interaction);
+          break;
+        case 'setwelcome':
+          await this.commandHandlers.handleSetWelcome(interaction);
           break;
         default:
           await interaction.reply({ content: 'Unknown command.', ephemeral: true });
@@ -244,15 +248,27 @@ class AutoRoleBot {
         return;
       }
 
-      const systemChannel = member.guild.systemChannel;
-      if (systemChannel) {
-        await systemChannel.send({
-          content: `Welcome to **${member.guild.name}**, <@${member.id}>! 🎉`,
+      let targetChannel = null;
+      
+      if (this.config.welcomeChannelId) {
+        targetChannel = member.guild.channels.cache.get(this.config.welcomeChannelId);
+        if (!targetChannel) {
+          logger.warn('MEMBER-JOIN', `Configured welcome channel ${this.config.welcomeChannelId} not found, falling back to system channel`);
+        }
+      }
+      
+      if (!targetChannel) {
+        targetChannel = member.guild.systemChannel;
+      }
+
+      if (targetChannel) {
+        await targetChannel.send({
+          content: `Welcome to **${member.guild.name}**, <@${member.id}>!`,
           files: [welcomeCard]
         });
-        logger.success('MEMBER-JOIN', `Welcome card sent for ${member.user.tag}`);
+        logger.success('MEMBER-JOIN', `Welcome card sent for ${member.user.tag} to ${targetChannel.name}`);
       } else {
-        logger.warn('MEMBER-JOIN', 'No system channel found for welcome message');
+        logger.warn('MEMBER-JOIN', 'No channel found for welcome message');
       }
     } catch (error) {
       logger.error('MEMBER-JOIN', `Error handling member join: ${error.message}`);
@@ -270,15 +286,27 @@ class AutoRoleBot {
         return;
       }
 
-      const systemChannel = member.guild.systemChannel;
-      if (systemChannel) {
-        await systemChannel.send({
-          content: `**${member.user.username}** has left the server. 👋`,
+      let targetChannel = null;
+      
+      if (this.config.welcomeChannelId) {
+        targetChannel = member.guild.channels.cache.get(this.config.welcomeChannelId);
+        if (!targetChannel) {
+          logger.warn('MEMBER-LEAVE', `Configured welcome channel ${this.config.welcomeChannelId} not found, falling back to system channel`);
+        }
+      }
+      
+      if (!targetChannel) {
+        targetChannel = member.guild.systemChannel;
+      }
+
+      if (targetChannel) {
+        await targetChannel.send({
+          content: `**${member.user.username}** has left the server.`,
           files: [leaveCard]
         });
-        logger.success('MEMBER-LEAVE', `Leave card sent for ${member.user.tag}`);
+        logger.success('MEMBER-LEAVE', `Leave card sent for ${member.user.tag} to ${targetChannel.name}`);
       } else {
-        logger.warn('MEMBER-LEAVE', 'No system channel found for leave message');
+        logger.warn('MEMBER-LEAVE', 'No channel found for leave message');
       }
     } catch (error) {
       logger.error('MEMBER-LEAVE', `Error handling member leave: ${error.message}`);
