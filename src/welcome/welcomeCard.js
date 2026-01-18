@@ -19,6 +19,11 @@ class WelcomeCardGenerator {
       const canvas = createCanvas(1024, 450);
       const ctx = canvas.getContext('2d');
 
+      // Test if canvas is working
+      ctx.fillStyle = '#FF0000';
+      ctx.fillRect(0, 0, 100, 100);
+      logger.info('WELCOME-CARD', 'Canvas test rectangle drawn');
+
       // Load and draw background
       logger.info('WELCOME-CARD', 'Loading background image');
       const background = await loadImage(BACKGROUND_URL);
@@ -29,18 +34,29 @@ class WelcomeCardGenerator {
       ctx.fillRect(0, 0, 1024, 450);
       logger.info('WELCOME-CARD', 'Applied dark overlay');
 
-      // Configure text rendering
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
+      // Test text rendering IMMEDIATELY after overlay
+      ctx.fillStyle = '#FF0000';
+      ctx.fillRect(400, 50, 224, 60);
+      logger.info('WELCOME-CARD', 'Test rectangle for text area drawn');
 
-      // Draw title text - WELCOME/GOODBYE
+      // Configure text rendering with explicit settings
       const messageText = type === 'welcome' ? 'WELCOME' : 'GOODBYE';
       
-      ctx.font = '70px sans-serif';
+      ctx.save();
       ctx.fillStyle = '#FFFFFF';
-      ctx.fillText(messageText, 512, 80);
-      ctx.fillText(messageText, 512, 80);
-      ctx.fillText(messageText, 512, 80);
+      ctx.font = '70px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      
+      // Measure text to verify font is loaded
+      const metrics = ctx.measureText(messageText);
+      logger.info('WELCOME-CARD', `Text metrics - width: ${metrics.width}`);
+      
+      // Draw text multiple times
+      for (let i = 0; i < 5; i++) {
+        ctx.fillText(messageText, 512, 80);
+      }
+      ctx.restore();
       
       logger.info('WELCOME-CARD', `Title text rendered: ${messageText}`);
 
@@ -76,15 +92,20 @@ class WelcomeCardGenerator {
 
       logger.info('WELCOME-CARD', 'Avatar rendered with gradient border');
 
-      // Reset text rendering context
+      // Draw username with explicit context reset
+      ctx.save();
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '42px Arial';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-
-      // Draw username below avatar
-      ctx.font = '42px sans-serif';
-      ctx.fillStyle = '#FFFFFF';
-      ctx.fillText(member.user.username, 512, 300);
-      ctx.fillText(member.user.username, 512, 300);
+      
+      const usernameMetrics = ctx.measureText(member.user.username);
+      logger.info('WELCOME-CARD', `Username metrics - width: ${usernameMetrics.width}`);
+      
+      for (let i = 0; i < 5; i++) {
+        ctx.fillText(member.user.username, 512, 300);
+      }
+      ctx.restore();
       
       logger.info('WELCOME-CARD', `Username rendered: ${member.user.username}`);
 
@@ -93,9 +114,13 @@ class WelcomeCardGenerator {
         ? 'Welcome to Wildflover Community!' 
         : 'Thanks for being part of our community!';
       
-      ctx.font = '26px sans-serif';
+      ctx.save();
       ctx.fillStyle = '#E0E0E0';
+      ctx.font = '26px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
       ctx.fillText(subText, 512, 350);
+      ctx.restore();
       
       logger.info('WELCOME-CARD', `Subtitle rendered: ${subText}`);
 
@@ -104,9 +129,13 @@ class WelcomeCardGenerator {
         ? `Member #${member.guild.memberCount}` 
         : 'We hope to see you again';
       
-      ctx.font = '22px sans-serif';
+      ctx.save();
       ctx.fillStyle = '#AAAAAA';
+      ctx.font = '22px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
       ctx.fillText(memberCount, 512, 390);
+      ctx.restore();
       
       logger.info('WELCOME-CARD', `Member count rendered: ${memberCount}`);
 
