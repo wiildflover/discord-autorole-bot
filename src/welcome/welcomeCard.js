@@ -1,12 +1,12 @@
 /**
  * File: welcomeCard.js
  * Author: Wildflover
- * Description: Welcome/Leave card generator with text rendering fix
+ * Description: Welcome/Leave card generator using canvas package
  * Language: JavaScript (Node.js)
  */
 
 const { AttachmentBuilder } = require('discord.js');
-const { createCanvas, loadImage, GlobalFonts } = require('@napi-rs/canvas');
+const { createCanvas, loadImage } = require('canvas');
 const logger = require('../utils/logger');
 
 const BACKGROUND_URL = 'https://raw.githubusercontent.com/wiildflover/wildflover/main/public/assets/backgrounds/wildflover_bg.jpg';
@@ -15,15 +15,6 @@ class WelcomeCardGenerator {
   static async generateCard(member, type = 'welcome') {
     try {
       logger.info('WELCOME-CARD', `Generating ${type} card for ${member.user.tag}`);
-      
-      // Register system fonts explicitly
-      try {
-        GlobalFonts.registerFromPath('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', 'DejaVu Sans Bold');
-        GlobalFonts.registerFromPath('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', 'DejaVu Sans');
-        logger.info('WELCOME-CARD', 'Fonts registered successfully');
-      } catch (fontError) {
-        logger.warn('WELCOME-CARD', `Font registration failed: ${fontError.message}`);
-      }
       
       const canvas = createCanvas(1024, 450);
       const ctx = canvas.getContext('2d');
@@ -41,23 +32,17 @@ class WelcomeCardGenerator {
       // Draw title text - WELCOME/GOODBYE
       const messageText = type === 'welcome' ? 'WELCOME' : 'GOODBYE';
       
-      ctx.save();
-      ctx.font = 'bold 70px "DejaVu Sans Bold", Arial, sans-serif';
+      ctx.font = 'bold 70px Arial';
       ctx.fillStyle = '#FFFFFF';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       
-      const metrics = ctx.measureText(messageText);
-      logger.info('WELCOME-CARD', `Text metrics - width: ${metrics.width}, font: ${ctx.font}`);
-      
-      // Draw with shadow for visibility
       ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
       ctx.shadowBlur = 10;
       ctx.shadowOffsetX = 2;
       ctx.shadowOffsetY = 2;
       
       ctx.fillText(messageText, 512, 80);
-      ctx.restore();
       
       logger.info('WELCOME-CARD', `Title text rendered: ${messageText}`);
 
@@ -94,8 +79,7 @@ class WelcomeCardGenerator {
       logger.info('WELCOME-CARD', 'Avatar rendered with gradient border');
 
       // Draw username below avatar
-      ctx.save();
-      ctx.font = 'bold 42px "DejaVu Sans Bold", Arial, sans-serif';
+      ctx.font = 'bold 42px Arial';
       ctx.fillStyle = '#FFFFFF';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -106,7 +90,6 @@ class WelcomeCardGenerator {
       ctx.shadowOffsetY = 2;
       
       ctx.fillText(member.user.username, 512, 300);
-      ctx.restore();
       
       logger.info('WELCOME-CARD', `Username rendered: ${member.user.username}`);
 
@@ -115,17 +98,17 @@ class WelcomeCardGenerator {
         ? 'Welcome to Wildflover Community!' 
         : 'Thanks for being part of our community!';
       
-      ctx.save();
-      ctx.font = '26px "DejaVu Sans", Arial, sans-serif';
+      ctx.font = '26px Arial';
       ctx.fillStyle = '#E0E0E0';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       
       ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
       ctx.shadowBlur = 6;
+      ctx.shadowOffsetX = 1;
+      ctx.shadowOffsetY = 1;
       
       ctx.fillText(subText, 512, 350);
-      ctx.restore();
       
       logger.info('WELCOME-CARD', `Subtitle rendered: ${subText}`);
 
@@ -134,17 +117,17 @@ class WelcomeCardGenerator {
         ? `Member #${member.guild.memberCount}` 
         : 'We hope to see you again';
       
-      ctx.save();
-      ctx.font = '22px "DejaVu Sans", Arial, sans-serif';
+      ctx.font = '22px Arial';
       ctx.fillStyle = '#AAAAAA';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       
       ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
       ctx.shadowBlur = 4;
+      ctx.shadowOffsetX = 1;
+      ctx.shadowOffsetY = 1;
       
       ctx.fillText(memberCount, 512, 390);
-      ctx.restore();
       
       logger.info('WELCOME-CARD', `Member count rendered: ${memberCount}`);
 
