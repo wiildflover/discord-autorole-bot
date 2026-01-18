@@ -6,375 +6,388 @@
  */
 
 const { EmbedBuilder } = require('discord.js');
+const translations = require('../utils/translations');
 
 const TUTORIAL_BASE_URL = 'https://raw.githubusercontent.com/wiildflover/wildflover/main/public/assets/learning';
 
 class TutorialSystem {
-  static getMainMenu() {
+  static getMainMenu(lang = 'en') {
+    const t = translations[lang].mainMenu;
     return new EmbedBuilder()
       .setColor(0x5865F2)
-      .setTitle('Wildflover Skin Manager - Complete Guide')
-      .setDescription('Professional League of Legends skin customization tool')
+      .setTitle(t.title)
+      .setDescription(t.description)
       .addFields(
-        { name: '▸ Getting Started', value: 'Use `/tutorial home` to learn the basics', inline: false },
-        { name: '▸ Champions Library', value: 'Use `/tutorial champions` to browse and select skins', inline: false },
-        { name: '▸ Marketplace', value: 'Use `/tutorial marketplace` to download community mods', inline: false },
-        { name: '▸ Custom Skins', value: 'Use `/tutorial customs` to import your own skins', inline: false },
-        { name: '▸ Activation System', value: 'Use `/tutorial activate` to enable your skins', inline: false },
-        { name: '▸ Settings', value: 'Use `/tutorial settings` for configuration options', inline: false }
+        { name: t.gettingStarted, value: t.gettingStartedValue, inline: false },
+        { name: t.championsLibrary, value: t.championsLibraryValue, inline: false },
+        { name: t.marketplace, value: t.marketplaceValue, inline: false },
+        { name: t.customSkins, value: t.customSkinsValue, inline: false },
+        { name: t.activationSystem, value: t.activationSystemValue, inline: false },
+        { name: t.settings, value: t.settingsValue, inline: false }
       )
-      .setFooter({ text: 'Crafted by Wildflover with passion & caffeine' })
+      .setFooter({ text: t.footer })
       .setTimestamp();
   }
 
-  static getHomeTutorial() {
+  static getHomeTutorial(lang = 'en') {
+    const t = translations[lang].home;
     return new EmbedBuilder()
       .setColor(0x5865F2)
-      .setTitle('Home Screen - Dashboard Overview')
-      .setDescription('Your central hub for managing League of Legends skins')
+      .setTitle(t.title)
+      .setDescription(t.description)
       .addFields(
         { 
-          name: '▸ Quick Access Panel', 
-          value: 'Navigate between Champions Library, Marketplace, Customs, and Settings from the main menu', 
+          name: t.quickAccess, 
+          value: t.quickAccessValue, 
           inline: false 
         },
         { 
-          name: '▸ Active Skins Counter', 
-          value: 'View how many skins are currently enabled in your game', 
+          name: t.activeSkinsCounter, 
+          value: t.activeSkinsCounterValue, 
           inline: false 
         },
         { 
-          name: '▸ Recent Activity', 
-          value: 'See your latest downloads and activated skins', 
+          name: t.recentActivity, 
+          value: t.recentActivityValue, 
           inline: false 
         }
       )
       .setImage(`${TUTORIAL_BASE_URL}/home_preview.png`)
-      .setFooter({ text: 'Tip: Use the sidebar for quick navigation' });
+      .setFooter({ text: t.tip });
   }
 
-  static getChampionsTutorial() {
+  static getChampionsTutorial(lang = 'en') {
+    const t = translations[lang].champions;
     return new EmbedBuilder()
       .setColor(0x5865F2)
-      .setTitle('Champions Library - Browse & Select Skins')
-      .setDescription('Access all League of Legends champions and their available skins')
+      .setTitle(t.title)
+      .setDescription(t.description)
       .addFields(
         { 
-          name: '▸ Step 1: Select Champion', 
-          value: 'Click on any champion card to view their available skins', 
+          name: t.step1, 
+          value: t.step1Value, 
           inline: false 
         },
         { 
-          name: '▸ Step 2: Browse Skins', 
-          value: 'Scroll through official skins, chromas, and custom variants', 
+          name: t.step2, 
+          value: t.step2Value, 
           inline: false 
         },
         { 
-          name: '▸ Step 3: Preview', 
-          value: 'Click on a skin to see detailed preview and information', 
+          name: t.step3, 
+          value: t.step3Value, 
           inline: false 
         },
         { 
-          name: '▸ Step 4: Add to Selection', 
-          value: 'Click "Add to Selected Skins" button to queue for activation', 
+          name: t.step4, 
+          value: t.step4Value, 
           inline: false 
         }
       )
       .setImage(`${TUTORIAL_BASE_URL}/championslibrary_preview.png`)
-      .setFooter({ text: 'Tip: Use search bar to quickly find champions' });
+      .setFooter({ text: t.tip });
   }
 
-  static getSkinPageTutorial() {
+  static getSkinPageTutorial(lang = 'en') {
+    const t = translations[lang].skinPage;
     return new EmbedBuilder()
       .setColor(0x5865F2)
-      .setTitle('Skin Details Page - In-Depth View')
-      .setDescription('Detailed information about selected skin')
+      .setTitle(t.title)
+      .setDescription(t.description)
       .addFields(
         { 
-          name: '▸ Skin Preview', 
-          value: 'High-quality splash art and in-game model preview', 
+          name: t.preview, 
+          value: t.previewValue, 
           inline: false 
         },
         { 
-          name: '▸ Chroma Variants', 
-          value: 'Browse available color variations for the skin', 
+          name: t.chromaVariants, 
+          value: t.chromaVariantsValue, 
           inline: false 
         },
         { 
-          name: '▸ Rarity Information', 
-          value: 'View skin tier: Ultimate, Legendary, Epic, or Standard', 
+          name: t.rarity, 
+          value: t.rarityValue, 
           inline: false 
         },
         { 
-          name: '▸ Quick Actions', 
-          value: 'Add to favorites, share, or add to selected skins directly', 
+          name: t.quickActions, 
+          value: t.quickActionsValue, 
           inline: false 
         }
       )
       .setImage(`${TUTORIAL_BASE_URL}/skinpage_preview.png`)
-      .setFooter({ text: 'Tip: Click chroma icons to preview color variants' });
+      .setFooter({ text: t.tip });
   }
 
-  static getChromaTutorial() {
+  static getChromaTutorial(lang = 'en') {
+    const t = translations[lang].chroma;
     return new EmbedBuilder()
       .setColor(0x5865F2)
-      .setTitle('Chroma System - Color Customization')
-      .setDescription('Apply unique color variations to your skins')
+      .setTitle(t.title)
+      .setDescription(t.description)
       .addFields(
         { 
-          name: '▸ What are Chromas?', 
-          value: 'Alternative color schemes for existing skins, offering visual variety', 
+          name: t.whatAre, 
+          value: t.whatAreValue, 
           inline: false 
         },
         { 
-          name: '▸ How to Apply', 
-          value: '1. Select a skin with chroma support\n2. Click on desired chroma variant\n3. Add to selected skins\n4. Activate normally', 
+          name: t.howToApply, 
+          value: t.howToApplyValue, 
           inline: false 
         },
         { 
-          name: '▸ Compatibility', 
-          value: 'Only one chroma can be active per skin at a time', 
+          name: t.compatibility, 
+          value: t.compatibilityValue, 
           inline: false 
         }
       )
       .setImage(`${TUTORIAL_BASE_URL}/chroma_preview.png`)
-      .setFooter({ text: 'Tip: Chromas work with both official and custom skins' });
+      .setFooter({ text: t.tip });
   }
 
-  static getMarketplaceTutorial() {
+  static getMarketplaceTutorial(lang = 'en') {
+    const t = translations[lang].marketplace;
     return new EmbedBuilder()
       .setColor(0x5865F2)
-      .setTitle('Marketplace - Community Mods Hub')
-      .setDescription('Download and install community-created custom skins')
+      .setTitle(t.title)
+      .setDescription(t.description)
       .addFields(
         { 
-          name: '▸ Step 1: Browse Marketplace', 
-          value: 'Explore thousands of custom skins created by the community', 
+          name: t.step1, 
+          value: t.step1Value, 
           inline: false 
         },
         { 
-          name: '▸ Step 2: Filter & Search', 
-          value: 'Use filters to find skins by champion, category, or popularity', 
+          name: t.step2, 
+          value: t.step2Value, 
           inline: false 
         },
         { 
-          name: '▸ Step 3: Download', 
-          value: 'Click "Download" button on any mod card to install', 
+          name: t.step3, 
+          value: t.step3Value, 
           inline: false 
         },
         { 
-          name: '▸ Step 4: Auto-Import', 
-          value: 'Downloaded mods automatically appear in your Customs library', 
+          name: t.step4, 
+          value: t.step4Value, 
           inline: false 
         }
       )
       .setImage(`${TUTORIAL_BASE_URL}/marketplace_preview.png`)
-      .setFooter({ text: 'Tip: Check ratings and reviews before downloading' });
+      .setFooter({ text: t.tip });
   }
 
-  static getMarketplaceFilterTutorial() {
+  static getMarketplaceFilterTutorial(lang = 'en') {
+    const t = translations[lang].filters;
     return new EmbedBuilder()
       .setColor(0x5865F2)
-      .setTitle('Marketplace Filters - Advanced Search')
-      .setDescription('Refine your search to find exactly what you need')
+      .setTitle(t.title)
+      .setDescription(t.description)
       .addFields(
         { 
-          name: '▸ Champion Filter', 
-          value: 'Show only skins for specific champions', 
+          name: t.championFilter, 
+          value: t.championFilterValue, 
           inline: false 
         },
         { 
-          name: '▸ Category Filter', 
-          value: 'Filter by: Anime, Fantasy, Realistic, Meme, Crossover', 
+          name: t.categoryFilter, 
+          value: t.categoryFilterValue, 
           inline: false 
         },
         { 
-          name: '▸ Sort Options', 
-          value: 'Sort by: Most Downloaded, Highest Rated, Newest, Trending', 
+          name: t.sortOptions, 
+          value: t.sortOptionsValue, 
           inline: false 
         },
         { 
-          name: '▸ Quality Filter', 
-          value: 'Filter by skin quality: High, Medium, Standard', 
+          name: t.qualityFilter, 
+          value: t.qualityFilterValue, 
           inline: false 
         }
       )
       .setImage(`${TUTORIAL_BASE_URL}/marketplace_filtre_preview.png`)
-      .setFooter({ text: 'Tip: Combine multiple filters for precise results' });
+      .setFooter({ text: t.tip });
   }
 
-  static getDownloadHistoryTutorial() {
+  static getDownloadHistoryTutorial(lang = 'en') {
+    const t = translations[lang].history;
     return new EmbedBuilder()
       .setColor(0x5865F2)
-      .setTitle('Download History - Track Your Mods')
-      .setDescription('View and manage all your downloaded marketplace mods')
+      .setTitle(t.title)
+      .setDescription(t.description)
       .addFields(
         { 
-          name: '▸ Download Log', 
-          value: 'Complete history of all marketplace downloads with timestamps', 
+          name: t.downloadLog, 
+          value: t.downloadLogValue, 
           inline: false 
         },
         { 
-          name: '▸ Quick Actions', 
-          value: 'Re-download, delete, or activate directly from history', 
+          name: t.quickActions, 
+          value: t.quickActionsValue, 
           inline: false 
         },
         { 
-          name: '▸ Storage Management', 
-          value: 'View total storage used by downloaded mods', 
+          name: t.storageManagement, 
+          value: t.storageManagementValue, 
           inline: false 
         }
       )
       .setImage(`${TUTORIAL_BASE_URL}/downloadhistory_preview.png`)
-      .setFooter({ text: 'Tip: Clear old downloads to free up space' });
+      .setFooter({ text: t.tip });
   }
 
-  static getCustomsTutorial() {
+  static getCustomsTutorial(lang = 'en') {
+    const t = translations[lang].customs;
     return new EmbedBuilder()
       .setColor(0x5865F2)
-      .setTitle('Custom Skins - Import Your Own Mods')
-      .setDescription('Add custom skins from external sources')
+      .setTitle(t.title)
+      .setDescription(t.description)
       .addFields(
         { 
-          name: '▸ Step 1: Obtain Custom Skin', 
-          value: 'Download .fantome or .zip skin files from trusted sources', 
+          name: t.step1, 
+          value: t.step1Value, 
           inline: false 
         },
         { 
-          name: '▸ Step 2: Import to Wildflover', 
-          value: 'Click "Import Custom" button and select your skin file', 
+          name: t.step2, 
+          value: t.step2Value, 
           inline: false 
         },
         { 
-          name: '▸ Step 3: Verify Import', 
-          value: 'Skin appears in Customs library with preview thumbnail', 
+          name: t.step3, 
+          value: t.step3Value, 
           inline: false 
         },
         { 
-          name: '▸ Step 4: Activate', 
-          value: 'Add to selected skins and activate like any other skin', 
+          name: t.step4, 
+          value: t.step4Value, 
           inline: false 
         },
         { 
-          name: '▸ Supported Formats', 
-          value: '.fantome, .zip (must contain valid skin structure)', 
+          name: t.supportedFormats, 
+          value: t.supportedFormatsValue, 
           inline: false 
         }
       )
       .setImage(`${TUTORIAL_BASE_URL}/customs_preview.png`)
-      .setFooter({ text: 'Warning: Only use skins from trusted sources' });
+      .setFooter({ text: t.warning });
   }
 
-  static getActivationTutorial() {
+  static getActivationTutorial(lang = 'en') {
+    const t = translations[lang].activate;
     return new EmbedBuilder()
       .setColor(0x5865F2)
-      .setTitle('Activation System - Enable Your Skins')
-      .setDescription('How to activate and apply skins to your League of Legends game')
+      .setTitle(t.title)
+      .setDescription(t.description)
       .addFields(
         { 
-          name: '▸ Step 1: Select Skins', 
-          value: 'Add desired skins to "Selected Skins" list from any source', 
+          name: t.step1, 
+          value: t.step1Value, 
           inline: false 
         },
         { 
-          name: '▸ Step 2: Open Selected Skins', 
-          value: 'Click "Selected Skins" button (shows count badge)', 
+          name: t.step2, 
+          value: t.step2Value, 
           inline: false 
         },
         { 
-          name: '▸ Step 3: Review Selection', 
-          value: 'Verify all skins in the list are correct, remove unwanted ones', 
+          name: t.step3, 
+          value: t.step3Value, 
           inline: false 
         },
         { 
-          name: '▸ Step 4: Click Activate', 
-          value: 'Press the green "Activate All" button to apply skins', 
+          name: t.step4, 
+          value: t.step4Value, 
           inline: false 
         },
         { 
-          name: '▸ Step 5: Wait for Process', 
-          value: 'Activation progress bar shows real-time status', 
+          name: t.step5, 
+          value: t.step5Value, 
           inline: false 
         },
         { 
-          name: '▸ Step 6: Launch Game', 
-          value: 'Start League of Legends - skins are now active in-game', 
+          name: t.step6, 
+          value: t.step6Value, 
           inline: false 
         },
         { 
-          name: '▸ Important Notes', 
-          value: '• Close League of Legends before activating\n• Activation takes 10-30 seconds\n• Skins persist until deactivated', 
+          name: t.importantNotes, 
+          value: t.importantNotesValue, 
           inline: false 
         }
       )
       .setImage(`${TUTORIAL_BASE_URL}/selectedskins_preview.png`)
-      .setFooter({ text: 'Tip: You can activate multiple skins at once' });
+      .setFooter({ text: t.tip });
   }
 
-  static getSettingsTutorial() {
+  static getSettingsTutorial(lang = 'en') {
+    const t = translations[lang].settings;
     return new EmbedBuilder()
       .setColor(0x5865F2)
-      .setTitle('Settings - Configuration Options')
-      .setDescription('Customize Wildflover to your preferences')
+      .setTitle(t.title)
+      .setDescription(t.description)
       .addFields(
         { 
-          name: '▸ General Settings', 
-          value: 'Language, theme, startup behavior, update preferences', 
+          name: t.general, 
+          value: t.generalValue, 
           inline: false 
         },
         { 
-          name: '▸ Game Integration', 
-          value: 'League of Legends installation path, auto-detect game', 
+          name: t.gameIntegration, 
+          value: t.gameIntegrationValue, 
           inline: false 
         },
         { 
-          name: '▸ Performance', 
-          value: 'Enable/disable animations, optimize for low-end systems', 
+          name: t.performance, 
+          value: t.performanceValue, 
           inline: false 
         },
         { 
-          name: '▸ Storage Management', 
-          value: 'Clear cache, manage downloaded files, backup settings', 
+          name: t.storageManagement, 
+          value: t.storageManagementValue, 
           inline: false 
         },
         { 
-          name: '▸ About & Updates', 
-          value: 'Version information, check for updates, changelog', 
+          name: t.aboutUpdates, 
+          value: t.aboutUpdatesValue, 
           inline: false 
         }
       )
       .setImage(`${TUTORIAL_BASE_URL}/settings_preview.png`)
-      .setFooter({ text: 'Tip: Backup your settings before major updates' });
+      .setFooter({ text: t.tip });
   }
 
-  static getTroubleshooting() {
+  static getTroubleshooting(lang = 'en') {
+    const t = translations[lang].troubleshoot;
     return new EmbedBuilder()
       .setColor(0xFF5555)
-      .setTitle('Troubleshooting - Common Issues')
-      .setDescription('Solutions to frequently encountered problems')
+      .setTitle(t.title)
+      .setDescription(t.description)
       .addFields(
         { 
-          name: '▸ Skins Not Showing In-Game', 
-          value: '1. Ensure League is closed during activation\n2. Verify game path in settings\n3. Re-activate skins\n4. Restart League of Legends', 
+          name: t.skinsNotShowing, 
+          value: t.skinsNotShowingValue, 
           inline: false 
         },
         { 
-          name: '▸ Activation Failed', 
-          value: '1. Run Wildflover as Administrator\n2. Disable antivirus temporarily\n3. Check game file integrity\n4. Reinstall Wildflover', 
+          name: t.activationFailed, 
+          value: t.activationFailedValue, 
           inline: false 
         },
         { 
-          name: '▸ Custom Skin Import Error', 
-          value: '1. Verify file format (.fantome or .zip)\n2. Check file isn\'t corrupted\n3. Ensure skin is compatible with current patch', 
+          name: t.importError, 
+          value: t.importErrorValue, 
           inline: false 
         },
         { 
-          name: '▸ Marketplace Download Issues', 
-          value: '1. Check internet connection\n2. Clear download cache\n3. Try different mod\n4. Report broken mod to community', 
+          name: t.downloadIssues, 
+          value: t.downloadIssuesValue, 
           inline: false 
         }
       )
-      .setFooter({ text: 'Still having issues? Join our Discord support server' });
+      .setFooter({ text: t.footer });
   }
 }
 
