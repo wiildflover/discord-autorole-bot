@@ -301,7 +301,7 @@ class AutoRoleBot {
 
       if (targetChannel) {
         await targetChannel.send({
-          content: `**${member.user.username}** has left the server.`,
+          content: `<@${member.id}> has left the server.`,
           files: [leaveCard]
         });
         logger.success('MEMBER-LEAVE', `Leave card sent for ${member.user.tag} to ${targetChannel.name}`);

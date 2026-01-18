@@ -6,7 +6,7 @@
  */
 
 const { AttachmentBuilder } = require('discord.js');
-const { createCanvas, loadImage, GlobalFonts } = require('@napi-rs/canvas');
+const { createCanvas, loadImage } = require('@napi-rs/canvas');
 const logger = require('../utils/logger');
 
 const BACKGROUND_URL = 'https://raw.githubusercontent.com/wiildflover/wildflover/main/public/assets/backgrounds/wildflover_bg.jpg';
@@ -20,34 +20,35 @@ class WelcomeCardGenerator {
       const ctx = canvas.getContext('2d');
 
       // Load and draw background
+      logger.info('WELCOME-CARD', 'Loading background image');
       const background = await loadImage(BACKGROUND_URL);
       ctx.drawImage(background, 0, 0, 1024, 450);
 
       // Apply dark overlay
       ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
       ctx.fillRect(0, 0, 1024, 450);
+      logger.info('WELCOME-CARD', 'Applied dark overlay');
 
-      // Draw text BEFORE avatar to ensure it renders
-      const messageText = type === 'welcome' ? 'WELCOME' : 'GOODBYE';
-      
-      // Top text - WELCOME/GOODBYE
+      // Configure text rendering
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
+
+      // Draw title text - WELCOME/GOODBYE
+      const messageText = type === 'welcome' ? 'WELCOME' : 'GOODBYE';
       
       ctx.font = '70px sans-serif';
-      ctx.lineWidth = 8;
-      ctx.strokeStyle = '#000000';
-      ctx.strokeText(messageText, 512, 80);
-      
       ctx.fillStyle = '#FFFFFF';
       ctx.fillText(messageText, 512, 80);
+      ctx.fillText(messageText, 512, 80);
+      ctx.fillText(messageText, 512, 80);
       
-      logger.info('WELCOME-CARD', `Drew title text: ${messageText}`);
+      logger.info('WELCOME-CARD', `Title text rendered: ${messageText}`);
 
       // Load and draw avatar
       const avatarX = 512;
       const avatarY = 180;
 
+      logger.info('WELCOME-CARD', 'Loading avatar');
       const avatar = await loadImage(
         member.user.displayAvatarURL({ extension: 'png', size: 256 })
       );
@@ -73,21 +74,19 @@ class WelcomeCardGenerator {
       ctx.arc(avatarX, avatarY, 80, 0, Math.PI * 2);
       ctx.stroke();
 
-      logger.info('WELCOME-CARD', 'Drew avatar with gradient border');
+      logger.info('WELCOME-CARD', 'Avatar rendered with gradient border');
 
-      // Draw username below avatar
+      // Reset text rendering context
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      
+
+      // Draw username below avatar
       ctx.font = '42px sans-serif';
-      ctx.lineWidth = 6;
-      ctx.strokeStyle = '#000000';
-      ctx.strokeText(member.user.username, 512, 300);
-      
       ctx.fillStyle = '#FFFFFF';
       ctx.fillText(member.user.username, 512, 300);
+      ctx.fillText(member.user.username, 512, 300);
       
-      logger.info('WELCOME-CARD', `Drew username: ${member.user.username}`);
+      logger.info('WELCOME-CARD', `Username rendered: ${member.user.username}`);
 
       // Draw welcome message
       const subText = type === 'welcome' 
@@ -98,7 +97,7 @@ class WelcomeCardGenerator {
       ctx.fillStyle = '#E0E0E0';
       ctx.fillText(subText, 512, 350);
       
-      logger.info('WELCOME-CARD', `Drew subtitle: ${subText}`);
+      logger.info('WELCOME-CARD', `Subtitle rendered: ${subText}`);
 
       // Draw member count
       const memberCount = type === 'welcome' 
@@ -109,7 +108,7 @@ class WelcomeCardGenerator {
       ctx.fillStyle = '#AAAAAA';
       ctx.fillText(memberCount, 512, 390);
       
-      logger.info('WELCOME-CARD', `Drew member count: ${memberCount}`);
+      logger.info('WELCOME-CARD', `Member count rendered: ${memberCount}`);
 
       const buffer = canvas.toBuffer('image/png');
       const attachment = new AttachmentBuilder(buffer, {
