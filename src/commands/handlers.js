@@ -55,43 +55,43 @@ class CommandHandlers {
     const embed = new EmbedBuilder()
       .setColor(0x9B59B6)
       .setTitle('Wildflover Community Bot')
-      .setDescription('```ansi\n\x1b[35mAdvanced automation system for Wildflover Skin Manager community\x1b[0m\n```')
+      .setDescription('*Advanced automation system for Wildflover Skin Manager community*')
       .setThumbnail('https://raw.githubusercontent.com/wiildflover/wildflover/main/public/assets/backgrounds/wildflover_bg.jpg')
       .addFields(
         { 
-          name: '▸ Developer', 
-          value: '```fix\nWildflover\n```', 
+          name: 'Developer', 
+          value: '`Wildflover`', 
           inline: true 
         },
         { 
-          name: '▸ Server Members', 
-          value: `\`\`\`yaml\n${guild ? guild.memberCount : 'N/A'}\n\`\`\``, 
+          name: 'Server Members', 
+          value: `**${guild ? guild.memberCount : 'N/A'}**`, 
           inline: true 
         },
         { 
-          name: '▸ Verified Members', 
-          value: `\`\`\`diff\n+ ${verifiedCount}\n\`\`\``, 
+          name: 'Verified Members', 
+          value: `**${verifiedCount}**`, 
           inline: true 
         },
         { 
-          name: '▸ Active Servers', 
-          value: `\`\`\`css\n[${this.bot.client.guilds.cache.size}]\n\`\`\``, 
+          name: 'Active Servers', 
+          value: `${this.bot.client.guilds.cache.size}`, 
           inline: true 
         },
         { 
-          name: '▸ Total Users', 
-          value: `\`\`\`css\n[${this.bot.client.users.cache.size}]\n\`\`\``, 
+          name: 'Total Users', 
+          value: `${this.bot.client.users.cache.size}`, 
           inline: true 
         },
         { 
-          name: '▸ System Uptime', 
-          value: `\`\`\`apache\n${hours}h ${minutes}m ${seconds}s\n\`\`\``, 
+          name: 'System Uptime', 
+          value: `\`${hours}h ${minutes}m ${seconds}s\``, 
           inline: true 
         }
       )
       .addFields({
-        name: '▸ Core Features',
-        value: '```md\n# Automated role assignment system\n# Welcome & leave card generator\n# Multi-language tutorial system\n# Configurable welcome channels\n```',
+        name: 'Core Features',
+        value: '> Automated role assignment system\n> Welcome & leave card generator\n> Multi-language tutorial system\n> Configurable welcome channels',
         inline: false
       })
       .setImage('https://raw.githubusercontent.com/wiildflover/wildflover/main/public/assets/backgrounds/wildflover_splash_login.jpg')
