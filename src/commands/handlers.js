@@ -37,23 +37,45 @@ class CommandHandlers {
     const minutes = Math.floor((uptime % 3600) / 60);
     const seconds = Math.floor(uptime % 60);
 
+    const guild = interaction.guild;
+    let verifiedCount = 0;
+    
+    if (guild && this.bot.config.roleId) {
+      try {
+        await guild.members.fetch();
+        const role = guild.roles.cache.get(this.bot.config.roleId);
+        if (role) {
+          verifiedCount = role.members.size;
+        }
+      } catch (error) {
+        logger.warn('COMMAND-INFO', `Failed to fetch verified members: ${error.message}`);
+      }
+    }
+
     const embed = new EmbedBuilder()
-      .setColor(0x5865F2)
-      .setTitle('Bot Information')
-      .setDescription('Professional Discord Auto-Role Bot')
+      .setColor(0x9B59B6)
+      .setTitle('Wildflover Community Bot')
+      .setDescription('Advanced automation system for Wildflover Skin Manager community')
+      .setThumbnail('https://raw.githubusercontent.com/wiildflover/wildflover/main/public/assets/backgrounds/wildflover_bg.jpg')
       .addFields(
-        { name: 'Author', value: 'Wildflover', inline: true },
-        { name: 'Version', value: '1.0.0', inline: true },
-        { name: 'Uptime', value: `${hours}h ${minutes}m ${seconds}s`, inline: true },
-        { name: 'Servers', value: `${this.bot.client.guilds.cache.size}`, inline: true },
-        { name: 'Users', value: `${this.bot.client.users.cache.size}`, inline: true },
-        { name: 'Framework', value: 'Discord.js v14', inline: true }
+        { name: '▸ Developer', value: 'Wildflover', inline: true },
+        { name: '▸ Server Members', value: `${guild ? guild.memberCount : 'N/A'}`, inline: true },
+        { name: '▸ Verified Members', value: `${verifiedCount}`, inline: true },
+        { name: '▸ Active Servers', value: `${this.bot.client.guilds.cache.size}`, inline: true },
+        { name: '▸ Total Users', value: `${this.bot.client.users.cache.size}`, inline: true },
+        { name: '▸ System Uptime', value: `${hours}h ${minutes}m ${seconds}s`, inline: true }
       )
-      .setFooter({ text: 'Crafted with passion & caffeine' })
+      .addFields({
+        name: '▸ Core Features',
+        value: '• Automated role assignment system\n• Welcome & leave card generator\n• Multi-language tutorial system\n• Configurable welcome channels',
+        inline: false
+      })
+      .setImage('https://raw.githubusercontent.com/wiildflover/wildflover/main/public/assets/backgrounds/wildflover_splash_login.jpg')
+      .setFooter({ text: 'Crafted with passion & caffeine by Wildflover' })
       .setTimestamp();
 
     await interaction.reply({ embeds: [embed], ephemeral: true });
-    logger.info('COMMAND-INFO', `Executed by ${interaction.user.tag}`);
+    logger.info('COMMAND-INFO', `Executed by ${interaction.user.tag} | Verified: ${verifiedCount}`);
   }
 
   async handleConfig(interaction) {
