@@ -17,36 +17,48 @@ class WelcomeCardGenerator {
       const canvas = createCanvas(1024, 450);
       const ctx = canvas.getContext('2d');
 
+      // Draw background
       const background = await loadImage(BACKGROUND_URL);
       ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+      // Dark overlay for better text visibility
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+      // Draw WELCOME/GOODBYE text at top
       const messageText = type === 'welcome' ? 'WELCOME' : 'GOODBYE';
-      ctx.font = 'bold 72px Arial';
+      ctx.font = 'bold 70px sans-serif';
       ctx.fillStyle = '#FFFFFF';
       ctx.textAlign = 'center';
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
-      ctx.shadowBlur = 15;
-      ctx.shadowOffsetX = 3;
-      ctx.shadowOffsetY = 3;
-      ctx.fillText(messageText, canvas.width / 2, 100);
+      ctx.textBaseline = 'middle';
+      
+      // Add strong shadow for text
+      ctx.shadowColor = 'rgba(0, 0, 0, 1)';
+      ctx.shadowBlur = 20;
+      ctx.shadowOffsetX = 4;
+      ctx.shadowOffsetY = 4;
+      
+      ctx.fillText(messageText, canvas.width / 2, 80);
 
+      // Reset shadow
+      ctx.shadowColor = 'transparent';
       ctx.shadowBlur = 0;
       ctx.shadowOffsetX = 0;
       ctx.shadowOffsetY = 0;
 
-      const avatarSize = 160;
+      // Draw avatar in center-top area
+      const avatarSize = 150;
       const avatarX = canvas.width / 2;
-      const avatarY = 230;
+      const avatarY = 200;
 
+      // Clip for circular avatar
       ctx.save();
       ctx.beginPath();
       ctx.arc(avatarX, avatarY, avatarSize / 2, 0, Math.PI * 2);
       ctx.closePath();
       ctx.clip();
 
+      // Draw avatar
       const avatar = await loadImage(
         member.user.displayAvatarURL({ extension: 'png', size: 256 })
       );
@@ -60,6 +72,7 @@ class WelcomeCardGenerator {
 
       ctx.restore();
 
+      // Draw gradient border around avatar
       const gradient = ctx.createLinearGradient(
         avatarX - avatarSize / 2 - 6,
         avatarY - avatarSize / 2 - 6,
@@ -76,38 +89,53 @@ class WelcomeCardGenerator {
       ctx.arc(avatarX, avatarY, avatarSize / 2 + 5, 0, Math.PI * 2);
       ctx.stroke();
 
+      // Draw username below avatar
       const username = member.user.username;
-      ctx.font = 'bold 44px Arial';
+      ctx.font = 'bold 42px sans-serif';
       ctx.fillStyle = '#FFFFFF';
       ctx.textAlign = 'center';
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-      ctx.shadowBlur = 10;
-      ctx.fillText(username, canvas.width / 2, 350);
+      ctx.textBaseline = 'middle';
+      
+      ctx.shadowColor = 'rgba(0, 0, 0, 1)';
+      ctx.shadowBlur = 15;
+      ctx.shadowOffsetX = 3;
+      ctx.shadowOffsetY = 3;
+      
+      ctx.fillText(username, canvas.width / 2, 310);
 
+      // Draw welcome message
       const subText = type === 'welcome' 
-        ? `Welcome to Wildflover Community!` 
+        ? 'Welcome to Wildflover Community!' 
         : 'Thanks for being part of our community!';
-      ctx.font = '28px Arial';
+      
+      ctx.font = '26px sans-serif';
       ctx.fillStyle = '#E0E0E0';
-      ctx.fillText(subText, canvas.width / 2, 390);
+      ctx.fillText(subText, canvas.width / 2, 360);
 
+      // Draw member count
       const memberCount = type === 'welcome' 
         ? `Member #${member.guild.memberCount}` 
         : 'We hope to see you again';
-      ctx.font = '24px Arial';
+      
+      ctx.font = '22px sans-serif';
       ctx.fillStyle = '#AAAAAA';
-      ctx.fillText(memberCount, canvas.width / 2, 425);
+      ctx.fillText(memberCount, canvas.width / 2, 400);
 
+      // Reset shadow
+      ctx.shadowColor = 'transparent';
       ctx.shadowBlur = 0;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
 
       const attachment = new AttachmentBuilder(canvas.toBuffer('image/png'), {
         name: `${type}-${member.id}.png`
       });
 
-      logger.info('WELCOME-CARD', `Generated ${type} card for ${member.user.tag}`);
+      logger.success('WELCOME-CARD', `Generated ${type} card for ${member.user.tag}`);
       return attachment;
     } catch (error) {
       logger.error('WELCOME-CARD', `Failed to generate card: ${error.message}`);
+      logger.error('WELCOME-CARD', `Stack: ${error.stack}`);
       return null;
     }
   }
