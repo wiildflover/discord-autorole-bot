@@ -6,10 +6,10 @@
  */
 
 const { AttachmentBuilder } = require('discord.js');
-const { createCanvas, loadImage, GlobalFonts } = require('@napi-rs/canvas');
+const { createCanvas, loadImage } = require('@napi-rs/canvas');
 const logger = require('../utils/logger');
 
-const SPLASH_URL = 'https://raw.githubusercontent.com/wiildflover/wildflover/main/public/assets/backgrounds/wildflover_splash_login.jpg';
+const BACKGROUND_URL = 'https://raw.githubusercontent.com/wiildflover/wildflover/main/public/assets/backgrounds/wildflover_bg.jpg';
 
 class WelcomeCardGenerator {
   static async generateCard(member, type = 'welcome') {
@@ -17,15 +17,29 @@ class WelcomeCardGenerator {
       const canvas = createCanvas(1024, 450);
       const ctx = canvas.getContext('2d');
 
-      const background = await loadImage(SPLASH_URL);
+      const background = await loadImage(BACKGROUND_URL);
       ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      const avatarSize = 140;
-      const avatarX = canvas.width - 150;
-      const avatarY = 120;
+      const messageText = type === 'welcome' ? 'WELCOME' : 'GOODBYE';
+      ctx.font = 'bold 72px Arial';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.textAlign = 'center';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+      ctx.shadowBlur = 15;
+      ctx.shadowOffsetX = 3;
+      ctx.shadowOffsetY = 3;
+      ctx.fillText(messageText, canvas.width / 2, 100);
+
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+
+      const avatarSize = 160;
+      const avatarX = canvas.width / 2;
+      const avatarY = 230;
 
       ctx.save();
       ctx.beginPath();
@@ -46,40 +60,45 @@ class WelcomeCardGenerator {
 
       ctx.restore();
 
-      ctx.strokeStyle = '#9B59B6';
-      ctx.lineWidth = 5;
+      const gradient = ctx.createLinearGradient(
+        avatarX - avatarSize / 2 - 6,
+        avatarY - avatarSize / 2 - 6,
+        avatarX + avatarSize / 2 + 6,
+        avatarY + avatarSize / 2 + 6
+      );
+      gradient.addColorStop(0, '#9B59B6');
+      gradient.addColorStop(0.5, '#E91E63');
+      gradient.addColorStop(1, '#9B59B6');
+
+      ctx.strokeStyle = gradient;
+      ctx.lineWidth = 6;
       ctx.beginPath();
-      ctx.arc(avatarX, avatarY, avatarSize / 2 + 4, 0, Math.PI * 2);
+      ctx.arc(avatarX, avatarY, avatarSize / 2 + 5, 0, Math.PI * 2);
       ctx.stroke();
 
-      const messageText = type === 'welcome' ? 'WELCOME' : 'GOODBYE';
-      ctx.font = 'bold 64px Arial';
+      const username = member.user.username;
+      ctx.font = 'bold 44px Arial';
       ctx.fillStyle = '#FFFFFF';
-      ctx.textAlign = 'left';
+      ctx.textAlign = 'center';
       ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
       ctx.shadowBlur = 10;
-      ctx.fillText(messageText, 60, 140);
-
-      ctx.shadowBlur = 0;
-
-      const username = member.user.username;
-      ctx.font = 'bold 42px Arial';
-      ctx.fillStyle = '#9B59B6';
-      ctx.fillText(username, 60, 200);
+      ctx.fillText(username, canvas.width / 2, 350);
 
       const subText = type === 'welcome' 
         ? `Welcome to Wildflover Community!` 
         : 'Thanks for being part of our community!';
       ctx.font = '28px Arial';
       ctx.fillStyle = '#E0E0E0';
-      ctx.fillText(subText, 60, 250);
+      ctx.fillText(subText, canvas.width / 2, 390);
 
       const memberCount = type === 'welcome' 
         ? `Member #${member.guild.memberCount}` 
         : 'We hope to see you again';
       ctx.font = '24px Arial';
       ctx.fillStyle = '#AAAAAA';
-      ctx.fillText(memberCount, 60, 290);
+      ctx.fillText(memberCount, canvas.width / 2, 425);
+
+      ctx.shadowBlur = 0;
 
       const attachment = new AttachmentBuilder(canvas.toBuffer('image/png'), {
         name: `${type}-${member.id}.png`
