@@ -106,51 +106,52 @@ class CommandHandlers {
 
   async handleTutorial(interaction) {
     const topic = interaction.options.getString('topic');
+    const language = interaction.options.getString('language') || 'en';
     let embed;
 
     switch (topic) {
       case 'menu':
-        embed = TutorialSystem.getMainMenu();
+        embed = TutorialSystem.getMainMenu(language);
         break;
       case 'home':
-        embed = TutorialSystem.getHomeTutorial();
+        embed = TutorialSystem.getHomeTutorial(language);
         break;
       case 'champions':
-        embed = TutorialSystem.getChampionsTutorial();
+        embed = TutorialSystem.getChampionsTutorial(language);
         break;
       case 'skinpage':
-        embed = TutorialSystem.getSkinPageTutorial();
+        embed = TutorialSystem.getSkinPageTutorial(language);
         break;
       case 'chroma':
-        embed = TutorialSystem.getChromaTutorial();
+        embed = TutorialSystem.getChromaTutorial(language);
         break;
       case 'marketplace':
-        embed = TutorialSystem.getMarketplaceTutorial();
+        embed = TutorialSystem.getMarketplaceTutorial(language);
         break;
       case 'filters':
-        embed = TutorialSystem.getMarketplaceFilterTutorial();
+        embed = TutorialSystem.getMarketplaceFilterTutorial(language);
         break;
       case 'history':
-        embed = TutorialSystem.getDownloadHistoryTutorial();
+        embed = TutorialSystem.getDownloadHistoryTutorial(language);
         break;
       case 'customs':
-        embed = TutorialSystem.getCustomsTutorial();
+        embed = TutorialSystem.getCustomsTutorial(language);
         break;
       case 'activate':
-        embed = TutorialSystem.getActivationTutorial();
+        embed = TutorialSystem.getActivationTutorial(language);
         break;
       case 'settings':
-        embed = TutorialSystem.getSettingsTutorial();
+        embed = TutorialSystem.getSettingsTutorial(language);
         break;
       case 'troubleshoot':
-        embed = TutorialSystem.getTroubleshooting();
+        embed = TutorialSystem.getTroubleshooting(language);
         break;
       default:
-        embed = TutorialSystem.getMainMenu();
+        embed = TutorialSystem.getMainMenu(language);
     }
 
     await interaction.reply({ embeds: [embed], ephemeral: true });
-    logger.info('COMMAND-TUTORIAL', `Topic: ${topic} by ${interaction.user.tag}`);
+    logger.info('COMMAND-TUTORIAL', `Topic: ${topic} (${language}) by ${interaction.user.tag}`);
   }
 }
 

@@ -13,6 +13,7 @@ const logger = require('./utils/logger');
 const CommandRegistry = require('./commands/register');
 const CommandHandlers = require('./commands/handlers');
 const commandDefinitions = require('./commands/definitions');
+const WelcomeCardGenerator = require('./welcome/welcomeCard');
 
 // Load configuration with fallback to environment variables
 let config;
@@ -52,6 +53,8 @@ class AutoRoleBot {
     this.client.once(Events.ClientReady, () => this.onReady());
     this.client.on(Events.MessageCreate, (message) => this.onMessageCreate(message));
     this.client.on(Events.InteractionCreate, (interaction) => this.onInteractionCreate(interaction));
+    this.client.on(Events.GuildMemberAdd, (member) => this.onMemberJoin(member));
+    this.client.on(Events.GuildMemberRemove, (member) => this.onMemberLeave(member));
     this.client.on(Events.Error, (error) => logger.error('CLIENT-ERROR', error));
   }
 
@@ -227,6 +230,58 @@ class AutoRoleBot {
     } catch (error) {
       logger.error('PROCESS-ERROR', `Error: ${error.message}`);
       logger.error('PROCESS-ERROR', `Stack: ${error.stack}`);
+    }
+  }
+
+  async onMemberJoin(member) {
+    try {
+      logger.info('MEMBER-JOIN', `${member.user.tag} joined ${member.guild.name}`);
+
+      const welcomeCard = await WelcomeCardGenerator.generateCard(member, 'welcome');
+      
+      if (!welcomeCard) {
+        logger.warn('MEMBER-JOIN', 'Failed to generate welcome card');
+        return;
+      }
+
+      const systemChannel = member.guild.systemChannel;
+      if (systemChannel) {
+        await systemChannel.send({
+          content: `Welcome to **${member.guild.name}**, <@${member.id}>! 🎉`,
+          files: [welcomeCard]
+        });
+        logger.success('MEMBER-JOIN', `Welcome card sent for ${member.user.tag}`);
+      } else {
+        logger.warn('MEMBER-JOIN', 'No system channel found for welcome message');
+      }
+    } catch (error) {
+      logger.error('MEMBER-JOIN', `Error handling member join: ${error.message}`);
+    }
+  }
+
+  async onMemberLeave(member) {
+    try {
+      logger.info('MEMBER-LEAVE', `${member.user.tag} left ${member.guild.name}`);
+
+      const leaveCard = await WelcomeCardGenerator.generateCard(member, 'leave');
+      
+      if (!leaveCard) {
+        logger.warn('MEMBER-LEAVE', 'Failed to generate leave card');
+        return;
+      }
+
+      const systemChannel = member.guild.systemChannel;
+      if (systemChannel) {
+        await systemChannel.send({
+          content: `**${member.user.username}** has left the server. 👋`,
+          files: [leaveCard]
+        });
+        logger.success('MEMBER-LEAVE', `Leave card sent for ${member.user.tag}`);
+      } else {
+        logger.warn('MEMBER-LEAVE', 'No system channel found for leave message');
+      }
+    } catch (error) {
+      logger.error('MEMBER-LEAVE', `Error handling member leave: ${error.message}`);
     }
   }
 

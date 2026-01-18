@@ -45,6 +45,14 @@ const commands = {
           { name: 'Settings', value: 'settings' },
           { name: 'Troubleshooting', value: 'troubleshoot' }
         ))
+    .addStringOption(option =>
+      option.setName('language')
+        .setDescription('Select language')
+        .setRequired(false)
+        .addChoices(
+          { name: 'English', value: 'en' },
+          { name: 'Türkçe', value: 'tr' }
+        ))
 };
 
 module.exports = commands;
