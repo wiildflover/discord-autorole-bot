@@ -54,7 +54,6 @@ class AutoRoleBot {
     this.client.on(Events.MessageCreate, (message) => this.onMessageCreate(message));
     this.client.on(Events.InteractionCreate, (interaction) => this.onInteractionCreate(interaction));
     this.client.on(Events.GuildMemberAdd, (member) => this.onMemberJoin(member));
-    this.client.on(Events.GuildMemberRemove, (member) => this.onMemberLeave(member));
     this.client.on(Events.Error, (error) => logger.error('CLIENT-ERROR', error));
   }
 
@@ -277,45 +276,7 @@ class AutoRoleBot {
     }
   }
 
-  async onMemberLeave(member) {
-    try {
-      logger.info('MEMBER-LEAVE', `${member.user.tag} left ${member.guild.name}`);
 
-      const leaveCard = await WelcomeCardGenerator.generateCard(member, 'leave');
-      
-      if (!leaveCard) {
-        logger.warn('MEMBER-LEAVE', 'Failed to generate leave card');
-        return;
-      }
-
-      const message = WelcomeCardGenerator.getMessage(member, 'leave');
-
-      let targetChannel = null;
-      
-      if (this.config.welcomeChannelId) {
-        targetChannel = member.guild.channels.cache.get(this.config.welcomeChannelId);
-        if (!targetChannel) {
-          logger.warn('MEMBER-LEAVE', `Configured welcome channel ${this.config.welcomeChannelId} not found, falling back to system channel`);
-        }
-      }
-      
-      if (!targetChannel) {
-        targetChannel = member.guild.systemChannel;
-      }
-
-      if (targetChannel) {
-        await targetChannel.send({
-          content: message,
-          files: [leaveCard]
-        });
-        logger.success('MEMBER-LEAVE', `Leave card sent for ${member.user.tag} to ${targetChannel.name}`);
-      } else {
-        logger.warn('MEMBER-LEAVE', 'No channel found for leave message');
-      }
-    } catch (error) {
-      logger.error('MEMBER-LEAVE', `Error handling member leave: ${error.message}`);
-    }
-  }
 
   start() {
     this.client.login(this.config.token).catch((error) => {
