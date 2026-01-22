@@ -465,12 +465,37 @@ class CommandHandlers {
         return;
       }
 
-      // Find members without the role
+      // Find members WITH tag but WITHOUT role (need to add role)
       const membersNeedingRole = membersWithTag.filter(member => 
         !member.roles.cache.has(targetRoleId)
       );
 
+      // Find members WITH role but WITHOUT tag (need to remove role)
+      const membersNeedingRemoval = guild.members.cache.filter(member => {
+        // Has the role
+        if (!member.roles.cache.has(targetRoleId)) return false;
+        
+        // Check if they have the tag
+        if (member.user.primaryGuild) {
+          const userTag = member.user.primaryGuild.tag;
+          const isDisplaying = member.user.primaryGuild.identityEnabled;
+          const tagGuildId = member.user.primaryGuild.identityGuildId;
+          
+          // If they have the correct tag, keep the role
+          if (userTag && 
+              userTag.toUpperCase() === targetTag.toUpperCase() && 
+              isDisplaying && 
+              tagGuildId === targetGuildId) {
+            return false;
+          }
+        }
+        
+        // They have role but not the tag, remove it
+        return true;
+      });
+
       const needsRoleCount = membersNeedingRole.size;
+      const needsRemovalCount = membersNeedingRemoval.size;
       const alreadyHasRole = totalWithTag - needsRoleCount;
 
       // Assign role to members who don't have it
@@ -482,6 +507,18 @@ class CommandHandlers {
           logger.success('CHECKGUILDS-ASSIGN', `Role assigned to ${member.user.tag}`);
         } catch (error) {
           logger.error('CHECKGUILDS-ERROR', `Failed to assign role to ${member.user.tag}: ${error.message}`);
+        }
+      }
+
+      // Remove role from members who shouldn't have it
+      const removedMembers = [];
+      for (const [, member] of membersNeedingRemoval) {
+        try {
+          await member.roles.remove(targetRoleId);
+          removedMembers.push(member);
+          logger.success('CHECKGUILDS-REMOVE', `Role removed from ${member.user.tag}`);
+        } catch (error) {
+          logger.error('CHECKGUILDS-ERROR', `Failed to remove role from ${member.user.tag}: ${error.message}`);
         }
       }
 
@@ -498,6 +535,7 @@ class CommandHandlers {
           { name: 'Total with Tag', value: `${totalWithTag}`, inline: true },
           { name: 'Already Had Role', value: `${alreadyHasRole}`, inline: true },
           { name: 'Newly Assigned', value: `${assignedMembers.length}`, inline: true },
+          { name: 'Roles Removed', value: `${removedMembers.length}`, inline: true },
           { name: 'Total Verified Members', value: `${verifiedCount}`, inline: false }
         )
         .setFooter({ 
@@ -514,7 +552,7 @@ class CommandHandlers {
         
         for (const member of assignedMembers) {
           const notificationEmbed = new EmbedBuilder()
-            .setColor(0xF39C12)
+            .setColor(0x57F287)
             .setAuthor({
               name: 'Auto Role Assignment',
               iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
@@ -539,7 +577,38 @@ class CommandHandlers {
         }
       }
 
-      logger.success('COMMAND-CHECKGUILDS', `Executed by ${interaction.user.tag} | Found: ${totalWithTag} | Assigned: ${assignedMembers.length}`);
+      // Send notification for each removed member
+      if (removedMembers.length > 0) {
+        const notificationChannel = interaction.channel;
+        
+        for (const member of removedMembers) {
+          const notificationEmbed = new EmbedBuilder()
+            .setColor(0xED4245)
+            .setAuthor({
+              name: 'Auto Role Removal',
+              iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
+            })
+            .setDescription(`${member} has been automatically removed from <@&${targetRoleId}> role`)
+            .addFields(
+              { name: 'User', value: member.user.tag, inline: true },
+              { name: 'User ID', value: member.id, inline: true },
+              { name: 'Reason', value: 'No longer displaying WILD tag', inline: false }
+            )
+            .setThumbnail(member.user.displayAvatarURL())
+            .setFooter({ 
+              text: 'Automated by CheckGuilds Command',
+              iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
+            })
+            .setTimestamp();
+
+          await notificationChannel.send({ 
+            content: `<@${interaction.user.id}>`,
+            embeds: [notificationEmbed] 
+          });
+        }
+      }
+
+      logger.success('COMMAND-CHECKGUILDS', `Executed by ${interaction.user.tag} | Found: ${totalWithTag} | Assigned: ${assignedMembers.length} | Removed: ${removedMembers.length}`);
 
     } catch (error) {
       logger.error('COMMAND-CHECKGUILDS', `Execution failed: ${error.message}`);
