@@ -412,17 +412,18 @@ class CommandHandlers {
     try {
       const guild = interaction.guild;
       const targetRoleId = '1463770776900468941';
-      const searchTag = 'wildflover'; // Tag to search for in usernames
+      const searchTag = 'WILD'; // Clan tag to search for
       
       // Fetch all members
       await guild.members.fetch();
       
-      // Find members with "wildflover" tag in their username or global name
+      // Find members with "WILD" clan tag
       const membersWithTag = guild.members.cache.filter(member => {
-        const username = member.user.username.toLowerCase();
-        const globalName = member.user.globalName?.toLowerCase() || '';
-        const tag = searchTag.toLowerCase();
-        return username.includes(tag) || globalName.includes(tag);
+        // Check if member has a clan and if the clan tag matches
+        if (member.clan && member.clan.tag) {
+          return member.clan.tag.toUpperCase() === searchTag.toUpperCase();
+        }
+        return false;
       });
 
       const totalWithTag = membersWithTag.size;
@@ -464,7 +465,7 @@ class CommandHandlers {
           iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
         })
         .setImage('https://github.com/wiildflover/wildflover-discord-bot/blob/main/banner.png?raw=true')
-        .setDescription(`Scanned server for members with "Wildflover" tag`)
+        .setDescription(`Scanned server for members with "WILD" clan tag`)
         .addFields(
           { name: 'Total with Tag', value: `${totalWithTag}`, inline: true },
           { name: 'Already Had Role', value: `${alreadyHasRole}`, inline: true },
@@ -493,7 +494,7 @@ class CommandHandlers {
             .addFields(
               { name: 'User', value: member.user.tag, inline: true },
               { name: 'User ID', value: member.id, inline: true },
-              { name: 'Reason', value: 'Has guild tag in username', inline: false }
+              { name: 'Reason', value: 'Has WILD clan tag', inline: false }
             )
             .setThumbnail(member.user.displayAvatarURL())
             .setFooter({ 
