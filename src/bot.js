@@ -32,8 +32,19 @@ if (fs.existsSync(configPath)) {
     targetUserId: process.env.TARGET_USER_ID,
     roleId: process.env.ROLE_ID,
     roleName: process.env.ROLE_NAME || 'Verified',
-    deleteMessageDelay: parseInt(process.env.DELETE_MESSAGE_DELAY) || 3500,
-    welcomeChannelId: process.env.WELCOME_CHANNEL_ID || null
+    deleteMessageDelay: parseInt(process.env.DELETE_MESSAGE_DELAY) || 3500
+  };
+}
+
+// Load channel configuration
+let channelConfig;
+const channelConfigPath = path.join(__dirname, '../channels.json');
+
+if (fs.existsSync(channelConfigPath)) {
+  channelConfig = require('../channels.json');
+} else {
+  channelConfig = {
+    welcomeChannelId: null
   };
 }
 
@@ -49,6 +60,7 @@ class WildfloverBot {
     });
 
     this.config = config;
+    this.channelConfig = channelConfig;
     this.commandHandlers = new CommandHandlers(this);
     this.ticketHandler = new TicketHandler(this.client);
     this.verifiedHandler = new VerifiedHandler(this.client, this.config);
@@ -310,10 +322,10 @@ class WildfloverBot {
 
       let targetChannel = null;
       
-      if (this.config.welcomeChannelId) {
-        targetChannel = member.guild.channels.cache.get(this.config.welcomeChannelId);
+      if (this.channelConfig.welcomeChannelId) {
+        targetChannel = member.guild.channels.cache.get(this.channelConfig.welcomeChannelId);
         if (!targetChannel) {
-          logger.warn('MEMBER-JOIN', `Configured welcome channel ${this.config.welcomeChannelId} not found, falling back to system channel`);
+          logger.warn('MEMBER-JOIN', `Configured welcome channel ${this.channelConfig.welcomeChannelId} not found, falling back to system channel`);
         }
       }
       

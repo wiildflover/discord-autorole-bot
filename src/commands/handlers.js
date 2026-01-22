@@ -238,23 +238,37 @@ class CommandHandlers {
       return;
     }
 
-    // Update in-memory config (persists until bot restart)
-    this.bot.config.welcomeChannelId = channel.id;
+    // Update channel config
+    this.bot.channelConfig.welcomeChannelId = channel.id;
     
-    const embed = new EmbedBuilder()
-      .setColor(0x57F287)
-      .setTitle('Welcome Channel Configuration')
-      .setDescription('Welcome and leave messages channel has been successfully configured.\n\n**Note:** This setting will persist until bot restart. For permanent configuration, add `WELCOME_CHANNEL_ID` to Railway environment variables.')
-      .addFields(
-        { name: 'Channel Name', value: channel.name, inline: true },
-        { name: 'Channel ID', value: channel.id, inline: true },
-        { name: 'Channel Mention', value: `<#${channel.id}>`, inline: true }
-      )
-      .setFooter({ text: 'Welcome cards will be sent to this channel' })
-      .setTimestamp();
+    const fs = require('fs');
+    const path = require('path');
+    const channelConfigPath = path.join(__dirname, '../../channels.json');
+    
+    try {
+      fs.writeFileSync(channelConfigPath, JSON.stringify(this.bot.channelConfig, null, 2));
+      
+      const embed = new EmbedBuilder()
+        .setColor(0x57F287)
+        .setTitle('Welcome Channel Configuration')
+        .setDescription('Welcome and leave messages channel has been successfully configured.')
+        .addFields(
+          { name: 'Channel Name', value: channel.name, inline: true },
+          { name: 'Channel ID', value: channel.id, inline: true },
+          { name: 'Channel Mention', value: `<#${channel.id}>`, inline: true }
+        )
+        .setFooter({ text: 'Welcome cards will be sent to this channel' })
+        .setTimestamp();
 
-    await interaction.reply({ embeds: [embed], ephemeral: true });
-    logger.success('COMMAND-SETWELCOME', `Welcome channel set to ${channel.name} (${channel.id}) by ${interaction.user.tag}`);
+      await interaction.reply({ embeds: [embed], ephemeral: true });
+      logger.success('COMMAND-SETWELCOME', `Welcome channel set to ${channel.name} (${channel.id}) by ${interaction.user.tag}`);
+    } catch (error) {
+      logger.error('COMMAND-SETWELCOME', `Failed to save configuration: ${error.message}`);
+      await interaction.reply({
+        content: 'Failed to save configuration. Please try again.',
+        ephemeral: true
+      });
+    }
   }
 
   async handleTicket(interaction) {
