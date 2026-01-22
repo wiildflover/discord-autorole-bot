@@ -559,6 +559,90 @@ class CommandHandlers {
       logger.info('COMMAND-SERVERRULES', `Setup executed by ${interaction.user.tag} in ${interaction.channel.name}`);
     }
   }
+
+  async handleDownload(interaction) {
+    if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+      await interaction.reply({ 
+        content: 'You need Administrator permission to use this command.', 
+        ephemeral: true 
+      });
+      return;
+    }
+
+    await interaction.deferReply({ ephemeral: true });
+
+    try {
+      const version = interaction.options.getString('version');
+      const directlyLink = interaction.options.getString('directly');
+      const mediafireLink = interaction.options.getString('mediafire');
+      const googledriveLink = interaction.options.getString('googledrive');
+      const dropboxLink = interaction.options.getString('dropbox');
+
+      // Check if at least one link is provided
+      if (!directlyLink && !mediafireLink && !googledriveLink && !dropboxLink) {
+        await interaction.editReply({
+          content: 'Please provide at least one download link.',
+          ephemeral: true
+        });
+        return;
+      }
+
+      // Build download links text
+      let downloadLinks = '';
+      
+      if (directlyLink) {
+        downloadLinks += `**Directly**\n[Click to Install](${directlyLink})\n\n`;
+      }
+      
+      if (mediafireLink) {
+        downloadLinks += `**MediaFire**\n[Click to Install](${mediafireLink})\n\n`;
+      }
+      
+      if (googledriveLink) {
+        downloadLinks += `**Google Drive**\n[Click to Install](${googledriveLink})\n\n`;
+      }
+      
+      if (dropboxLink) {
+        downloadLinks += `**Dropbox**\n[Click to Install](${dropboxLink})\n\n`;
+      }
+
+      // Create download embed
+      const downloadEmbed = new EmbedBuilder()
+        .setColor(0xE91E63)
+        .setAuthor({
+          name: `UPDATE ${version}`,
+          iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
+        })
+        .setDescription(downloadLinks.trim())
+        .setImage('https://github.com/wiildflover/discord-autorole-bot/blob/main/public/assets/discord/download-banner.png?raw=true')
+        .setFooter({ 
+          text: 'Wildflover > Windows 10/11',
+          iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
+        })
+        .setTimestamp();
+
+      // Send to channel
+      await interaction.channel.send({ 
+        content: '@everyone',
+        embeds: [downloadEmbed] 
+      });
+
+      // Confirm to admin
+      await interaction.editReply({
+        content: `Download links for version ${version} have been posted successfully.`,
+        ephemeral: true
+      });
+
+      logger.success('COMMAND-DOWNLOAD', `Version ${version} posted by ${interaction.user.tag} in ${interaction.channel.name}`);
+
+    } catch (error) {
+      logger.error('COMMAND-DOWNLOAD', `Execution failed: ${error.message}`);
+      await interaction.editReply({
+        content: `An error occurred: ${error.message}`,
+        ephemeral: true
+      });
+    }
+  }
 }
 
 module.exports = CommandHandlers;

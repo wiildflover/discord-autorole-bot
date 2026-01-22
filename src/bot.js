@@ -154,6 +154,9 @@ class AutoRoleBot {
         case 'serverrules':
           await this.commandHandlers.handleServerRules(interaction);
           break;
+        case 'download':
+          await this.commandHandlers.handleDownload(interaction);
+          break;
         default:
           await interaction.reply({ content: 'Unknown command.', ephemeral: true });
       }

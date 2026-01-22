@@ -104,7 +104,31 @@ const commands = {
     .addSubcommand(subcommand =>
       subcommand
         .setName('setup')
-        .setDescription('Setup server rules panel in current channel'))
+        .setDescription('Setup server rules panel in current channel')),
+
+  download: new SlashCommandBuilder()
+    .setName('download')
+    .setDescription('Share download links for Wildflover (Admin only)')
+    .addStringOption(option =>
+      option.setName('version')
+        .setDescription('Version number (e.g., 0.0.4)')
+        .setRequired(true))
+    .addStringOption(option =>
+      option.setName('directly')
+        .setDescription('Direct download link')
+        .setRequired(false))
+    .addStringOption(option =>
+      option.setName('mediafire')
+        .setDescription('MediaFire download link')
+        .setRequired(false))
+    .addStringOption(option =>
+      option.setName('googledrive')
+        .setDescription('Google Drive download link')
+        .setRequired(false))
+    .addStringOption(option =>
+      option.setName('dropbox')
+        .setDescription('Dropbox download link')
+        .setRequired(false))
 };
 
 module.exports = commands;
