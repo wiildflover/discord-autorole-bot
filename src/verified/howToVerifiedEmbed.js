@@ -13,7 +13,7 @@ class HowToVerifiedEmbed {
       .setColor(0xF39C12)
       .setAuthor({
         name: 'HOW TO GET VERIFIED',
-        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=2'
       })
       .setImage('https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_banner.png?raw=true')
       .setDescription(
@@ -48,7 +48,7 @@ class HowToVerifiedEmbed {
       )
       .setFooter({ 
         text: 'Wildflover Community • Verification Guide',
-        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=2'
       })
       .setTimestamp();
   }

@@ -14,7 +14,7 @@ class VerifiedEmbed {
       .setColor(VERIFIED_CONFIG.embedColor)
       .setAuthor({
         name: 'Application Access Verification',
-        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=2'
       })
       .setImage(VERIFIED_CONFIG.bannerUrl)
       .setDescription(
@@ -31,7 +31,7 @@ class VerifiedEmbed {
       )
       .setFooter({ 
         text: 'Wildflover Community • Verification System',
-        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=2'
       })
       .setTimestamp();
   }
@@ -41,7 +41,7 @@ class VerifiedEmbed {
       .setColor(0x2ECC71)
       .setAuthor({
         name: 'Verification Successful',
-        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=2'
       })
       .setDescription(
         `${member}, you have been successfully verified!\n\n` +
@@ -54,7 +54,7 @@ class VerifiedEmbed {
       )
       .setFooter({ 
         text: 'Wildflover Community',
-        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=2'
       })
       .setTimestamp();
   }
@@ -64,14 +64,14 @@ class VerifiedEmbed {
       .setColor(0xE67E22)
       .setAuthor({
         name: 'Already Verified',
-        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=2'
       })
       .setDescription(
         `${member}, you are already verified and have full access to all features.`
       )
       .setFooter({ 
         text: 'Wildflover Community',
-        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=2'
       })
       .setTimestamp();
   }
