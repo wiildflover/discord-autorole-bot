@@ -9,7 +9,7 @@ const { AttachmentBuilder } = require('discord.js');
 const { createCanvas, loadImage } = require('@napi-rs/canvas');
 const logger = require('../utils/logger');
 
-const BACKGROUND_URL = 'https://raw.githubusercontent.com/wiildflover/wildflover/main/public/assets/backgrounds/wildflover_bg.jpg';
+const BACKGROUND_URL = 'https://github.com/wiildflover/discord-autorole-bot/blob/main/welcome_banner.png?raw=true';
 
 class WelcomeCardGenerator {
   static async generateCard(member, type = 'welcome') {

@@ -259,12 +259,8 @@ class AutoRoleBot {
 
       // Send DM to new member
       try {
-        const bannerEmbed = WelcomeDM.createBannerEmbed();
         const welcomeEmbed = WelcomeDM.createWelcomeEmbed(member);
-        
-        await member.send({ embeds: [bannerEmbed] });
         await member.send({ embeds: [welcomeEmbed] });
-        
         logger.success('MEMBER-JOIN', `Welcome DM sent to ${member.user.tag}`);
       } catch (dmError) {
         logger.warn('MEMBER-JOIN', `Could not send DM to ${member.user.tag}: ${dmError.message}`);

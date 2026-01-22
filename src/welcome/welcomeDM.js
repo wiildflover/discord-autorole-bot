@@ -8,15 +8,10 @@
 const { EmbedBuilder } = require('discord.js');
 
 class WelcomeDM {
-  static createBannerEmbed() {
-    return new EmbedBuilder()
-      .setColor(0xF39C12)
-      .setImage('https://github.com/wiildflover/discord-autorole-bot/blob/main/welcome_banner.png?raw=true');
-  }
-
   static createWelcomeEmbed(member) {
     const embed = new EmbedBuilder()
       .setColor(0xF39C12)
+      .setImage('https://github.com/wiildflover/discord-autorole-bot/blob/main/welcome_banner.png?raw=true')
       .setTitle('Welcome to Wildflover Community!')
       .setDescription(`Hey ${member.user.username}! We're glad to have you here — the largest community for custom League of Legends skins. Before diving in, here are some essentials to get you started:`)
       .addFields(
