@@ -13,51 +13,47 @@ class TicketEmbed {
     const embed = new EmbedBuilder()
       .setColor(0xF39C12)
       .setTitle('Support Ticket System')
-      .setDescription('*Need assistance? We\'re here to help.*')
+      .setDescription('Need assistance? We\'re here to help.')
       .setImage('https://github.com/wiildflover/discord-autorole-bot/blob/main/ticket_banner.png?raw=true')
       .addFields(
         {
-          name: 'How It Works',
-          value: [
-            'Click the button below to open a ticket',
-            'Select your issue category',
-            'Describe your problem in detail',
-            'Our team will respond shortly'
-          ].join('\n'),
-          inline: false
-        },
-        {
-          name: '\u200B',
+          name: '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬',
           value: '\u200B',
           inline: false
         },
         {
-          name: 'Available Categories',
-          value: [
-            `${CONFIG.categories.customMods.emoji} **Custom Mods**`,
-            `Custom mod installation and compatibility issues`,
-            '',
-            `${CONFIG.categories.skins.emoji} **Skin Issues**`,
-            `Skin loading and display problems`,
-            '',
-            `${CONFIG.categories.program.emoji} **Program Issues**`,
-            `Launcher crashes and technical problems`
-          ].join('\n'),
+          name: 'How It Works',
+          value: 'Click the button below to open a ticket\nSelect your issue category\nDescribe your problem in detail\nOur team will respond shortly',
           inline: false
         },
         {
-          name: '\u200B',
+          name: '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬',
+          value: '\u200B',
+          inline: false
+        },
+        {
+          name: `${CONFIG.categories.customMods.emoji} Custom Mods`,
+          value: 'Custom mod installation and compatibility issues',
+          inline: true
+        },
+        {
+          name: `${CONFIG.categories.skins.emoji} Skin Issues`,
+          value: 'Skin loading and display problems',
+          inline: true
+        },
+        {
+          name: `${CONFIG.categories.program.emoji} Program Issues`,
+          value: 'Launcher crashes and technical problems',
+          inline: true
+        },
+        {
+          name: '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬',
           value: '\u200B',
           inline: false
         },
         {
           name: 'Important Guidelines',
-          value: [
-            'Provide clear and detailed information',
-            'Be patient while waiting for staff response',
-            'Only create tickets for genuine support needs',
-            `Check ${CONFIG.links.reportIssues} and ${CONFIG.links.commonIssues} first`
-          ].join('\n'),
+          value: 'Provide clear and detailed information\nBe patient while waiting for staff response\nOnly create tickets for genuine support needs\nCheck #report-issues and #common-issues first',
           inline: false
         }
       )
