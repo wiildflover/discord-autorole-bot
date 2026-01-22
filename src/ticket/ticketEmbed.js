@@ -12,7 +12,10 @@ class TicketEmbed {
   static createMainPanel() {
     const embed = new EmbedBuilder()
       .setColor(0xF39C12)
-      .setTitle('Support Ticket System')
+      .setAuthor({
+        name: 'Support Ticket System',
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
+      })
       .setDescription('Need assistance? We\'re here to help.')
       .setImage('https://github.com/wiildflover/discord-autorole-bot/blob/main/ticket_banner.png?raw=true')
       .addFields(
@@ -53,7 +56,8 @@ class TicketEmbed {
         }
       )
       .setFooter({ 
-        text: 'All tickets are private and secure • Wildflover Support Team'
+        text: 'Wildflover Support Team',
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
       })
       .setTimestamp();
 
@@ -65,7 +69,10 @@ class TicketEmbed {
     
     const embed = new EmbedBuilder()
       .setColor(0xF39C12)
-      .setTitle(`${categoryData.emoji} ${categoryData.label}`)
+      .setAuthor({
+        name: `${categoryData.label}`,
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
+      })
       .setThumbnail('https://github.com/wiildflover/discord-autorole-bot/blob/main/ticket_banner.png?raw=true')
       .setDescription(`Welcome ${user}\n\nThank you for reaching out. Our support team has been notified and will assist you shortly.`)
       .addFields(
@@ -85,7 +92,10 @@ class TicketEmbed {
           inline: false
         }
       )
-      .setFooter({ text: 'Use the buttons below to manage this ticket' })
+      .setFooter({ 
+        text: 'Wildflover Support',
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
+      })
       .setTimestamp();
 
     return embed;
@@ -94,7 +104,10 @@ class TicketEmbed {
   static createTicketClosed(closedBy, reason) {
     const embed = new EmbedBuilder()
       .setColor(0xED4245)
-      .setTitle('Ticket Closed')
+      .setAuthor({
+        name: 'Ticket Closed',
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
+      })
       .setThumbnail('https://github.com/wiildflover/discord-autorole-bot/blob/main/ticket_banner.png?raw=true')
       .setDescription('This support ticket has been resolved and closed.')
       .addFields(
@@ -119,7 +132,10 @@ class TicketEmbed {
       inline: false
     });
 
-    embed.setFooter({ text: 'Thank you for using our support system' });
+    embed.setFooter({ 
+      text: 'Wildflover Support',
+      iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
+    });
     embed.setTimestamp();
 
     return embed;
