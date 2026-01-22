@@ -61,13 +61,11 @@ class TicketButtons {
     const confirmButton = new ButtonBuilder()
       .setCustomId('ticket_close_confirm')
       .setLabel('Confirm')
-      .setEmoji('✓')
       .setStyle(ButtonStyle.Danger);
 
     const cancelButton = new ButtonBuilder()
       .setCustomId('ticket_close_cancel')
       .setLabel('Cancel')
-      .setEmoji('✗')
       .setStyle(ButtonStyle.Secondary);
 
     return new ActionRowBuilder().addComponents(confirmButton, cancelButton);
