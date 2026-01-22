@@ -163,12 +163,17 @@ class TicketHandler {
   }
 
   async handleCloseConfirm(interaction) {
-    await interaction.deferUpdate();
+    await interaction.deferReply({ ephemeral: true });
 
     const result = await this.manager.closeTicket(interaction.channel, interaction.user);
 
-    if (!result.success) {
-      await interaction.followUp({
+    if (result.success) {
+      await interaction.editReply({
+        content: 'Ticket is being closed. Channel will be deleted in 10 seconds.',
+        ephemeral: true
+      });
+    } else {
+      await interaction.editReply({
         content: result.error,
         ephemeral: true
       });
