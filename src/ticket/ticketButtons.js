@@ -13,7 +13,6 @@ class TicketButtons {
     const button = new ButtonBuilder()
       .setCustomId('ticket_create')
       .setLabel('Create Ticket')
-      .setEmoji('🎫')
       .setStyle(ButtonStyle.Primary);
 
     return new ActionRowBuilder().addComponents(button);
@@ -39,19 +38,16 @@ class TicketButtons {
     const closeButton = new ButtonBuilder()
       .setCustomId('ticket_close')
       .setLabel('Close Ticket')
-      .setEmoji('🔒')
       .setStyle(ButtonStyle.Danger);
 
     const claimButton = new ButtonBuilder()
       .setCustomId('ticket_claim')
       .setLabel('Claim')
-      .setEmoji('✋')
       .setStyle(ButtonStyle.Success);
 
     const transcriptButton = new ButtonBuilder()
       .setCustomId('ticket_transcript')
       .setLabel('Transcript')
-      .setEmoji('📄')
       .setStyle(ButtonStyle.Secondary);
 
     return new ActionRowBuilder().addComponents(closeButton, claimButton, transcriptButton);
@@ -61,13 +57,11 @@ class TicketButtons {
     const confirmButton = new ButtonBuilder()
       .setCustomId('ticket_close_confirm')
       .setLabel('Confirm Close')
-      .setEmoji('✅')
       .setStyle(ButtonStyle.Danger);
 
     const cancelButton = new ButtonBuilder()
       .setCustomId('ticket_close_cancel')
       .setLabel('Cancel')
-      .setEmoji('❌')
       .setStyle(ButtonStyle.Secondary);
 
     return new ActionRowBuilder().addComponents(confirmButton, cancelButton);
@@ -77,7 +71,6 @@ class TicketButtons {
     const button = new ButtonBuilder()
       .setCustomId('ticket_reopen')
       .setLabel('Reopen Ticket')
-      .setEmoji('🔓')
       .setStyle(ButtonStyle.Success);
 
     return new ActionRowBuilder().addComponents(button);
@@ -87,7 +80,6 @@ class TicketButtons {
     const button = new ButtonBuilder()
       .setCustomId('ticket_delete')
       .setLabel('Delete Channel')
-      .setEmoji('🗑️')
       .setStyle(ButtonStyle.Danger);
 
     return new ActionRowBuilder().addComponents(button);

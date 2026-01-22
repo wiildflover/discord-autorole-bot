@@ -11,49 +11,61 @@ const CONFIG = require('./ticketConfig');
 class TicketEmbed {
   static createMainPanel() {
     const embed = new EmbedBuilder()
-      .setColor(0x5865F2)
-      .setTitle('🎫 Open a Support Ticket')
-      .setDescription('*Need help? You\'re in the right place!*')
-      .setImage(CONFIG.bannerImage)
+      .setColor(0xF39C12)
+      .setTitle('Support Ticket System')
+      .setDescription('*Need assistance? We\'re here to help.*')
+      .setImage('https://github.com/wiildflover/discord-autorole-bot/blob/main/ticket_banner.png?raw=true')
       .addFields(
         {
-          name: 'How it works:',
+          name: 'How It Works',
           value: [
-            '🎫 Click the button below to create a ticket',
-            '🔒 A private channel will be created just for you',
-            '👥 Staff will respond as soon as possible',
-            '✅ Ticket will be closed once resolved'
+            'Click the button below to open a ticket',
+            'Select your issue category',
+            'Describe your problem in detail',
+            'Our team will respond shortly'
           ].join('\n'),
           inline: false
         },
         {
-          name: 'When to open a ticket:',
+          name: '\u200B',
+          value: '\u200B',
+          inline: false
+        },
+        {
+          name: 'Available Categories',
           value: [
-            `${CONFIG.categories.technical.emoji} **Technical support** (launcher / skins not working)`,
-            `${CONFIG.categories.payment.emoji} **Payment issues** (orders, commissions, subscriptions)`,
-            `${CONFIG.categories.account.emoji} **Account help** (login, access, roles)`,
-            `${CONFIG.categories.other.emoji} **Other concerns** not covered elsewhere`
+            `${CONFIG.categories.technical.emoji} **Technical Support**`,
+            `Launcher issues, skin loading problems, game crashes`,
+            '',
+            `${CONFIG.categories.payment.emoji} **Payment & Orders**`,
+            `Purchase issues, commissions, subscription management`,
+            '',
+            `${CONFIG.categories.account.emoji} **Account Assistance**`,
+            `Login problems, access issues, role assignments`,
+            '',
+            `${CONFIG.categories.other.emoji} **General Inquiries**`,
+            `Questions not covered by other categories`
           ].join('\n'),
           inline: false
         },
         {
-          name: 'Guidelines:',
+          name: '\u200B',
+          value: '\u200B',
+          inline: false
+        },
+        {
+          name: 'Important Guidelines',
           value: [
-            '📝 Be clear and detailed about your issue',
-            '⏳ Be patient while waiting for staff',
-            '🚫 Only open tickets for real support needs'
+            'Provide clear and detailed information',
+            'Be patient while waiting for staff response',
+            'Only create tickets for genuine support needs',
+            `Check ${CONFIG.links.reportIssues} and ${CONFIG.links.commonIssues} first`
           ].join('\n'),
           inline: false
         }
       )
-      .addFields({
-        name: '⚠️ Before opening a ticket:',
-        value: `Check ${CONFIG.links.reportIssues} and ${CONFIG.links.commonIssues}`,
-        inline: false
-      })
       .setFooter({ 
-        text: '🔐 Support tickets are private and only visible to you and staff',
-        iconURL: 'https://cdn.discordapp.com/emojis/1234567890.png'
+        text: 'All tickets are private and secure • Wildflover Support Team'
       })
       .setTimestamp();
 
@@ -66,39 +78,43 @@ class TicketEmbed {
     const embed = new EmbedBuilder()
       .setColor(categoryData.color)
       .setTitle(`${categoryData.emoji} ${categoryData.label}`)
-      .setDescription(`Welcome ${user}, thank you for opening a support ticket.`)
+      .setDescription(`Welcome ${user}\n\nThank you for reaching out. Our support team has been notified and will assist you shortly.`)
       .addFields(
         {
-          name: 'Category',
-          value: `${categoryData.emoji} ${categoryData.label}`,
-          inline: true
+          name: 'Ticket Information',
+          value: [
+            `**Category:** ${categoryData.label}`,
+            `**Status:** ${CONFIG.status.open.emoji} Open`,
+            `**Created:** <t:${Math.floor(Date.now() / 1000)}:R>`
+          ].join('\n'),
+          inline: false
         },
         {
-          name: 'Status',
-          value: `${CONFIG.status.open.emoji} ${CONFIG.status.open.label}`,
-          inline: true
+          name: '\u200B',
+          value: '\u200B',
+          inline: false
         },
         {
-          name: 'Created',
-          value: `<t:${Math.floor(Date.now() / 1000)}:R>`,
-          inline: true
+          name: 'Your Issue',
+          value: reason || 'No description provided',
+          inline: false
+        },
+        {
+          name: '\u200B',
+          value: '\u200B',
+          inline: false
+        },
+        {
+          name: 'What Happens Next',
+          value: [
+            'Our support team will review your ticket',
+            'Average response time: 5-30 minutes',
+            'Feel free to add more details or screenshots',
+            'You will be notified when staff responds'
+          ].join('\n'),
+          inline: false
         }
       )
-      .addFields({
-        name: 'Your Issue',
-        value: reason || 'No description provided',
-        inline: false
-      })
-      .addFields({
-        name: 'What happens next?',
-        value: [
-          '👥 Our support team has been notified',
-          '⏱️ Average response time: 5-30 minutes',
-          '📝 Please provide any additional details',
-          '🔔 You will be notified when staff responds'
-        ].join('\n'),
-        inline: false
-      })
       .setFooter({ text: 'Use the buttons below to manage this ticket' })
       .setTimestamp();
 
@@ -108,18 +124,16 @@ class TicketEmbed {
   static createTicketClosed(closedBy, reason) {
     const embed = new EmbedBuilder()
       .setColor(CONFIG.status.closed.color)
-      .setTitle('🔒 Ticket Closed')
-      .setDescription('This support ticket has been closed.')
+      .setTitle('Ticket Closed')
+      .setDescription('This support ticket has been resolved and closed.')
       .addFields(
         {
-          name: 'Closed By',
-          value: closedBy.toString(),
-          inline: true
-        },
-        {
-          name: 'Closed At',
-          value: `<t:${Math.floor(Date.now() / 1000)}:F>`,
-          inline: true
+          name: 'Closure Details',
+          value: [
+            `**Closed By:** ${closedBy}`,
+            `**Closed At:** <t:${Math.floor(Date.now() / 1000)}:F>`
+          ].join('\n'),
+          inline: false
         }
       );
 
@@ -132,8 +146,8 @@ class TicketEmbed {
     }
 
     embed.addFields({
-      name: 'Channel Deletion',
-      value: 'This channel will be deleted in 10 seconds.',
+      name: '\u200B',
+      value: 'This channel will be automatically deleted in 10 seconds.',
       inline: false
     });
 
@@ -145,22 +159,16 @@ class TicketEmbed {
     
     const embed = new EmbedBuilder()
       .setColor(categoryData.color)
-      .setTitle(`📋 Ticket ${action}`)
+      .setTitle(`Ticket ${action}`)
       .addFields(
         {
-          name: 'Ticket ID',
-          value: ticket.id,
-          inline: true
-        },
-        {
-          name: 'User',
-          value: `<@${ticket.userId}>`,
-          inline: true
-        },
-        {
-          name: 'Category',
-          value: `${categoryData.emoji} ${categoryData.label}`,
-          inline: true
+          name: 'Ticket Details',
+          value: [
+            `**ID:** ${ticket.id}`,
+            `**User:** <@${ticket.userId}>`,
+            `**Category:** ${categoryData.emoji} ${categoryData.label}`
+          ].join('\n'),
+          inline: false
         }
       );
 
@@ -174,7 +182,7 @@ class TicketEmbed {
 
     if (ticket.reason) {
       embed.addFields({
-        name: 'Reason',
+        name: 'Issue Description',
         value: ticket.reason,
         inline: false
       });
@@ -187,7 +195,7 @@ class TicketEmbed {
   static createErrorEmbed(title, description) {
     return new EmbedBuilder()
       .setColor(0xED4245)
-      .setTitle(`❌ ${title}`)
+      .setTitle(title)
       .setDescription(description)
       .setTimestamp();
   }
@@ -195,7 +203,7 @@ class TicketEmbed {
   static createSuccessEmbed(title, description) {
     return new EmbedBuilder()
       .setColor(0x57F287)
-      .setTitle(`✅ ${title}`)
+      .setTitle(title)
       .setDescription(description)
       .setTimestamp();
   }

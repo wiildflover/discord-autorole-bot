@@ -67,7 +67,7 @@ const TICKET_CONFIG = {
   },
 
   // Embed banner image
-  bannerImage: 'https://raw.githubusercontent.com/wiildflover/wildflover/main/public/assets/discord/welcome_banner.png',
+  bannerImage: 'https://github.com/wiildflover/discord-autorole-bot/blob/main/ticket_banner.png?raw=true',
 
   // Support links
   links: {
