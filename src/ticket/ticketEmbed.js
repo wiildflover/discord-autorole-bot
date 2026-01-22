@@ -18,7 +18,7 @@ class TicketEmbed {
       .addFields(
         {
           name: 'How It Works',
-          value: 'Click the button below to open a ticket\nSelect your issue category\nDescribe your problem in detail\nOur team will respond shortly',
+          value: '**Step 1** - Click the button below to open a ticket\n**Step 2** - Select your issue category\n**Step 3** - Describe your problem in detail\n**Step 4** - Our team will respond shortly',
           inline: false
         },
         {
@@ -48,7 +48,7 @@ class TicketEmbed {
         },
         {
           name: 'Important Guidelines',
-          value: 'Provide clear and detailed information\nBe patient while waiting for staff response\nOnly create tickets for genuine support needs\nCheck #report-issues and #common-issues first',
+          value: '**Clear Information** - Provide detailed information about your issue\n**Patience** - Be patient while waiting for staff response\n**Genuine Support** - Only create tickets for genuine support needs\n**Check First** - Review #report-issues and #common-issues before creating ticket',
           inline: false
         }
       )
