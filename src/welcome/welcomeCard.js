@@ -44,11 +44,11 @@ class WelcomeCardGenerator {
       ctx.drawImage(avatar, avatarX - 100, avatarY - 100, 200, 200);
       ctx.restore();
 
-      // Draw gradient border around avatar
+      // Draw gradient border around avatar (orange theme)
       const gradient = ctx.createLinearGradient(avatarX - 110, avatarY - 110, avatarX + 110, avatarY + 110);
-      gradient.addColorStop(0, '#9B59B6');
-      gradient.addColorStop(0.5, '#E91E63');
-      gradient.addColorStop(1, '#9B59B6');
+      gradient.addColorStop(0, '#F39C12');
+      gradient.addColorStop(0.5, '#E67E22');
+      gradient.addColorStop(1, '#F39C12');
       
       ctx.strokeStyle = gradient;
       ctx.lineWidth = 8;
