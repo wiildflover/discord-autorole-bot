@@ -412,13 +412,19 @@ class CommandHandlers {
     try {
       const guild = interaction.guild;
       const targetRoleId = '1463770776900468941';
+      const verifiedRoleId = '1458931524656300042';
       const targetGuildId = '1458924040587837452'; // Wildflover server ID
       const targetTag = 'WILD';
       
       // Fetch all members with force to get fresh data including primary_guild
       await guild.members.fetch({ force: true, withPresences: false });
       
+      // Count members with verified role
+      const verifiedRole = guild.roles.cache.get(verifiedRoleId);
+      const verifiedCount = verifiedRole ? verifiedRole.members.size : 0;
+      
       logger.info('CHECKGUILDS-SCAN', `Scanning ${guild.members.cache.size} members for server tag: ${targetTag} (Target Guild: ${targetGuildId})`);
+      logger.info('CHECKGUILDS-VERIFIED', `Current verified members: ${verifiedCount}`);
       
       // Track members found for debug logging
       let debugCount = 0;
@@ -491,7 +497,8 @@ class CommandHandlers {
         .addFields(
           { name: 'Total with Tag', value: `${totalWithTag}`, inline: true },
           { name: 'Already Had Role', value: `${alreadyHasRole}`, inline: true },
-          { name: 'Newly Assigned', value: `${assignedMembers.length}`, inline: true }
+          { name: 'Newly Assigned', value: `${assignedMembers.length}`, inline: true },
+          { name: 'Total Verified Members', value: `${verifiedCount}`, inline: false }
         )
         .setFooter({ 
           text: 'Server Tag Detection System',

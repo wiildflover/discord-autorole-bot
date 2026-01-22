@@ -16,7 +16,13 @@ const commands = [
   commandDefinitions.config.toJSON(),
   commandDefinitions.tutorial.toJSON(),
   commandDefinitions.help.toJSON(),
-  commandDefinitions.setwelcome.toJSON()
+  commandDefinitions.setwelcome.toJSON(),
+  commandDefinitions.ticket.toJSON(),
+  commandDefinitions.verified.toJSON(),
+  commandDefinitions.howtoverified.toJSON(),
+  commandDefinitions.checkguilds.toJSON(),
+  commandDefinitions.serverrules.toJSON(),
+  commandDefinitions.download.toJSON()
 ];
 
 const rest = new REST({ version: '10' }).setToken(config.token);
