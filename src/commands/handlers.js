@@ -712,7 +712,7 @@ class CommandHandlers {
           name: `UPDATE ${version}`,
           iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
         })
-        .setImage('https://github.com/wiildflover/discord-autorole-bot/blob/main/public/assets/discord/download-banner.png?raw=true')
+        .setImage('https://github.com/wiildflover/wildflover-discord-bot/blob/main/download_banner.png?raw=true&v=' + Date.now())
         .setFooter({ 
           text: 'Wildflover > Windows 10/11',
           iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
