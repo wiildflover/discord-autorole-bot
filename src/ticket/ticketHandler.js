@@ -132,6 +132,15 @@ class TicketHandler {
         ephemeral: true
       });
       this.selectedCategories.delete(interaction.user.id);
+
+      setTimeout(async () => {
+        try {
+          await interaction.deleteReply();
+          logger.info('TICKET-HANDLER', 'Ticket creation message auto-deleted');
+        } catch (error) {
+          logger.warn('TICKET-HANDLER', 'Failed to delete ticket creation message');
+        }
+      }, 3000);
     } else {
       await interaction.editReply({
         content: result.error,
