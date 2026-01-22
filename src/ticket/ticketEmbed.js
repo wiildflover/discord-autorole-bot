@@ -17,11 +17,6 @@ class TicketEmbed {
       .setImage('https://github.com/wiildflover/discord-autorole-bot/blob/main/ticket_banner.png?raw=true')
       .addFields(
         {
-          name: '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬',
-          value: '\u200B',
-          inline: false
-        },
-        {
           name: 'How It Works',
           value: 'Click the button below to open a ticket\nSelect your issue category\nDescribe your problem in detail\nOur team will respond shortly',
           inline: false
