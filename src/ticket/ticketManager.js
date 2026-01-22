@@ -160,13 +160,26 @@ class TicketManager {
 
       logger.info('TICKET-MANAGER', `Ticket ${channel.name} closed by ${closedBy.tag}`);
 
+      const parentCategory = channel.parent;
+
       setTimeout(async () => {
         try {
           await channel.delete();
           await this.storage.deleteTicket(channel.id);
           logger.info('TICKET-MANAGER', `Deleted ticket channel ${channel.name}`);
+
+          if (parentCategory && parentCategory.name === CONFIG.settings.categoryChannelName) {
+            const remainingChannels = parentCategory.children.cache.filter(c => c.id !== channel.id);
+            
+            if (remainingChannels.size === 0) {
+              await parentCategory.delete();
+              logger.info('TICKET-MANAGER', `Deleted empty ticket category ${parentCategory.name}`);
+            } else {
+              logger.info('TICKET-MANAGER', `Category ${parentCategory.name} has ${remainingChannels.size} remaining channels`);
+            }
+          }
         } catch (error) {
-          logger.error('TICKET-MANAGER', `Failed to delete channel: ${error.message}`);
+          logger.error('TICKET-MANAGER', `Failed to delete channel or category: ${error.message}`);
         }
       }, 10000);
 
