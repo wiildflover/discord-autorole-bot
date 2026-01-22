@@ -792,12 +792,15 @@ class CommandHandlers {
           { name: 'Channel', value: `${channel}`, inline: true }
         )
         .setFooter({ 
-          text: `Messages older than 14 days cannot be bulk deleted • Executed by ${executor.tag}`,
+          text: `Messages older than 14 days cannot be bulk deleted • Used by ${executor.tag}`,
           iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
         })
         .setTimestamp();
 
-      const confirmMessage = await channel.send({ embeds: [confirmEmbed] });
+      const confirmMessage = await channel.send({ 
+        content: `<@${executor.id}>`,
+        embeds: [confirmEmbed] 
+      });
 
       // Delete confirmation message after 3 seconds
       setTimeout(async () => {
