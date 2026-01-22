@@ -102,16 +102,14 @@ class TicketEmbed {
 
   static createTicketClosed(closedBy, reason) {
     const embed = new EmbedBuilder()
-      .setColor(CONFIG.status.closed.color)
+      .setColor(0xED4245)
       .setTitle('Ticket Closed')
+      .setThumbnail('https://github.com/wiildflover/discord-autorole-bot/blob/main/ticket_banner.png?raw=true')
       .setDescription('This support ticket has been resolved and closed.')
       .addFields(
         {
           name: 'Closure Details',
-          value: [
-            `**Closed By:** ${closedBy}`,
-            `**Closed At:** <t:${Math.floor(Date.now() / 1000)}:F>`
-          ].join('\n'),
+          value: `**Closed By:** ${closedBy}\n**Closed At:** <t:${Math.floor(Date.now() / 1000)}:F>`,
           inline: false
         }
       );
@@ -129,6 +127,9 @@ class TicketEmbed {
       value: 'This channel will be automatically deleted in 10 seconds.',
       inline: false
     });
+
+    embed.setFooter({ text: 'Thank you for using our support system' });
+    embed.setTimestamp();
 
     return embed;
   }
