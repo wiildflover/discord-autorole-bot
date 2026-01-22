@@ -10,7 +10,7 @@ const VERIFIED_CONFIG = {
   bannerUrl: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_banner.png?raw=true',
   buttonStyle: 'Success',
   buttonLabel: 'Get Verified',
-  buttonEmoji: '✓'
+  buttonEmoji: '✅'
 };
 
 module.exports = VERIFIED_CONFIG;
