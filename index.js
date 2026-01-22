@@ -76,5 +76,4 @@ function main() {
   bot.start();
 }
 
-const chalk = require('chalk');
 main();
