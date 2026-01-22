@@ -1,7 +1,7 @@
 {
   "name": "discord-autorole-bot",
-  "version": "1.0.0",
-  "description": "Professional Discord bot with automated role assignment system",
+  "version": "2.0.0",
+  "description": "Professional Discord bot with automated role assignment and ticket support system",
   "main": "index.js",
   "author": "Wildflover",
   "license": "MIT",
@@ -28,6 +28,8 @@
     "bot",
     "automation",
     "role-management",
+    "ticket-system",
+    "support",
     "discord.js"
   ]
 }

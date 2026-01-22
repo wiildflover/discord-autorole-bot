@@ -60,7 +60,23 @@ const commands = {
     .addChannelOption(option =>
       option.setName('channel')
         .setDescription('Channel for welcome and leave messages')
-        .setRequired(true))
+        .setRequired(true)),
+
+  ticket: new SlashCommandBuilder()
+    .setName('ticket')
+    .setDescription('Ticket system management (Admin only)')
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('setup')
+        .setDescription('Setup ticket panel in current channel'))
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('stats')
+        .setDescription('View ticket statistics'))
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('close')
+        .setDescription('Force close current ticket channel'))
 };
 
 module.exports = commands;

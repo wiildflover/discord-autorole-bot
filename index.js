@@ -8,15 +8,19 @@
 require('dotenv').config();
 const AutoRoleBot = require('./src/bot');
 const logger = require('./src/utils/logger');
+const chalk = require('chalk');
 
 const PROJECT_INFO = {
   name: 'Discord Auto-Role Bot',
   author: 'Wildflover',
-  version: '1.0.0',
-  description: 'Automated role assignment system with reaction-based confirmation',
+  version: '2.0.0',
+  description: 'Advanced automation system with role assignment and ticket support',
   features: [
     'Mention-based role assignment',
     'Automatic reaction confirmation',
+    'Professional ticket system',
+    'Welcome card generator',
+    'Multi-language tutorial system',
     'Timed message deletion',
     'Professional logging system',
     'Error handling and recovery'

@@ -1,38 +1,112 @@
-# Discord Auto-Role Bot
+# Discord Auto-Role & Ticket Bot
 
 **Author:** Wildflover  
-**Version:** 1.0.0  
+**Version:** 2.0.0  
 **Framework:** Discord.js v14
 
 ## Project Overview
 
-Professional Discord bot designed for automated role assignment with reaction-based confirmation system. Built with modern JavaScript practices and optimized for Railway.app deployment.
+Professional Discord bot with automated role assignment and advanced ticket support system. Built with modern JavaScript practices, modular architecture, and optimized for Railway.app deployment.
 
 ## Features
 
-- ✓ Mention-based role assignment trigger
-- ✓ Automatic green check reaction confirmation
-- ✓ Timed message deletion (configurable)
-- ✓ Professional logging system with color-coded output
-- ✓ Error handling and graceful shutdown
-- ✓ Permission validation
-- ✓ Environment-based configuration
+### Role Management
+- Mention-based role assignment trigger
+- Automatic green check reaction confirmation
+- Timed message deletion (configurable)
+- Permission validation
+
+### Ticket System
+- Multi-category support (Technical, Payment, Account, Other)
+- Private channel creation with permissions
+- Staff claim system
+- Transcript generation
+- Auto-close with configurable delay
+- Ticket statistics and logging
+- Modal-based ticket creation
+
+### System Features
+- Professional logging with color-coded output
+- Error handling and graceful shutdown
+- Welcome card generator with canvas
+- Multi-language tutorial system
+- Environment-based configuration
 
 ## Architecture
 
 ```
 discord-bot/
 ├── src/
-│   ├── bot.js              # Core bot logic and event handlers
-│   └── utils/
-│       └── logger.js       # Professional logging utility
-├── config.json             # Bot configuration (not tracked)
-├── index.js                # Application entry point
-├── package.json            # Dependencies and scripts
-├── railway.json            # Railway deployment configuration
-├── .env.example            # Environment variables template
-└── README.md               # Documentation
+│   ├── bot.js                    # Core bot logic and event handlers
+│   ├── commands/
+│   │   ├── definitions.js        # Slash command definitions
+│   │   ├── handlers.js           # Command execution handlers
+│   │   ├── register.js           # Command registration system
+│   │   └── tutorials.js          # Tutorial embed system
+│   ├── ticket/
+│   │   ├── ticketConfig.js       # Ticket system configuration
+│   │   ├── ticketStorage.js      # JSON database management
+│   │   ├── ticketEmbed.js        # Professional embed designs
+│   │   ├── ticketButtons.js      # Button components
+│   │   ├── ticketModal.js        # Modal forms
+│   │   ├── ticketManager.js      # Core ticket management
+│   │   └── ticketHandler.js      # Interaction handlers
+│   ├── utils/
+│   │   ├── logger.js             # Professional logging utility
+│   │   └── translations.js       # Multi-language support
+│   └── welcome/
+│       └── welcomeCard.js        # Welcome card generator
+├── data/                         # Ticket database (auto-created)
+├── config.json                   # Bot configuration
+├── index.js                      # Application entry point
+├── TICKET_SYSTEM.md              # Ticket system documentation
+└── README.md                     # Main documentation
 ```
+
+## Commands
+
+### User Commands
+- `/ping` - Check bot response time and status
+- `/info` - Display bot information and statistics
+- `/help` - Show available commands
+- `/tutorial <topic> [language]` - Access comprehensive guides
+
+### Admin Commands
+- `/config` - View current bot configuration
+- `/setwelcome <channel>` - Set welcome message channel
+- `/ticket setup` - Create ticket panel in current channel
+- `/ticket stats` - View ticket statistics
+- `/ticket close` - Force close current ticket
+
+## Ticket System
+
+### Quick Start
+
+1. **Setup Ticket Panel**
+   ```
+   /ticket setup
+   ```
+   Run this command in the channel where you want the ticket panel.
+
+2. **User Creates Ticket**
+   - Click "Create Ticket" button
+   - Select category
+   - Fill in the modal form
+   - Private channel is created automatically
+
+3. **Staff Management**
+   - Claim tickets with "Claim" button
+   - Close tickets with "Close Ticket" button
+   - Generate transcripts with "Transcript" button
+
+### Ticket Categories
+
+- **Technical Support** - Launcher / Skins not working
+- **Payment Issues** - Orders, commissions, subscriptions
+- **Account Help** - Login, access, roles
+- **Other Concerns** - Not covered elsewhere
+
+For detailed ticket system documentation, see [TICKET_SYSTEM.md](TICKET_SYSTEM.md)
 
 ## Installation
 
@@ -105,18 +179,37 @@ npm start
 
 ## Bot Permissions Required
 
+### Essential Permissions
 - `MANAGE_ROLES` - Assign roles to members
-- `ADD_REACTIONS` - Add reaction to messages
-- `SEND_MESSAGES` - Send confirmation messages
+- `MANAGE_CHANNELS` - Create and manage ticket channels
+- `ADD_REACTIONS` - Add reactions to messages
+- `SEND_MESSAGES` - Send messages in channels
+- `EMBED_LINKS` - Send embedded messages
+- `ATTACH_FILES` - Send transcripts and welcome cards
 - `READ_MESSAGE_HISTORY` - Read channel messages
+- `MANAGE_MESSAGES` - Delete messages
+
+### Recommended Role Position
+Bot's role should be higher than the role it assigns to prevent hierarchy errors.
 
 ## Usage
 
+### Role Assignment
 1. User mentions target user in configured channel
 2. Bot adds ✅ reaction to message
-3. Bot assigns configured role to mentioned user
-4. Bot sends confirmation message mentioning author
-5. Confirmation message auto-deletes after 3.5 seconds
+3. Bot assigns configured role to user
+4. Bot sends confirmation message
+5. Confirmation auto-deletes after 3.5 seconds
+
+### Ticket System
+1. Admin runs `/ticket setup` in desired channel
+2. Users click "Create Ticket" button
+3. Select category from dropdown
+4. Fill modal form with issue details
+5. Private channel created automatically
+6. Staff receives notification
+7. Staff can claim, manage, and close tickets
+8. Channel auto-deletes 10 seconds after closing
 
 ## Logging System
 

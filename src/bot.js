@@ -14,6 +14,7 @@ const CommandRegistry = require('./commands/register');
 const CommandHandlers = require('./commands/handlers');
 const commandDefinitions = require('./commands/definitions');
 const WelcomeCardGenerator = require('./welcome/welcomeCard');
+const TicketHandler = require('./ticket/ticketHandler');
 
 // Load configuration with fallback to environment variables
 let config;
@@ -46,6 +47,7 @@ class AutoRoleBot {
 
     this.config = config;
     this.commandHandlers = new CommandHandlers(this);
+    this.ticketHandler = new TicketHandler(this.client);
     this.initialize();
   }
 
@@ -69,6 +71,9 @@ class AutoRoleBot {
     
     logger.info('BOT-PRESENCE', 'Presence cleared - no activity shown');
 
+    await this.ticketHandler.initialize();
+    logger.success('BOT-READY', 'Ticket system initialized');
+
     await this.registerSlashCommands();
   }
 
@@ -82,6 +87,7 @@ class AutoRoleBot {
       registry.addCommand(commandDefinitions.tutorial);
       registry.addCommand(commandDefinitions.help);
       registry.addCommand(commandDefinitions.setwelcome);
+      registry.addCommand(commandDefinitions.ticket);
 
       await registry.registerGlobally();
     } catch (error) {
@@ -90,6 +96,13 @@ class AutoRoleBot {
   }
 
   async onInteractionCreate(interaction) {
+    if (interaction.isButton() || interaction.isStringSelectMenu() || interaction.isModalSubmit()) {
+      if (interaction.customId && interaction.customId.startsWith('ticket_')) {
+        await this.ticketHandler.handleInteraction(interaction);
+        return;
+      }
+    }
+
     if (!interaction.isChatInputCommand()) return;
 
     try {
@@ -113,6 +126,9 @@ class AutoRoleBot {
           break;
         case 'setwelcome':
           await this.commandHandlers.handleSetWelcome(interaction);
+          break;
+        case 'ticket':
+          await this.commandHandlers.handleTicket(interaction);
           break;
         default:
           await interaction.reply({ content: 'Unknown command.', ephemeral: true });

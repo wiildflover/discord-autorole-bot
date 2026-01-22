@@ -8,10 +8,12 @@
 const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 const logger = require('../utils/logger');
 const TutorialSystem = require('./tutorials');
+const TicketManager = require('../ticket/ticketManager');
 
 class CommandHandlers {
   constructor(bot) {
     this.bot = bot;
+    this.ticketManager = new TicketManager(bot.client);
   }
 
   async handlePing(interaction) {
@@ -257,6 +259,100 @@ class CommandHandlers {
       logger.error('COMMAND-SETWELCOME', `Failed to save configuration: ${error.message}`);
       await interaction.reply({
         content: 'Failed to save configuration. Please try again.',
+        ephemeral: true
+      });
+    }
+  }
+
+  async handleTicket(interaction) {
+    if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+      await interaction.reply({ 
+        content: 'You need Administrator permission to use this command.', 
+        ephemeral: true 
+      });
+      return;
+    }
+
+    const subcommand = interaction.options.getSubcommand();
+
+    switch (subcommand) {
+      case 'setup':
+        await this.handleTicketSetup(interaction);
+        break;
+      case 'stats':
+        await this.handleTicketStats(interaction);
+        break;
+      case 'close':
+        await this.handleTicketForceClose(interaction);
+        break;
+      default:
+        await interaction.reply({ content: 'Unknown subcommand.', ephemeral: true });
+    }
+  }
+
+  async handleTicketSetup(interaction) {
+    await interaction.deferReply({ ephemeral: true });
+
+    const result = await this.ticketManager.setupTicketPanel(interaction.channel);
+
+    if (result.success) {
+      await interaction.editReply({
+        content: 'Ticket panel has been successfully created in this channel.',
+        ephemeral: true
+      });
+      logger.success('COMMAND-TICKET', `Panel setup by ${interaction.user.tag} in ${interaction.channel.name}`);
+    } else {
+      await interaction.editReply({
+        content: result.error,
+        ephemeral: true
+      });
+    }
+  }
+
+  async handleTicketStats(interaction) {
+    await interaction.deferReply({ ephemeral: true });
+
+    const stats = await this.ticketManager.getTicketStats(interaction.guild);
+
+    const embed = new EmbedBuilder()
+      .setColor(0x5865F2)
+      .setTitle('Ticket System Statistics')
+      .addFields(
+        { name: 'Total Tickets', value: `${stats.total}`, inline: true },
+        { name: 'Open Tickets', value: `${stats.open}`, inline: true },
+        { name: 'Pending Tickets', value: `${stats.pending}`, inline: true },
+        { name: 'Closed Tickets', value: `${stats.closed}`, inline: true }
+      )
+      .setFooter({ text: 'Ticket System by Wildflover' })
+      .setTimestamp();
+
+    await interaction.editReply({ embeds: [embed], ephemeral: true });
+    logger.info('COMMAND-TICKET', `Stats viewed by ${interaction.user.tag}`);
+  }
+
+  async handleTicketForceClose(interaction) {
+    const channelName = interaction.channel.name;
+    
+    if (!channelName.includes('tech-support') && 
+        !channelName.includes('payment') && 
+        !channelName.includes('account') && 
+        !channelName.includes('other')) {
+      await interaction.reply({
+        content: 'This command can only be used in ticket channels.',
+        ephemeral: true
+      });
+      return;
+    }
+
+    await interaction.deferReply({ ephemeral: true });
+
+    const result = await this.ticketManager.closeTicket(interaction.channel, interaction.user, 'Force closed by administrator');
+
+    if (result.success) {
+      logger.info('COMMAND-TICKET', `Force closed by ${interaction.user.tag}`);
+    } else {
+      await interaction.editReply({
+        content: result.error,
         ephemeral: true
       });
     }

@@ -29,3 +29,7 @@ Thumbs.db
 # Build files
 dist/
 build/
+
+# Ticket system data
+data/
+tickets.json
