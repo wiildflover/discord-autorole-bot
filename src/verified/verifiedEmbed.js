@@ -12,8 +12,11 @@ class VerifiedEmbed {
   static createVerificationPanel() {
     return new EmbedBuilder()
       .setColor(VERIFIED_CONFIG.embedColor)
+      .setAuthor({
+        name: 'Application Access Verification',
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
+      })
       .setImage(VERIFIED_CONFIG.bannerUrl)
-      .setTitle('Application Access Verification')
       .setDescription(
         'Welcome to the Wildflover Community verification system. ' +
         'To gain full access to our custom skin manager application and exclusive features, ' +
@@ -36,7 +39,10 @@ class VerifiedEmbed {
   static createSuccessEmbed(member) {
     return new EmbedBuilder()
       .setColor(0x2ECC71)
-      .setTitle('Verification Successful')
+      .setAuthor({
+        name: 'Verification Successful',
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
+      })
       .setDescription(
         `${member}, you have been successfully verified!\n\n` +
         'You now have full access to:\n' +
@@ -46,18 +52,27 @@ class VerifiedEmbed {
         '▸ Exclusive member features\n\n' +
         'Welcome to the Wildflover Community!'
       )
-      .setFooter({ text: 'Enjoy your stay!' })
+      .setFooter({ 
+        text: 'Wildflover Community',
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
+      })
       .setTimestamp();
   }
 
   static createAlreadyVerifiedEmbed(member) {
     return new EmbedBuilder()
       .setColor(0xE67E22)
-      .setTitle('Already Verified')
+      .setAuthor({
+        name: 'Already Verified',
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
+      })
       .setDescription(
         `${member}, you are already verified and have full access to all features.`
       )
-      .setFooter({ text: 'No action needed' })
+      .setFooter({ 
+        text: 'Wildflover Community',
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
+      })
       .setTimestamp();
   }
 }

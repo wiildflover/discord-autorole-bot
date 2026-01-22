@@ -11,8 +11,11 @@ class HowToVerifiedEmbed {
   static createGuideEmbed() {
     return new EmbedBuilder()
       .setColor(0xF39C12)
+      .setAuthor({
+        name: 'HOW TO GET VERIFIED',
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
+      })
       .setImage('https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_banner.png?raw=true')
-      .setTitle('HOW TO GET VERIFIED')
       .setDescription(
         '**Follow these simple steps to gain full access to Wildflover Community and application features.**'
       )
@@ -45,7 +48,7 @@ class HowToVerifiedEmbed {
       )
       .setFooter({ 
         text: 'Wildflover Community • Verification Guide',
-        iconURL: 'https://github.com/wiildflover/discord-autorole-bot/blob/main/welcome_banner.png?raw=true'
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
       })
       .setTimestamp();
   }
