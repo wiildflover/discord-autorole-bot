@@ -412,12 +412,13 @@ class CommandHandlers {
     try {
       const guild = interaction.guild;
       const targetRoleId = '1463770776900468941';
+      const targetGuildId = '1458924040587837452'; // Wildflover server ID
       const targetTag = 'WILD';
       
       // Fetch all members with force to get fresh data including primary_guild
       await guild.members.fetch({ force: true, withPresences: false });
       
-      logger.info('CHECKGUILDS-SCAN', `Scanning ${guild.members.cache.size} members for server tag: ${targetTag}`);
+      logger.info('CHECKGUILDS-SCAN', `Scanning ${guild.members.cache.size} members for server tag: ${targetTag} (Target Guild: ${targetGuildId})`);
       
       // Track members found for debug logging
       let debugCount = 0;
@@ -428,15 +429,19 @@ class CommandHandlers {
         if (member.user.primaryGuild) {
           const userTag = member.user.primaryGuild.tag;
           const isDisplaying = member.user.primaryGuild.identityEnabled;
+          const tagGuildId = member.user.primaryGuild.identityGuildId;
           
           // Log for debugging (first 3 members with tags)
           if (userTag && debugCount < 3) {
-            logger.info('CHECKGUILDS-DEBUG', `User: ${member.user.tag} | Tag: ${userTag} | Displaying: ${isDisplaying}`);
+            logger.info('CHECKGUILDS-DEBUG', `User: ${member.user.tag} | Tag: ${userTag} | Guild: ${tagGuildId} | Displaying: ${isDisplaying}`);
             debugCount++;
           }
           
-          // Check if user has the target tag and is displaying it
-          return userTag && userTag.toUpperCase() === targetTag.toUpperCase() && isDisplaying;
+          // Check if user has the target tag, is displaying it, AND it's from the target guild
+          return userTag && 
+                 userTag.toUpperCase() === targetTag.toUpperCase() && 
+                 isDisplaying && 
+                 tagGuildId === targetGuildId;
         }
         return false;
       });
