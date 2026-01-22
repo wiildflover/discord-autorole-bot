@@ -419,6 +419,9 @@ class CommandHandlers {
       
       logger.info('CHECKGUILDS-SCAN', `Scanning ${guild.members.cache.size} members for server tag: ${targetTag}`);
       
+      // Track members found for debug logging
+      let debugCount = 0;
+      
       // Find members who have the target server tag in their primary_guild
       const membersWithTag = guild.members.cache.filter(member => {
         // Check if user has primary_guild data
@@ -427,8 +430,9 @@ class CommandHandlers {
           const isDisplaying = member.user.primaryGuild.identityEnabled;
           
           // Log for debugging (first 3 members with tags)
-          if (userTag && membersWithTag.size < 3) {
+          if (userTag && debugCount < 3) {
             logger.info('CHECKGUILDS-DEBUG', `User: ${member.user.tag} | Tag: ${userTag} | Displaying: ${isDisplaying}`);
+            debugCount++;
           }
           
           // Check if user has the target tag and is displaying it
