@@ -412,19 +412,32 @@ class CommandHandlers {
     try {
       const guild = interaction.guild;
       const targetRoleId = '1463770776900468941';
-      const searchTag = 'WILD'; // Clan tag to search for
+      const targetTag = 'WILD';
       
-      // Fetch all members
-      await guild.members.fetch();
+      // Fetch all members with force to get fresh data including primary_guild
+      await guild.members.fetch({ force: true, withPresences: false });
       
-      // Find members with "WILD" clan tag
+      logger.info('CHECKGUILDS-SCAN', `Scanning ${guild.members.cache.size} members for server tag: ${targetTag}`);
+      
+      // Find members who have the target server tag in their primary_guild
       const membersWithTag = guild.members.cache.filter(member => {
-        // Check if member has a clan and if the clan tag matches
-        if (member.clan && member.clan.tag) {
-          return member.clan.tag.toUpperCase() === searchTag.toUpperCase();
+        // Check if user has primary_guild data
+        if (member.user.primaryGuild) {
+          const userTag = member.user.primaryGuild.tag;
+          const isDisplaying = member.user.primaryGuild.identityEnabled;
+          
+          // Log for debugging (first 3 members with tags)
+          if (userTag && membersWithTag.size < 3) {
+            logger.info('CHECKGUILDS-DEBUG', `User: ${member.user.tag} | Tag: ${userTag} | Displaying: ${isDisplaying}`);
+          }
+          
+          // Check if user has the target tag and is displaying it
+          return userTag && userTag.toUpperCase() === targetTag.toUpperCase() && isDisplaying;
         }
         return false;
       });
+
+      logger.info('CHECKGUILDS-RESULT', `Found ${membersWithTag.size} members with ${targetTag} server tag`);
 
       const totalWithTag = membersWithTag.size;
       const targetRole = guild.roles.cache.get(targetRoleId);
@@ -447,13 +460,13 @@ class CommandHandlers {
 
       // Assign role to members who don't have it
       const assignedMembers = [];
-      for (const [memberId, member] of membersNeedingRole) {
+      for (const [, member] of membersNeedingRole) {
         try {
           await member.roles.add(targetRoleId);
           assignedMembers.push(member);
-          logger.success('CHECKGUILDS-ROLE', `Assigned role to ${member.user.tag}`);
+          logger.success('CHECKGUILDS-ASSIGN', `Role assigned to ${member.user.tag}`);
         } catch (error) {
-          logger.error('CHECKGUILDS-ROLE', `Failed to assign role to ${member.user.tag}: ${error.message}`);
+          logger.error('CHECKGUILDS-ERROR', `Failed to assign role to ${member.user.tag}: ${error.message}`);
         }
       }
 
@@ -461,18 +474,18 @@ class CommandHandlers {
       const summaryEmbed = new EmbedBuilder()
         .setColor(0x57F287)
         .setAuthor({
-          name: 'Guild Tag Check Complete',
+          name: 'Server Tag Scan Complete',
           iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
         })
         .setImage('https://github.com/wiildflover/wildflover-discord-bot/blob/main/banner.png?raw=true')
-        .setDescription(`Scanned server for members with "WILD" clan tag`)
+        .setDescription(`Scanned server for members displaying **${targetTag}** server tag`)
         .addFields(
           { name: 'Total with Tag', value: `${totalWithTag}`, inline: true },
           { name: 'Already Had Role', value: `${alreadyHasRole}`, inline: true },
           { name: 'Newly Assigned', value: `${assignedMembers.length}`, inline: true }
         )
         .setFooter({ 
-          text: 'Guild Tag Check System',
+          text: 'Server Tag Detection System',
           iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
         })
         .setTimestamp();
@@ -494,7 +507,7 @@ class CommandHandlers {
             .addFields(
               { name: 'User', value: member.user.tag, inline: true },
               { name: 'User ID', value: member.id, inline: true },
-              { name: 'Reason', value: 'Has WILD clan tag', inline: false }
+              { name: 'Server Tag', value: targetTag, inline: true }
             )
             .setThumbnail(member.user.displayAvatarURL())
             .setFooter({ 
@@ -513,7 +526,7 @@ class CommandHandlers {
       logger.success('COMMAND-CHECKGUILDS', `Executed by ${interaction.user.tag} | Found: ${totalWithTag} | Assigned: ${assignedMembers.length}`);
 
     } catch (error) {
-      logger.error('COMMAND-CHECKGUILDS', `Error: ${error.message}`);
+      logger.error('COMMAND-CHECKGUILDS', `Execution failed: ${error.message}`);
       await interaction.editReply({
         content: `An error occurred: ${error.message}`,
         ephemeral: true
