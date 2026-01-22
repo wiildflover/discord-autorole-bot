@@ -92,7 +92,11 @@ const commands = {
     .addSubcommand(subcommand =>
       subcommand
         .setName('setup')
-        .setDescription('Setup verification guide panel in current channel'))
+        .setDescription('Setup verification guide panel in current channel')),
+
+  checkguilds: new SlashCommandBuilder()
+    .setName('checkguilds')
+    .setDescription('Check members with guild tag and auto-assign verified role (Admin only)')
 };
 
 module.exports = commands;

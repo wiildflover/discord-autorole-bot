@@ -395,6 +395,115 @@ class CommandHandlers {
       logger.info('COMMAND-HOWTOVERIFIED', `Guide setup executed by ${interaction.user.tag} in ${interaction.channel.name}`);
     }
   }
+
+  async handleCheckGuilds(interaction) {
+    if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+      await interaction.reply({ 
+        content: 'You need Administrator permission to use this command.', 
+        ephemeral: true 
+      });
+      return;
+    }
+
+    await interaction.deferReply({ ephemeral: true });
+
+    try {
+      const guild = interaction.guild;
+      const targetRoleId = '1463770776900468941';
+      const guildTag = guild.name;
+      
+      // Fetch all members
+      await guild.members.fetch();
+      
+      // Find members with guild tag in their username or global name
+      const membersWithTag = guild.members.cache.filter(member => {
+        const username = member.user.username.toLowerCase();
+        const globalName = member.user.globalName?.toLowerCase() || '';
+        const tag = guildTag.toLowerCase();
+        return username.includes(tag) || globalName.includes(tag);
+      });
+
+      const totalWithTag = membersWithTag.size;
+      const targetRole = guild.roles.cache.get(targetRoleId);
+      
+      if (!targetRole) {
+        await interaction.editReply({
+          content: 'Target role not found. Please check the role ID.',
+          ephemeral: true
+        });
+        return;
+      }
+
+      // Find members without the role
+      const membersNeedingRole = membersWithTag.filter(member => 
+        !member.roles.cache.has(targetRoleId)
+      );
+
+      const needsRoleCount = membersNeedingRole.size;
+      const alreadyHasRole = totalWithTag - needsRoleCount;
+
+      // Assign role to members who don't have it
+      const assignedMembers = [];
+      for (const [memberId, member] of membersNeedingRole) {
+        try {
+          await member.roles.add(targetRoleId);
+          assignedMembers.push(member);
+          logger.success('CHECKGUILDS-ROLE', `Assigned role to ${member.user.tag}`);
+        } catch (error) {
+          logger.error('CHECKGUILDS-ROLE', `Failed to assign role to ${member.user.tag}: ${error.message}`);
+        }
+      }
+
+      // Create summary embed
+      const summaryEmbed = new EmbedBuilder()
+        .setColor(0x57F287)
+        .setTitle('Guild Tag Check Complete')
+        .setDescription(`Scanned server for members with "${guildTag}" tag`)
+        .addFields(
+          { name: 'Total with Tag', value: `${totalWithTag}`, inline: true },
+          { name: 'Already Had Role', value: `${alreadyHasRole}`, inline: true },
+          { name: 'Newly Assigned', value: `${assignedMembers.length}`, inline: true }
+        )
+        .setFooter({ text: 'Guild Tag Check System' })
+        .setTimestamp();
+
+      await interaction.editReply({ embeds: [summaryEmbed], ephemeral: true });
+
+      // Send notification for each assigned member
+      if (assignedMembers.length > 0) {
+        const notificationChannel = interaction.channel;
+        
+        for (const member of assignedMembers) {
+          const notificationEmbed = new EmbedBuilder()
+            .setColor(0xF39C12)
+            .setTitle('Auto Role Assignment')
+            .setDescription(`${member} has been automatically assigned <@&${targetRoleId}> role`)
+            .addFields(
+              { name: 'User', value: member.user.tag, inline: true },
+              { name: 'User ID', value: member.id, inline: true },
+              { name: 'Reason', value: 'Has guild tag in username', inline: false }
+            )
+            .setThumbnail(member.user.displayAvatarURL())
+            .setFooter({ text: 'Automated by CheckGuilds Command' })
+            .setTimestamp();
+
+          await notificationChannel.send({ 
+            content: `<@${interaction.user.id}>`,
+            embeds: [notificationEmbed] 
+          });
+        }
+      }
+
+      logger.success('COMMAND-CHECKGUILDS', `Executed by ${interaction.user.tag} | Found: ${totalWithTag} | Assigned: ${assignedMembers.length}`);
+
+    } catch (error) {
+      logger.error('COMMAND-CHECKGUILDS', `Error: ${error.message}`);
+      await interaction.editReply({
+        content: `An error occurred: ${error.message}`,
+        ephemeral: true
+      });
+    }
+  }
 }
 
 module.exports = CommandHandlers;
