@@ -32,7 +32,8 @@ if (fs.existsSync(configPath)) {
     targetUserId: process.env.TARGET_USER_ID,
     roleId: process.env.ROLE_ID,
     roleName: process.env.ROLE_NAME || 'Verified',
-    deleteMessageDelay: parseInt(process.env.DELETE_MESSAGE_DELAY) || 3500
+    deleteMessageDelay: parseInt(process.env.DELETE_MESSAGE_DELAY) || 3500,
+    welcomeChannelId: process.env.WELCOME_CHANNEL_ID || null
   };
 }
 
