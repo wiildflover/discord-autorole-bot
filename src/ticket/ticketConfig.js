@@ -8,33 +8,26 @@
 const TICKET_CONFIG = {
   // Ticket categories with custom styling
   categories: {
-    technical: {
-      emoji: '🔧',
-      label: 'Technical Support',
-      description: 'Launcher / Skins not working',
+    customMods: {
+      emoji: '🎨',
+      label: 'Custom Mods',
+      description: 'Custom mod installation and compatibility issues',
+      color: 0x9B59B6,
+      channelPrefix: 'custom-mods'
+    },
+    skins: {
+      emoji: '✨',
+      label: 'Skin Issues',
+      description: 'Skin loading and display problems',
       color: 0xE74C3C,
-      channelPrefix: 'tech-support'
+      channelPrefix: 'skin-support'
     },
-    payment: {
-      emoji: '💳',
-      label: 'Payment Issues',
-      description: 'Orders, commissions, subscriptions',
-      color: 0xF39C12,
-      channelPrefix: 'payment'
-    },
-    account: {
-      emoji: '👤',
-      label: 'Account Help',
-      description: 'Login, access, roles',
+    program: {
+      emoji: '⚙️',
+      label: 'Program Issues',
+      description: 'Launcher crashes and technical problems',
       color: 0x3498DB,
-      channelPrefix: 'account'
-    },
-    other: {
-      emoji: '❓',
-      label: 'Other Concerns',
-      description: 'Not covered elsewhere',
-      color: 0x95A5A6,
-      channelPrefix: 'other'
+      channelPrefix: 'program-support'
     }
   },
 
