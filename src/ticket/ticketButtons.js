@@ -70,8 +70,6 @@ class TicketButtons {
 
     return new ActionRowBuilder().addComponents(confirmButton, cancelButton);
   }
-    return new ActionRowBuilder().addComponents(confirmButton, cancelButton);
-  }
 
   static createReopenButton() {
     const button = new ButtonBuilder()
