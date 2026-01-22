@@ -48,6 +48,20 @@ if (fs.existsSync(channelConfigPath)) {
   };
 }
 
+// Load roles configuration
+let rolesConfig;
+const rolesConfigPath = path.join(__dirname, '../roles.json');
+
+if (fs.existsSync(rolesConfigPath)) {
+  rolesConfig = require('../roles.json');
+} else {
+  rolesConfig = {
+    'app-access': {
+      roleId: null
+    }
+  };
+}
+
 class WildfloverBot {
   constructor() {
     this.client = new Client({
@@ -61,6 +75,7 @@ class WildfloverBot {
 
     this.config = config;
     this.channelConfig = channelConfig;
+    this.rolesConfig = rolesConfig;
     this.commandHandlers = new CommandHandlers(this);
     this.ticketHandler = new TicketHandler(this.client);
     this.verifiedHandler = new VerifiedHandler(this.client, this.config);
@@ -223,11 +238,12 @@ class WildfloverBot {
     logger.info('ROLE-PROCESS', `Fetching member: ${message.author.id} (message author)`);
     const member = await guild.members.fetch(message.author.id);
     
-    logger.info('ROLE-PROCESS', `Fetching role: ${this.config.roleId}`);
-    const role = guild.roles.cache.get(this.config.roleId);
+    const appAccessRoleId = this.rolesConfig['app-access'].roleId;
+    logger.info('ROLE-PROCESS', `Fetching role: ${appAccessRoleId}`);
+    const role = guild.roles.cache.get(appAccessRoleId);
 
     if (!role) {
-      logger.error('ROLE-ERROR', `Role not found: ${this.config.roleId}`);
+      logger.error('ROLE-ERROR', `Role not found: ${appAccessRoleId}`);
       logger.error('ROLE-ERROR', `Available roles: ${guild.roles.cache.map(r => `${r.name}(${r.id})`).join(', ')}`);
       return;
     }
