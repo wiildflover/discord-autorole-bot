@@ -128,7 +128,17 @@ const commands = {
     .addStringOption(option =>
       option.setName('dropbox')
         .setDescription('Dropbox download link')
-        .setRequired(false))
+        .setRequired(false)),
+
+  delete: new SlashCommandBuilder()
+    .setName('delete')
+    .setDescription('Bulk delete messages in current channel (Admin only)')
+    .addIntegerOption(option =>
+      option.setName('amount')
+        .setDescription('Number of messages to delete (1-100)')
+        .setRequired(true)
+        .setMinValue(1)
+        .setMaxValue(100))
 };
 
 module.exports = commands;

@@ -719,6 +719,75 @@ class CommandHandlers {
       });
     }
   }
+
+  async handleDelete(interaction) {
+    if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+      await interaction.reply({ 
+        content: 'You need Administrator permission to use this command.', 
+        ephemeral: true 
+      });
+      return;
+    }
+
+    await interaction.deferReply({ ephemeral: true });
+
+    try {
+      const amount = interaction.options.getInteger('amount');
+      const channel = interaction.channel;
+
+      // Check if bot has permission to manage messages
+      if (!channel.permissionsFor(interaction.guild.members.me).has(PermissionFlagsBits.ManageMessages)) {
+        await interaction.editReply({
+          content: 'I do not have permission to manage messages in this channel.',
+          ephemeral: true
+        });
+        return;
+      }
+
+      // Fetch and delete messages
+      const messages = await channel.messages.fetch({ limit: amount });
+      const deletedMessages = await channel.bulkDelete(messages, true);
+
+      logger.success('COMMAND-DELETE', `${deletedMessages.size} messages deleted by ${interaction.user.tag} in ${channel.name}`);
+
+      // Send confirmation
+      const confirmEmbed = new EmbedBuilder()
+        .setColor(0x57F287)
+        .setAuthor({
+          name: 'Bulk Delete Complete',
+          iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
+        })
+        .setDescription(`Successfully deleted **${deletedMessages.size}** messages`)
+        .addFields(
+          { name: 'Requested Amount', value: `${amount}`, inline: true },
+          { name: 'Actually Deleted', value: `${deletedMessages.size}`, inline: true },
+          { name: 'Channel', value: `${channel}`, inline: true }
+        )
+        .setFooter({ 
+          text: 'Messages older than 14 days cannot be bulk deleted',
+          iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
+        })
+        .setTimestamp();
+
+      await interaction.editReply({ embeds: [confirmEmbed], ephemeral: true });
+
+    } catch (error) {
+      logger.error('COMMAND-DELETE', `Execution failed: ${error.message}`);
+      
+      let errorMessage = 'An error occurred while deleting messages.';
+      
+      if (error.code === 50034) {
+        errorMessage = 'Cannot delete messages older than 14 days.';
+      } else if (error.code === 50013) {
+        errorMessage = 'Missing permissions to delete messages.';
+      }
+
+      await interaction.editReply({
+        content: errorMessage,
+        ephemeral: true
+      });
+    }
+  }
 }
 
 module.exports = CommandHandlers;

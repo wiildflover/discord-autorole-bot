@@ -157,6 +157,9 @@ class AutoRoleBot {
         case 'download':
           await this.commandHandlers.handleDownload(interaction);
           break;
+        case 'delete':
+          await this.commandHandlers.handleDelete(interaction);
+          break;
         default:
           await interaction.reply({ content: 'Unknown command.', ephemeral: true });
       }
