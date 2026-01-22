@@ -31,7 +31,7 @@ class VerifiedEmbed {
       )
       .setFooter({ 
         text: 'Wildflover Community • Verification System',
-        iconURL: 'https://github.com/wiildflover/discord-autorole-bot/blob/main/welcome_banner.png?raw=true'
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true'
       })
       .setTimestamp();
   }
