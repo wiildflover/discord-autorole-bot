@@ -10,8 +10,8 @@ const { EmbedBuilder } = require('discord.js');
 class WelcomeDM {
   static createWelcomeEmbed(member) {
     const embed = new EmbedBuilder()
-      .setColor(0xF39C12)
-      .setImage('https://github.com/wiildflover/discord-autorole-bot/blob/main/welcome_banner.png?raw=true')
+      .setColor(0x9B59B6)
+      .setImage('https://github.com/wiildflover/wildflover-discord-bot/blob/main/welcome_banner_2.png?raw=true')
       .setAuthor({
         name: 'Welcome to Wildflover Community!',
         iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'

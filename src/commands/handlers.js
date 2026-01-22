@@ -663,24 +663,47 @@ class CommandHandlers {
         return;
       }
 
-      // Build download links text
-      let downloadLinks = '';
+      // Build download buttons
+      const { ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
+      const buttons = [];
       
       if (directlyLink) {
-        downloadLinks += `**Directly**\n[Click to Install](${directlyLink})\n\n`;
+        buttons.push(
+          new ButtonBuilder()
+            .setLabel('Directly')
+            .setStyle(ButtonStyle.Link)
+            .setURL(directlyLink)
+        );
       }
       
       if (mediafireLink) {
-        downloadLinks += `**MediaFire**\n[Click to Install](${mediafireLink})\n\n`;
+        buttons.push(
+          new ButtonBuilder()
+            .setLabel('MediaFire')
+            .setStyle(ButtonStyle.Link)
+            .setURL(mediafireLink)
+        );
       }
       
       if (googledriveLink) {
-        downloadLinks += `**Google Drive**\n[Click to Install](${googledriveLink})\n\n`;
+        buttons.push(
+          new ButtonBuilder()
+            .setLabel('Google Drive')
+            .setStyle(ButtonStyle.Link)
+            .setURL(googledriveLink)
+        );
       }
       
       if (dropboxLink) {
-        downloadLinks += `**Dropbox**\n[Click to Install](${dropboxLink})\n\n`;
+        buttons.push(
+          new ButtonBuilder()
+            .setLabel('Dropbox')
+            .setStyle(ButtonStyle.Link)
+            .setURL(dropboxLink)
+        );
       }
+
+      const row = new ActionRowBuilder().addComponents(buttons);
 
       // Create download embed
       const downloadEmbed = new EmbedBuilder()
@@ -689,7 +712,6 @@ class CommandHandlers {
           name: `UPDATE ${version}`,
           iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
         })
-        .setDescription(downloadLinks.trim())
         .setImage('https://github.com/wiildflover/discord-autorole-bot/blob/main/public/assets/discord/download-banner.png?raw=true')
         .setFooter({ 
           text: 'Wildflover > Windows 10/11',
@@ -700,7 +722,8 @@ class CommandHandlers {
       // Send to channel
       await interaction.channel.send({ 
         content: '@everyone',
-        embeds: [downloadEmbed] 
+        embeds: [downloadEmbed],
+        components: [row]
       });
 
       // Confirm to admin
@@ -729,28 +752,32 @@ class CommandHandlers {
       return;
     }
 
-    await interaction.deferReply({ ephemeral: true });
-
     try {
       const amount = interaction.options.getInteger('amount');
       const channel = interaction.channel;
+      const executor = interaction.user;
 
       // Check if bot has permission to manage messages
       if (!channel.permissionsFor(interaction.guild.members.me).has(PermissionFlagsBits.ManageMessages)) {
-        await interaction.editReply({
+        await interaction.reply({
           content: 'I do not have permission to manage messages in this channel.',
           ephemeral: true
         });
         return;
       }
 
+      // Reply immediately (non-ephemeral so everyone can see)
+      await interaction.reply({
+        content: `<@${executor.id}> used /delete command.`
+      });
+
       // Fetch and delete messages
       const messages = await channel.messages.fetch({ limit: amount });
       const deletedMessages = await channel.bulkDelete(messages, true);
 
-      logger.success('COMMAND-DELETE', `${deletedMessages.size} messages deleted by ${interaction.user.tag} in ${channel.name}`);
+      logger.success('COMMAND-DELETE', `${deletedMessages.size} messages deleted by ${executor.tag} in ${channel.name}`);
 
-      // Send confirmation
+      // Send confirmation (visible to everyone)
       const confirmEmbed = new EmbedBuilder()
         .setColor(0x57F287)
         .setAuthor({
@@ -764,12 +791,23 @@ class CommandHandlers {
           { name: 'Channel', value: `${channel}`, inline: true }
         )
         .setFooter({ 
-          text: 'Messages older than 14 days cannot be bulk deleted',
+          text: `Messages older than 14 days cannot be bulk deleted • Executed by ${executor.tag}`,
           iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
         })
         .setTimestamp();
 
-      await interaction.editReply({ embeds: [confirmEmbed], ephemeral: true });
+      const confirmMessage = await channel.send({ embeds: [confirmEmbed] });
+
+      // Delete confirmation message after 3 seconds
+      setTimeout(async () => {
+        try {
+          await confirmMessage.delete();
+          await interaction.deleteReply();
+          logger.info('COMMAND-DELETE', 'Confirmation messages auto-deleted after 3 seconds');
+        } catch (error) {
+          logger.warn('COMMAND-DELETE', `Failed to delete confirmation messages: ${error.message}`);
+        }
+      }, 3000);
 
     } catch (error) {
       logger.error('COMMAND-DELETE', `Execution failed: ${error.message}`);
@@ -782,10 +820,17 @@ class CommandHandlers {
         errorMessage = 'Missing permissions to delete messages.';
       }
 
-      await interaction.editReply({
-        content: errorMessage,
-        ephemeral: true
-      });
+      if (interaction.replied || interaction.deferred) {
+        await interaction.followUp({
+          content: errorMessage,
+          ephemeral: true
+        });
+      } else {
+        await interaction.reply({
+          content: errorMessage,
+          ephemeral: true
+        });
+      }
     }
   }
 }
