@@ -412,16 +412,16 @@ class CommandHandlers {
     try {
       const guild = interaction.guild;
       const targetRoleId = '1463770776900468941';
-      const guildTag = guild.name;
+      const searchTag = 'wildflover'; // Tag to search for in usernames
       
       // Fetch all members
       await guild.members.fetch();
       
-      // Find members with guild tag in their username or global name
+      // Find members with "wildflover" tag in their username or global name
       const membersWithTag = guild.members.cache.filter(member => {
         const username = member.user.username.toLowerCase();
         const globalName = member.user.globalName?.toLowerCase() || '';
-        const tag = guildTag.toLowerCase();
+        const tag = searchTag.toLowerCase();
         return username.includes(tag) || globalName.includes(tag);
       });
 
@@ -464,7 +464,7 @@ class CommandHandlers {
           iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
         })
         .setImage('https://github.com/wiildflover/wildflover-discord-bot/blob/main/banner.png?raw=true')
-        .setDescription(`Scanned server for members with "${guildTag}" tag`)
+        .setDescription(`Scanned server for members with "Wildflover" tag`)
         .addFields(
           { name: 'Total with Tag', value: `${totalWithTag}`, inline: true },
           { name: 'Already Had Role', value: `${alreadyHasRole}`, inline: true },
