@@ -459,14 +459,21 @@ class CommandHandlers {
       // Create summary embed
       const summaryEmbed = new EmbedBuilder()
         .setColor(0x57F287)
-        .setTitle('Guild Tag Check Complete')
+        .setAuthor({
+          name: 'Guild Tag Check Complete',
+          iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
+        })
+        .setImage('https://github.com/wiildflover/wildflover-discord-bot/blob/main/banner.png?raw=true')
         .setDescription(`Scanned server for members with "${guildTag}" tag`)
         .addFields(
           { name: 'Total with Tag', value: `${totalWithTag}`, inline: true },
           { name: 'Already Had Role', value: `${alreadyHasRole}`, inline: true },
           { name: 'Newly Assigned', value: `${assignedMembers.length}`, inline: true }
         )
-        .setFooter({ text: 'Guild Tag Check System' })
+        .setFooter({ 
+          text: 'Guild Tag Check System',
+          iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
+        })
         .setTimestamp();
 
       await interaction.editReply({ embeds: [summaryEmbed], ephemeral: true });
@@ -478,7 +485,10 @@ class CommandHandlers {
         for (const member of assignedMembers) {
           const notificationEmbed = new EmbedBuilder()
             .setColor(0xF39C12)
-            .setTitle('Auto Role Assignment')
+            .setAuthor({
+              name: 'Auto Role Assignment',
+              iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
+            })
             .setDescription(`${member} has been automatically assigned <@&${targetRoleId}> role`)
             .addFields(
               { name: 'User', value: member.user.tag, inline: true },
@@ -486,7 +496,10 @@ class CommandHandlers {
               { name: 'Reason', value: 'Has guild tag in username', inline: false }
             )
             .setThumbnail(member.user.displayAvatarURL())
-            .setFooter({ text: 'Automated by CheckGuilds Command' })
+            .setFooter({ 
+              text: 'Automated by CheckGuilds Command',
+              iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
+            })
             .setTimestamp();
 
           await notificationChannel.send({ 
