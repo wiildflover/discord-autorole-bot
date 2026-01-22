@@ -95,6 +95,8 @@ class WildfloverBot {
       registry.addCommand(commandDefinitions.howtoverified);
       registry.addCommand(commandDefinitions.checkguilds);
       registry.addCommand(commandDefinitions.serverrules);
+      registry.addCommand(commandDefinitions.download);
+      registry.addCommand(commandDefinitions.delete);
 
       await registry.registerGlobally();
     } catch (error) {
