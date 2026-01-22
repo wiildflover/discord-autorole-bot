@@ -6,12 +6,12 @@
  */
 
 require('dotenv').config();
-const AutoRoleBot = require('./src/bot');
+const WildfloverBot = require('./src/bot');
 const logger = require('./src/utils/logger');
 const chalk = require('chalk');
 
 const PROJECT_INFO = {
-  name: 'Discord Auto-Role Bot',
+  name: 'Discord Bot',
   author: 'Wildflover',
   version: '2.0.0',
   description: 'Advanced automation system with role assignment and ticket support',
@@ -70,7 +70,7 @@ function main() {
   
   logger.info('INITIALIZATION', 'Starting bot initialization sequence');
   
-  const bot = new AutoRoleBot();
+  const bot = new WildfloverBot();
   setupProcessHandlers(bot);
   
   bot.start();

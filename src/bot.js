@@ -36,7 +36,7 @@ if (fs.existsSync(configPath)) {
   };
 }
 
-class AutoRoleBot {
+class WildfloverBot {
   constructor() {
     this.client = new Client({
       intents: [
@@ -342,4 +342,4 @@ class AutoRoleBot {
   }
 }
 
-module.exports = AutoRoleBot;
+module.exports = WildfloverBot;
