@@ -14,7 +14,7 @@ class WelcomeDM {
       .setImage('https://github.com/wiildflover/discord-autorole-bot/blob/main/welcome_banner.png?raw=true')
       .setAuthor({
         name: 'Welcome to Wildflover Community!',
-        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=2'
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
       })
       .setDescription(`Hey ${member.user.username}! We're glad to have you here — the largest community for custom League of Legends skins. Before diving in, here are some essentials to get you started:`)
       .addFields(
@@ -51,7 +51,7 @@ class WelcomeDM {
       )
       .setFooter({ 
         text: 'Wildflover Community',
-        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=2'
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
       })
       .setTimestamp();
 

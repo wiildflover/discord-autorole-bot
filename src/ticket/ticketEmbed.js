@@ -14,7 +14,7 @@ class TicketEmbed {
       .setColor(0xF39C12)
       .setAuthor({
         name: 'Support Ticket System',
-        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=2'
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
       })
       .setDescription('Need assistance? We\'re here to help.')
       .setImage('https://github.com/wiildflover/discord-autorole-bot/blob/main/ticket_banner.png?raw=true')
@@ -57,7 +57,7 @@ class TicketEmbed {
       )
       .setFooter({ 
         text: 'Wildflover Support Team',
-        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=2'
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
       })
       .setTimestamp();
 
@@ -71,7 +71,7 @@ class TicketEmbed {
       .setColor(0xF39C12)
       .setAuthor({
         name: `${categoryData.label}`,
-        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=2'
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
       })
       .setThumbnail('https://github.com/wiildflover/discord-autorole-bot/blob/main/ticket_banner.png?raw=true')
       .setDescription(`Welcome ${user}\n\nThank you for reaching out. Our support team has been notified and will assist you shortly.`)
@@ -94,7 +94,7 @@ class TicketEmbed {
       )
       .setFooter({ 
         text: 'Wildflover Support',
-        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=2'
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
       })
       .setTimestamp();
 
@@ -106,7 +106,7 @@ class TicketEmbed {
       .setColor(0xED4245)
       .setAuthor({
         name: 'Ticket Closed',
-        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=2'
+        iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
       })
       .setThumbnail('https://github.com/wiildflover/discord-autorole-bot/blob/main/ticket_banner.png?raw=true')
       .setDescription('This support ticket has been resolved and closed.')
@@ -134,7 +134,7 @@ class TicketEmbed {
 
     embed.setFooter({ 
       text: 'Wildflover Support',
-      iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=2'
+      iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
     });
     embed.setTimestamp();
 
