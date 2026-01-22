@@ -712,6 +712,7 @@ class CommandHandlers {
           name: `UPDATE ${version}`,
           iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
         })
+        .setDescription('A new version of Wildflover is now available. Click the buttons below to download and install from your preferred platform.')
         .setImage('https://github.com/wiildflover/wildflover-discord-bot/blob/main/download_banner.png?raw=true&v=' + Date.now())
         .setFooter({ 
           text: 'Wildflover > Windows 10/11',
