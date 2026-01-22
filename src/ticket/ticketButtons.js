@@ -12,7 +12,8 @@ class TicketButtons {
   static createMainPanelButton() {
     const button = new ButtonBuilder()
       .setCustomId('ticket_create')
-      .setLabel('Create Ticket')
+      .setLabel('Create Support Ticket')
+      .setEmoji('📩')
       .setStyle(ButtonStyle.Primary);
 
     return new ActionRowBuilder().addComponents(button);
@@ -37,17 +38,20 @@ class TicketButtons {
   static createTicketControls() {
     const closeButton = new ButtonBuilder()
       .setCustomId('ticket_close')
-      .setLabel('Close Ticket')
+      .setLabel('Close')
+      .setEmoji('🔒')
       .setStyle(ButtonStyle.Danger);
 
     const claimButton = new ButtonBuilder()
       .setCustomId('ticket_claim')
       .setLabel('Claim')
+      .setEmoji('✋')
       .setStyle(ButtonStyle.Success);
 
     const transcriptButton = new ButtonBuilder()
       .setCustomId('ticket_transcript')
       .setLabel('Transcript')
+      .setEmoji('📄')
       .setStyle(ButtonStyle.Secondary);
 
     return new ActionRowBuilder().addComponents(closeButton, claimButton, transcriptButton);
@@ -56,12 +60,14 @@ class TicketButtons {
   static createCloseConfirmation() {
     const confirmButton = new ButtonBuilder()
       .setCustomId('ticket_close_confirm')
-      .setLabel('Confirm Close')
+      .setLabel('Confirm')
+      .setEmoji('✓')
       .setStyle(ButtonStyle.Danger);
 
     const cancelButton = new ButtonBuilder()
       .setCustomId('ticket_close_cancel')
       .setLabel('Cancel')
+      .setEmoji('✗')
       .setStyle(ButtonStyle.Secondary);
 
     return new ActionRowBuilder().addComponents(confirmButton, cancelButton);
