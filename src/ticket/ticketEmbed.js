@@ -22,7 +22,7 @@ class TicketEmbed {
           inline: false
         },
         {
-          name: '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬',
+          name: '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬',
           value: '\u200B',
           inline: false
         },
@@ -42,7 +42,7 @@ class TicketEmbed {
           inline: true
         },
         {
-          name: '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬',
+          name: '▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬',
           value: '\u200B',
           inline: false
         },
