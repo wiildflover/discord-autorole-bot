@@ -84,7 +84,15 @@ const commands = {
     .addSubcommand(subcommand =>
       subcommand
         .setName('setup')
-        .setDescription('Setup verification panel in current channel'))
+        .setDescription('Setup verification panel in current channel')),
+
+  howtoverified: new SlashCommandBuilder()
+    .setName('howtoverified')
+    .setDescription('Verification guide system (Admin only)')
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('setup')
+        .setDescription('Setup verification guide panel in current channel'))
 };
 
 module.exports = commands;

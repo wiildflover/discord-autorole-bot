@@ -92,6 +92,7 @@ class AutoRoleBot {
       registry.addCommand(commandDefinitions.setwelcome);
       registry.addCommand(commandDefinitions.ticket);
       registry.addCommand(commandDefinitions.verified);
+      registry.addCommand(commandDefinitions.howtoverified);
 
       await registry.registerGlobally();
     } catch (error) {
@@ -141,6 +142,9 @@ class AutoRoleBot {
           break;
         case 'verified':
           await this.commandHandlers.handleVerified(interaction);
+          break;
+        case 'howtoverified':
+          await this.commandHandlers.handleHowToVerified(interaction);
           break;
         default:
           await interaction.reply({ content: 'Unknown command.', ephemeral: true });

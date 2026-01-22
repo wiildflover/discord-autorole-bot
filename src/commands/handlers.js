@@ -10,12 +10,14 @@ const logger = require('../utils/logger');
 const TutorialSystem = require('./tutorials');
 const TicketManager = require('../ticket/ticketManager');
 const VerifiedManager = require('../verified/verifiedManager');
+const HowToVerifiedManager = require('../verified/howToVerifiedManager');
 
 class CommandHandlers {
   constructor(bot) {
     this.bot = bot;
     this.ticketManager = new TicketManager(bot.client);
     this.verifiedManager = new VerifiedManager(bot.client, bot.config);
+    this.howToVerifiedManager = new HowToVerifiedManager(bot.client);
   }
 
   async handlePing(interaction) {
@@ -374,6 +376,23 @@ class CommandHandlers {
     if (subcommand === 'setup') {
       await this.verifiedManager.setupVerificationPanel(interaction);
       logger.info('COMMAND-VERIFIED', `Setup executed by ${interaction.user.tag} in ${interaction.channel.name}`);
+    }
+  }
+
+  async handleHowToVerified(interaction) {
+    if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+      await interaction.reply({ 
+        content: 'You need Administrator permission to use this command.', 
+        ephemeral: true 
+      });
+      return;
+    }
+
+    const subcommand = interaction.options.getSubcommand();
+
+    if (subcommand === 'setup') {
+      await this.howToVerifiedManager.setupGuidePanel(interaction);
+      logger.info('COMMAND-HOWTOVERIFIED', `Guide setup executed by ${interaction.user.tag} in ${interaction.channel.name}`);
     }
   }
 }
