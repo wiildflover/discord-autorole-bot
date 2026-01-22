@@ -17,7 +17,7 @@ class TicketEmbed {
         iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
       })
       .setDescription('Need assistance? We\'re here to help.')
-      .setImage('https://github.com/wiildflover/discord-autorole-bot/blob/main/ticket_banner.png?raw=true')
+      .setImage('https://github.com/wiildflover/wildflover-discord-bot/blob/main/ticket_banner.png?raw=true')
       .addFields(
         {
           name: 'How It Works',
@@ -73,7 +73,7 @@ class TicketEmbed {
         name: `${categoryData.label}`,
         iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
       })
-      .setThumbnail('https://github.com/wiildflover/discord-autorole-bot/blob/main/ticket_banner.png?raw=true')
+      .setThumbnail('https://github.com/wiildflover/wildflover-discord-bot/blob/main/ticket_banner.png?raw=true')
       .setDescription(`Welcome ${user}\n\nThank you for reaching out. Our support team has been notified and will assist you shortly.`)
       .addFields(
         {
@@ -108,7 +108,7 @@ class TicketEmbed {
         name: 'Ticket Closed',
         iconURL: 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
       })
-      .setThumbnail('https://github.com/wiildflover/discord-autorole-bot/blob/main/ticket_banner.png?raw=true')
+      .setThumbnail('https://github.com/wiildflover/wildflover-discord-bot/blob/main/ticket_banner.png?raw=true')
       .setDescription('This support ticket has been resolved and closed.')
       .addFields(
         {
