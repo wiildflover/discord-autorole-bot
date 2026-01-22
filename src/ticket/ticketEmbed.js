@@ -73,22 +73,14 @@ class TicketEmbed {
     const categoryData = CONFIG.categories[category];
     
     const embed = new EmbedBuilder()
-      .setColor(categoryData.color)
+      .setColor(0xF39C12)
       .setTitle(`${categoryData.emoji} ${categoryData.label}`)
+      .setThumbnail('https://github.com/wiildflover/discord-autorole-bot/blob/main/ticket_banner.png?raw=true')
       .setDescription(`Welcome ${user}\n\nThank you for reaching out. Our support team has been notified and will assist you shortly.`)
       .addFields(
         {
           name: 'Ticket Information',
-          value: [
-            `**Category:** ${categoryData.label}`,
-            `**Status:** ${CONFIG.status.open.emoji} Open`,
-            `**Created:** <t:${Math.floor(Date.now() / 1000)}:R>`
-          ].join('\n'),
-          inline: false
-        },
-        {
-          name: '\u200B',
-          value: '\u200B',
+          value: `**Category:** ${categoryData.label}\n**Status:** ${CONFIG.status.open.emoji} Open\n**Created:** <t:${Math.floor(Date.now() / 1000)}:R>`,
           inline: false
         },
         {
@@ -97,18 +89,8 @@ class TicketEmbed {
           inline: false
         },
         {
-          name: '\u200B',
-          value: '\u200B',
-          inline: false
-        },
-        {
           name: 'What Happens Next',
-          value: [
-            'Our support team will review your ticket',
-            'Average response time: 5-30 minutes',
-            'Feel free to add more details or screenshots',
-            'You will be notified when staff responds'
-          ].join('\n'),
+          value: `Our support team will review your ticket\nAverage response time: 5-30 minutes\nFeel free to add more details or screenshots\nYou will be notified when staff responds`,
           inline: false
         }
       )
