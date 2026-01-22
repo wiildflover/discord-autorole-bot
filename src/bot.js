@@ -14,6 +14,7 @@ const CommandRegistry = require('./commands/register');
 const CommandHandlers = require('./commands/handlers');
 const commandDefinitions = require('./commands/definitions');
 const WelcomeCardGenerator = require('./welcome/welcomeCard');
+const WelcomeDM = require('./welcome/welcomeDM');
 const TicketHandler = require('./ticket/ticketHandler');
 
 // Load configuration with fallback to environment variables
@@ -256,6 +257,16 @@ class AutoRoleBot {
     try {
       logger.info('MEMBER-JOIN', `${member.user.tag} joined ${member.guild.name}`);
 
+      // Send DM to new member
+      try {
+        const welcomeEmbed = WelcomeDM.createWelcomeEmbed(member);
+        await member.send({ embeds: [welcomeEmbed] });
+        logger.success('MEMBER-JOIN', `Welcome DM sent to ${member.user.tag}`);
+      } catch (dmError) {
+        logger.warn('MEMBER-JOIN', `Could not send DM to ${member.user.tag}: ${dmError.message}`);
+      }
+
+      // Send welcome card to server channel
       const welcomeCard = await WelcomeCardGenerator.generateCard(member, 'welcome');
       
       if (!welcomeCard) {
