@@ -766,10 +766,8 @@ class CommandHandlers {
         return;
       }
 
-      // Reply immediately (non-ephemeral so everyone can see)
-      await interaction.reply({
-        content: `<@${executor.id}> used /delete command.`
-      });
+      // Defer reply (ephemeral) to prevent timeout
+      await interaction.deferReply({ ephemeral: true });
 
       // Fetch and delete messages
       const messages = await channel.messages.fetch({ limit: amount });
@@ -777,7 +775,10 @@ class CommandHandlers {
 
       logger.success('COMMAND-DELETE', `${deletedMessages.size} messages deleted by ${executor.tag} in ${channel.name}`);
 
-      // Send confirmation (visible to everyone)
+      // Delete the deferred reply immediately
+      await interaction.deleteReply();
+
+      // Send single confirmation message (visible to everyone)
       const confirmEmbed = new EmbedBuilder()
         .setColor(0x57F287)
         .setAuthor({
@@ -802,10 +803,9 @@ class CommandHandlers {
       setTimeout(async () => {
         try {
           await confirmMessage.delete();
-          await interaction.deleteReply();
-          logger.info('COMMAND-DELETE', 'Confirmation messages auto-deleted after 3 seconds');
+          logger.info('COMMAND-DELETE', 'Confirmation message auto-deleted after 3 seconds');
         } catch (error) {
-          logger.warn('COMMAND-DELETE', `Failed to delete confirmation messages: ${error.message}`);
+          logger.warn('COMMAND-DELETE', `Failed to delete confirmation message: ${error.message}`);
         }
       }, 3000);
 
