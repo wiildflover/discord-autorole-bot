@@ -76,7 +76,15 @@ const commands = {
     .addSubcommand(subcommand =>
       subcommand
         .setName('close')
-        .setDescription('Force close current ticket channel'))
+        .setDescription('Force close current ticket channel')),
+
+  verified: new SlashCommandBuilder()
+    .setName('verified')
+    .setDescription('Verification system management (Admin only)')
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('setup')
+        .setDescription('Setup verification panel in current channel'))
 };
 
 module.exports = commands;

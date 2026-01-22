@@ -1,0 +1,65 @@
+/**
+ * File: verifiedEmbed.js
+ * Author: Wildflover
+ * Description: Embed generator for verified role system
+ * Language: JavaScript (Node.js)
+ */
+
+const { EmbedBuilder } = require('discord.js');
+const VERIFIED_CONFIG = require('./verifiedConfig');
+
+class VerifiedEmbed {
+  static createVerificationPanel() {
+    return new EmbedBuilder()
+      .setColor(VERIFIED_CONFIG.embedColor)
+      .setImage(VERIFIED_CONFIG.bannerUrl)
+      .setTitle('Application Access Verification')
+      .setDescription(
+        'Welcome to the Wildflover Community verification system. ' +
+        'To gain full access to our custom skin manager application and exclusive features, ' +
+        'please complete the verification process by clicking the button below.\n\n' +
+        '**What You\'ll Get:**\n' +
+        '▸ Full access to Wildflover Skin Manager\n' +
+        '▸ Exclusive custom skin library\n' +
+        '▸ Marketplace download privileges\n' +
+        '▸ Community support channels\n' +
+        '▸ Early access to new features\n\n' +
+        '**Ready to begin?** Click the verification button to proceed.'
+      )
+      .setFooter({ 
+        text: 'Wildflover Community • Verification System',
+        iconURL: 'https://github.com/wiildflover/discord-autorole-bot/blob/main/welcome_banner.png?raw=true'
+      })
+      .setTimestamp();
+  }
+
+  static createSuccessEmbed(member) {
+    return new EmbedBuilder()
+      .setColor(0x2ECC71)
+      .setTitle('Verification Successful')
+      .setDescription(
+        `${member}, you have been successfully verified!\n\n` +
+        'You now have full access to:\n' +
+        '▸ Application download channels\n' +
+        '▸ Custom skin marketplace\n' +
+        '▸ Community support system\n' +
+        '▸ Exclusive member features\n\n' +
+        'Welcome to the Wildflover Community!'
+      )
+      .setFooter({ text: 'Enjoy your stay!' })
+      .setTimestamp();
+  }
+
+  static createAlreadyVerifiedEmbed(member) {
+    return new EmbedBuilder()
+      .setColor(0xE67E22)
+      .setTitle('Already Verified')
+      .setDescription(
+        `${member}, you are already verified and have full access to all features.`
+      )
+      .setFooter({ text: 'No action needed' })
+      .setTimestamp();
+  }
+}
+
+module.exports = VerifiedEmbed;

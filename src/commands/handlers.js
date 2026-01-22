@@ -9,11 +9,13 @@ const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 const logger = require('../utils/logger');
 const TutorialSystem = require('./tutorials');
 const TicketManager = require('../ticket/ticketManager');
+const VerifiedManager = require('../verified/verifiedManager');
 
 class CommandHandlers {
   constructor(bot) {
     this.bot = bot;
     this.ticketManager = new TicketManager(bot.client);
+    this.verifiedManager = new VerifiedManager(bot.client, bot.config);
   }
 
   async handlePing(interaction) {
@@ -355,6 +357,23 @@ class CommandHandlers {
         content: result.error,
         ephemeral: true
       });
+    }
+  }
+
+  async handleVerified(interaction) {
+    if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+      await interaction.reply({ 
+        content: 'You need Administrator permission to use this command.', 
+        ephemeral: true 
+      });
+      return;
+    }
+
+    const subcommand = interaction.options.getSubcommand();
+
+    if (subcommand === 'setup') {
+      await this.verifiedManager.setupVerificationPanel(interaction);
+      logger.info('COMMAND-VERIFIED', `Setup executed by ${interaction.user.tag} in ${interaction.channel.name}`);
     }
   }
 }

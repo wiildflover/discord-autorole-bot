@@ -16,6 +16,7 @@ const commandDefinitions = require('./commands/definitions');
 const WelcomeCardGenerator = require('./welcome/welcomeCard');
 const WelcomeDM = require('./welcome/welcomeDM');
 const TicketHandler = require('./ticket/ticketHandler');
+const VerifiedHandler = require('./verified/verifiedHandler');
 
 // Load configuration with fallback to environment variables
 let config;
@@ -49,6 +50,7 @@ class AutoRoleBot {
     this.config = config;
     this.commandHandlers = new CommandHandlers(this);
     this.ticketHandler = new TicketHandler(this.client);
+    this.verifiedHandler = new VerifiedHandler(this.client, this.config);
     this.initialize();
   }
 
@@ -89,6 +91,7 @@ class AutoRoleBot {
       registry.addCommand(commandDefinitions.help);
       registry.addCommand(commandDefinitions.setwelcome);
       registry.addCommand(commandDefinitions.ticket);
+      registry.addCommand(commandDefinitions.verified);
 
       await registry.registerGlobally();
     } catch (error) {
@@ -100,6 +103,11 @@ class AutoRoleBot {
     if (interaction.isButton() || interaction.isStringSelectMenu() || interaction.isModalSubmit()) {
       if (interaction.customId && interaction.customId.startsWith('ticket_')) {
         await this.ticketHandler.handleInteraction(interaction);
+        return;
+      }
+      
+      if (interaction.customId && interaction.customId.startsWith('verified_')) {
+        await this.verifiedHandler.handleVerificationButton(interaction);
         return;
       }
     }
@@ -130,6 +138,9 @@ class AutoRoleBot {
           break;
         case 'ticket':
           await this.commandHandlers.handleTicket(interaction);
+          break;
+        case 'verified':
+          await this.commandHandlers.handleVerified(interaction);
           break;
         default:
           await interaction.reply({ content: 'Unknown command.', ephemeral: true });
