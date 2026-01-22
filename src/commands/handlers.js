@@ -11,6 +11,7 @@ const TutorialSystem = require('./tutorials');
 const TicketManager = require('../ticket/ticketManager');
 const VerifiedManager = require('../verified/verifiedManager');
 const HowToVerifiedManager = require('../verified/howToVerifiedManager');
+const RulesManager = require('../rules/rulesManager');
 
 class CommandHandlers {
   constructor(bot) {
@@ -18,6 +19,7 @@ class CommandHandlers {
     this.ticketManager = new TicketManager(bot.client);
     this.verifiedManager = new VerifiedManager(bot.client, bot.config);
     this.howToVerifiedManager = new HowToVerifiedManager(bot.client);
+    this.rulesManager = new RulesManager(bot.client);
   }
 
   async handlePing(interaction) {
@@ -502,6 +504,23 @@ class CommandHandlers {
         content: `An error occurred: ${error.message}`,
         ephemeral: true
       });
+    }
+  }
+
+  async handleServerRules(interaction) {
+    if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+      await interaction.reply({ 
+        content: 'You need Administrator permission to use this command.', 
+        ephemeral: true 
+      });
+      return;
+    }
+
+    const subcommand = interaction.options.getSubcommand();
+
+    if (subcommand === 'setup') {
+      await this.rulesManager.setupRulesPanel(interaction);
+      logger.info('COMMAND-SERVERRULES', `Setup executed by ${interaction.user.tag} in ${interaction.channel.name}`);
     }
   }
 }

@@ -96,7 +96,15 @@ const commands = {
 
   checkguilds: new SlashCommandBuilder()
     .setName('checkguilds')
-    .setDescription('Check members with guild tag and auto-assign verified role (Admin only)')
+    .setDescription('Check members with guild tag and auto-assign verified role (Admin only)'),
+
+  serverrules: new SlashCommandBuilder()
+    .setName('serverrules')
+    .setDescription('Server rules and disclaimer system (Admin only)')
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('setup')
+        .setDescription('Setup server rules panel in current channel'))
 };
 
 module.exports = commands;
