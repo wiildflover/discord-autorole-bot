@@ -34,17 +34,14 @@ class TicketEmbed {
         {
           name: 'Available Categories',
           value: [
-            `${CONFIG.categories.technical.emoji} **Technical Support**`,
-            `Launcher issues, skin loading problems, game crashes`,
+            `${CONFIG.categories.customMods.emoji} **Custom Mods**`,
+            `Custom mod installation and compatibility issues`,
             '',
-            `${CONFIG.categories.payment.emoji} **Payment & Orders**`,
-            `Purchase issues, commissions, subscription management`,
+            `${CONFIG.categories.skins.emoji} **Skin Issues**`,
+            `Skin loading and display problems`,
             '',
-            `${CONFIG.categories.account.emoji} **Account Assistance**`,
-            `Login problems, access issues, role assignments`,
-            '',
-            `${CONFIG.categories.other.emoji} **General Inquiries**`,
-            `Questions not covered by other categories`
+            `${CONFIG.categories.program.emoji} **Program Issues**`,
+            `Launcher crashes and technical problems`
           ].join('\n'),
           inline: false
         },
