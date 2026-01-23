@@ -7,7 +7,6 @@
  */
 
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const config = require('../../config.json');
 
 /**
  * Create verification embed for panel (no OAuth link in embed)
@@ -44,8 +43,7 @@ function createVerificationEmbed(userId, authUrl) {
     )
     .setImage('attachment://verified_banner.png')
     .setFooter({ 
-      text: 'wildflover Community • Verification System',
-      iconURL: config.bot?.iconUrl || undefined
+      text: 'Wildflover Community • Verification System'
     })
     .setTimestamp();
 
