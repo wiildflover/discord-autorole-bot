@@ -77,8 +77,13 @@ function initializeVerificationAPI() {
     res.end('Not Found');
   });
   
-  server.listen(PORT, () => {
+  server.listen(PORT, '0.0.0.0', () => {
     logger.success('VERIFY-API', `Verification API listening on port ${PORT}`);
+  });
+  
+  // [ERROR] Handle server errors
+  server.on('error', (error) => {
+    logger.error('VERIFY-API', `Server error: ${error.message}`);
   });
   
   return server;
