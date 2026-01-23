@@ -12,7 +12,7 @@ const TicketManager = require('../ticket/ticketManager');
 const VerifiedManager = require('../verified/verifiedManager');
 const HowToVerifiedManager = require('../verified/howToVerifiedManager');
 const RulesManager = require('../rules/rulesManager');
-const { handleAuthLoginSetup } = require('../verification/verificationCommand');
+const { handleAuthLoginSetup } = require('../alternative-login/verificationCommand');
 
 class CommandHandlers {
   constructor(bot) {
