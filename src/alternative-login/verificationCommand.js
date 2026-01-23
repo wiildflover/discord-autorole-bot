@@ -71,7 +71,7 @@ async function handleAuthLoginSetup(interaction) {
       return;
     }
     
-    if (!OAUTH_REDIRECT_URI || OAUTH_REDIRECT_URI === 'http://localhost:1420/auth/callback') {
+    if (!OAUTH_CONFIG.redirectUri || OAUTH_CONFIG.redirectUri === 'http://localhost:1420/auth/callback') {
       logger.info('AUTHLOGIN-SETUP', 'Using Tauri dev server redirect URI');
     }
     
