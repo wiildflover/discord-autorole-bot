@@ -27,11 +27,11 @@ if (fs.existsSync(configPath)) {
 /**
  * OAuth configuration from Railway environment variables or config.json
  * Uses CLIENT_ID from Railway variables (same as bot client ID)
- * Default redirect URI points to Tauri application dev server
+ * Default redirect URI points to success page (no app redirect)
  */
 const OAUTH_CONFIG = {
   clientId: process.env.CLIENT_ID || config.clientId || '',
-  redirectUri: process.env.OAUTH_REDIRECT_URI || 'http://localhost:1420/auth/callback',
+  redirectUri: process.env.OAUTH_REDIRECT_URI || 'https://wildflover-discord-bot-production.up.railway.app/oauth-success.html',
   scope: 'identify guilds',
   responseType: 'code'
 };
