@@ -12,7 +12,6 @@ const TicketManager = require('../ticket/ticketManager');
 const VerifiedManager = require('../verified/verifiedManager');
 const HowToVerifiedManager = require('../verified/howToVerifiedManager');
 const RulesManager = require('../rules/rulesManager');
-const { handleAuthLoginSetup } = require('../alternative-login/verificationCommand');
 
 class CommandHandlers {
   constructor(bot) {
@@ -837,23 +836,6 @@ class CommandHandlers {
           ephemeral: true
         });
       }
-    }
-  }
-
-  async handleAuthLogin(interaction) {
-    if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
-      await interaction.reply({ 
-        content: 'You need Administrator permission to use this command.', 
-        ephemeral: true 
-      });
-      return;
-    }
-
-    const subcommand = interaction.options.getSubcommand();
-
-    if (subcommand === 'setup') {
-      await handleAuthLoginSetup(interaction);
-      logger.info('COMMAND-AUTHLOGIN', `Setup executed by ${interaction.user.tag} in ${interaction.channel.name}`);
     }
   }
 }

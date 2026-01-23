@@ -138,15 +138,7 @@ const commands = {
         .setDescription('Number of messages to delete (1-100)')
         .setRequired(true)
         .setMinValue(1)
-        .setMaxValue(100)),
-
-  authlogin: new SlashCommandBuilder()
-    .setName('authlogin')
-    .setDescription('Application authentication system (Admin only)')
-    .addSubcommand(subcommand =>
-      subcommand
-        .setName('setup')
-        .setDescription('Setup authentication panel in current channel'))
+        .setMaxValue(100))
 };
 
 module.exports = commands;
