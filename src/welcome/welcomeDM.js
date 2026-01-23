@@ -45,7 +45,7 @@ class WelcomeDM {
         },
         {
           name: 'Quick Start Guide',
-          value: '**Step 1** - Read <#1459119872284819466> to understand community rules\n**Step 2** - Download the program from <#1459253400234361056>\n**Step 3** - Follow login instructions in <#1459248874966220991>\n**Step 4** - Get verified in <#1459249995118153873> for full access\n**Step 5** - Open a <#1463806911186206772> if you need help',
+          value: '**Step 1** - Read <#1459119872284819466> to understand community rules\n**Step 2** - Download the program from <#1459253400234361056>\n**Step 3** - Follow login instructions in <#1459248874966220991>\n**Step 4** - Get verified in <#1463954145902854295> for full access\n**Step 5** - Open a <#1463806911186206772> if you need help',
           inline: false
         }
       )
