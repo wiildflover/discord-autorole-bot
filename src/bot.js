@@ -17,6 +17,8 @@ const WelcomeCardGenerator = require('./welcome/welcomeCard');
 const WelcomeDM = require('./welcome/welcomeDM');
 const TicketHandler = require('./ticket/ticketHandler');
 const VerifiedHandler = require('./verified/verifiedHandler');
+const { handleAuthLoginSetup, handleVerifyButton } = require('./verification/verificationCommand');
+const { startCleanupTask } = require('./verification/verificationManager');
 
 // Load configuration with fallback to environment variables
 let config;
@@ -95,6 +97,10 @@ class WildfloverBot {
     logger.info('BOT-STATUS', `Monitoring channel: ${this.config.targetChannelId}`);
     logger.info('BOT-STATUS', `Target user: ${this.config.targetUserId}`);
     
+    // [INIT] Start verification state cleanup task
+    startCleanupTask();
+    logger.info('BOT-INIT', 'Verification system initialized');
+    
     this.client.user.setPresence({
       activities: [],
       status: 'online'
@@ -125,6 +131,7 @@ class WildfloverBot {
       registry.addCommand(commandDefinitions.serverrules);
       registry.addCommand(commandDefinitions.download);
       registry.addCommand(commandDefinitions.delete);
+      registry.addCommand(commandDefinitions.authlogin);
 
       await registry.registerGlobally();
     } catch (error) {
@@ -141,6 +148,12 @@ class WildfloverBot {
       
       if (interaction.customId && interaction.customId.startsWith('verified_')) {
         await this.verifiedHandler.handleVerificationButton(interaction);
+        return;
+      }
+      
+      // [OAUTH-VERIFICATION] Handle auth_verify button click
+      if (interaction.customId === 'auth_verify') {
+        await handleVerifyButton(interaction);
         return;
       }
     }
@@ -189,6 +202,9 @@ class WildfloverBot {
           break;
         case 'delete':
           await this.commandHandlers.handleDelete(interaction);
+          break;
+        case 'authlogin':
+          await this.commandHandlers.handleAuthLogin(interaction);
           break;
         default:
           await interaction.reply({ content: 'Unknown command.', ephemeral: true });
