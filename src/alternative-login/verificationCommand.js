@@ -13,11 +13,25 @@ const { generateState } = require('./verificationManager');
 const { createVerificationEmbed } = require('./verificationEmbed');
 
 /**
- * OAuth configuration from environment
+ * Load configuration with Railway environment variables support
+ * Priority: Railway environment variables > config.json
+ */
+const fs = require('fs');
+const configPath = path.join(__dirname, '../../config.json');
+let config = {};
+
+if (fs.existsSync(configPath)) {
+  config = require('../../config.json');
+}
+
+/**
+ * OAuth configuration from Railway environment variables or config.json
+ * Uses CLIENT_ID from Railway variables (same as bot client ID)
+ * Default redirect URI points to Tauri application (tauri.localhost)
  */
 const OAUTH_CONFIG = {
-  clientId: process.env.DISCORD_CLIENT_ID || '',
-  redirectUri: process.env.OAUTH_REDIRECT_URI || 'http://localhost:3000/auth/callback',
+  clientId: process.env.CLIENT_ID || config.clientId || '',
+  redirectUri: process.env.OAUTH_REDIRECT_URI || 'http://tauri.localhost/auth/callback',
   scope: 'identify guilds',
   responseType: 'code'
 };
@@ -51,11 +65,18 @@ async function handleAuthLoginSetup(interaction) {
     if (!OAUTH_CONFIG.clientId) {
       logger.error('AUTHLOGIN-SETUP', 'OAuth client ID not configured');
       await interaction.reply({
-        content: '❌ Authentication system is not configured. Please set DISCORD_CLIENT_ID in environment variables.',
+        content: '❌ Authentication system is not configured. CLIENT_ID is missing in Railway environment variables.',
         ephemeral: true
       });
       return;
     }
+    
+    if (!OAUTH_CONFIG.redirectUri || OAUTH_CONFIG.redirectUri === 'http://tauri.localhost/auth/callback') {
+      logger.info('AUTHLOGIN-SETUP', 'Using Tauri localhost redirect URI');
+    }
+    
+    logger.info('AUTHLOGIN-SETUP', `Using client ID: ${OAUTH_CONFIG.clientId.substring(0, 8)}...`);
+    logger.info('AUTHLOGIN-SETUP', `Redirect URI: ${OAUTH_CONFIG.redirectUri}`);
     
     // [EMBED] Create verification embed (without state, will be generated on button click)
     const { embed } = createVerificationEmbed(null, null);
