@@ -17,8 +17,8 @@ const WelcomeCardGenerator = require('./welcome/welcomeCard');
 const WelcomeDM = require('./welcome/welcomeDM');
 const TicketHandler = require('./ticket/ticketHandler');
 const VerifiedHandler = require('./verified/verifiedHandler');
-const { handleAuthLoginSetup, handleVerifyButton } = require('./verification/verificationCommand');
-const { startCleanupTask } = require('./verification/verificationManager');
+const { handleAuthLoginSetup, handleVerifyButton } = require('./alternative-login/verificationCommand');
+const { startCleanupTask } = require('./alternative-login/verificationManager');
 
 // Load configuration with fallback to environment variables
 let config;
