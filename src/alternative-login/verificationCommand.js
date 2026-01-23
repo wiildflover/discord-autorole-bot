@@ -27,11 +27,11 @@ if (fs.existsSync(configPath)) {
 /**
  * OAuth configuration from Railway environment variables or config.json
  * Uses CLIENT_ID from Railway variables (same as bot client ID)
- * Default redirect URI points to Tauri application (tauri.localhost)
+ * Default redirect URI points to Tauri application dev server
  */
 const OAUTH_CONFIG = {
   clientId: process.env.CLIENT_ID || config.clientId || '',
-  redirectUri: process.env.OAUTH_REDIRECT_URI || 'http://tauri.localhost/auth/callback',
+  redirectUri: process.env.OAUTH_REDIRECT_URI || 'http://localhost:1420/auth/callback',
   scope: 'identify guilds',
   responseType: 'code'
 };
@@ -71,8 +71,8 @@ async function handleAuthLoginSetup(interaction) {
       return;
     }
     
-    if (!OAUTH_CONFIG.redirectUri || OAUTH_CONFIG.redirectUri === 'http://tauri.localhost/auth/callback') {
-      logger.info('AUTHLOGIN-SETUP', 'Using Tauri localhost redirect URI');
+    if (!OAUTH_REDIRECT_URI || OAUTH_REDIRECT_URI === 'http://localhost:1420/auth/callback') {
+      logger.info('AUTHLOGIN-SETUP', 'Using Tauri dev server redirect URI');
     }
     
     logger.info('AUTHLOGIN-SETUP', `Using client ID: ${OAUTH_CONFIG.clientId.substring(0, 8)}...`);

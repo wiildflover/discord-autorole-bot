@@ -40,9 +40,9 @@ Railway'de bot'un çalışması için aşağıdaki environment variables'ları a
 
 | Variable | Description | Example | Required |
 |----------|-------------|---------|----------|
-| `OAUTH_REDIRECT_URI` | OAuth callback URL (Tauri app) | `http://tauri.localhost/auth/callback` | ⚠️ Optional* |
+| `OAUTH_REDIRECT_URI` | OAuth callback URL (Tauri dev server) | `http://localhost:1420/auth/callback` | ⚠️ Optional* |
 
-> **Note:** Default redirect URI is `http://tauri.localhost/auth/callback` (Tauri application).  
+> **Note:** Default redirect URI is `http://localhost:1420/auth/callback` (Tauri dev server).  
 > **Important:** OAuth callback goes to **user's local Tauri application**, not Railway server!  
 > This value is already set as default, no need to add to Railway variables.
 
@@ -84,23 +84,25 @@ Alternative login sistemi için ek konfigürasyon:
 1. [Discord Developer Portal](https://discord.com/developers/applications) → Your Application
 2. **OAuth2** → **Redirects** bölümüne gidin
 3. Aşağıdaki redirect URI'nin ekli olduğundan emin olun:
-   - ✓ `http://tauri.localhost/auth/callback` (Tauri app - default)
+   - ✓ `http://localhost:1420/auth/callback` (Tauri dev server - default)
 4. **Save Changes**
 
 ### 2. Railway Variables
 ```bash
 # OAUTH_REDIRECT_URI eklemenize gerek YOK!
-# Kod zaten default olarak http://tauri.localhost/auth/callback kullanıyor
+# Kod zaten default olarak http://localhost:1420/auth/callback kullanıyor
 ```
 
 ### 3. Önemli Not
-OAuth callback **kullanıcının bilgisayarındaki Tauri uygulamasına** gider, Railway sunucusuna değil!
-Bu yüzden `tauri.localhost` kullanılması normaldir.
+OAuth callback **kullanıcının bilgisayarındaki Tauri uygulamasına** gider (localhost:1420), Railway sunucusuna değil!
 
 ### 4. Test OAuth System
 ```bash
 # Discord sunucunuzda komutu çalıştırın
 /authlogin setup
+
+# Butona tıklayın ve yetkilendirin
+# Tauri uygulamanız otomatik olarak callback'i yakalayacak
 ```
 
 ---
