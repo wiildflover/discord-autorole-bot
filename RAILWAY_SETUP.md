@@ -36,16 +36,6 @@ Railway'de bot'un çalışması için aşağıdaki environment variables'ları a
 |----------|-------------|---------|----------|
 | `DELETE_MESSAGE_DELAY` | Message deletion delay (ms) | `3500` | ⚠️ Optional |
 
-### OAuth Configuration (Alternative Login)
-
-| Variable | Description | Example | Required |
-|----------|-------------|---------|----------|
-| `OAUTH_REDIRECT_URI` | OAuth callback URL (Tauri dev server) | `http://localhost:1420/auth/callback` | ⚠️ Optional* |
-
-> **Note:** Default redirect URI is `http://localhost:1420/auth/callback` (Tauri dev server).  
-> **Important:** OAuth callback goes to **user's local Tauri application**, not Railway server!  
-> This value is already set as default, no need to add to Railway variables.
-
 ---
 
 ## Configuration Priority
@@ -76,33 +66,49 @@ NODE_ENV=production
 
 ---
 
-## OAuth System Setup
+## Alternative Login System
 
-Alternative login sistemi için ek konfigürasyon:
+Bot verification sistemi için konfigürasyon:
 
-### 1. Discord Developer Portal
-1. [Discord Developer Portal](https://discord.com/developers/applications) → Your Application
-2. **OAuth2** → **Redirects** bölümüne gidin
-3. Aşağıdaki redirect URI'nin ekli olduğundan emin olun:
-   - ✓ `http://localhost:1420/auth/callback` (Tauri dev server - default)
-4. **Save Changes**
-
-### 2. Railway Variables
-```bash
-# OAUTH_REDIRECT_URI eklemenize gerek YOK!
-# Kod zaten default olarak http://localhost:1420/auth/callback kullanıyor
-```
-
-### 3. Önemli Not
-OAuth callback **kullanıcının bilgisayarındaki Tauri uygulamasına** gider (localhost:1420), Railway sunucusuna değil!
-
-### 4. Test OAuth System
+### 1. Discord'da Komut Kullanımı
 ```bash
 # Discord sunucunuzda komutu çalıştırın
 /authlogin setup
 
-# Butona tıklayın ve yetkilendirin
-# Tauri uygulamanız otomatik olarak callback'i yakalayacak
+# "Get Verified" butonuna tıklayın
+# Bot sizi verified olarak işaretleyecek
+```
+
+### 2. Uygulama Girişi
+1. Wildflover uygulamasını açın
+2. "Login with Discord" ile normal giriş yapın
+3. "Alternative Login" butonuna tıklayın
+4. Bot API'si verification durumunuzu kontrol edecek
+5. Verified iseniz otomatik giriş yapılacak
+
+### 3. Sistem Mimarisi
+```
+Discord Bot → In-Memory Storage → HTTP API (Port 3000)
+                                        ↓
+                              Tauri App API Check
+```
+
+### 4. API Endpoint
+```bash
+GET /api/verify/check?userId={DISCORD_USER_ID}
+
+Response:
+{
+  "verified": true,
+  "user": {
+    "id": "123456789",
+    "username": "wildflover",
+    "discriminator": "0",
+    "avatar": "...",
+    "global_name": "Wildflover"
+  },
+  "timestamp": 1706012345678
+}
 ```
 
 ---
@@ -117,32 +123,31 @@ Bot başlatıldığında şu kontroller yapılır:
 [BOT-STATUS] Monitoring channel: 1459249995118153873
 [BOT-STATUS] Target user: 1457725804384358471
 [BOT-INIT] Verification system initialized
+[VERIFY-API] Verification API listening on port 3000
 ```
 
-### ❌ Missing CLIENT_ID
+### ❌ Missing Environment Variable
 ```
-[AUTHLOGIN-SETUP] OAuth client ID not configured
-Error: CLIENT_ID is missing in Railway environment variables
-```
-
-### ⚠️ Missing OAUTH_REDIRECT_URI
-```
-[AUTHLOGIN-SETUP] Using default redirect URI
-Warning: Set OAUTH_REDIRECT_URI in Railway for production
+[BOT-ERROR] Required environment variable missing
+Error: DISCORD_TOKEN is not set in Railway variables
 ```
 
 ---
 
 ## Troubleshooting
 
-### Problem: "CLIENT_ID is missing"
-**Solution:** Railway dashboard → Variables → Add `CLIENT_ID`
-
-### Problem: OAuth redirect fails
+### Problem: "Verification API not responding"
 **Solution:** 
-1. Check `OAUTH_REDIRECT_URI` in Railway
-2. Verify redirect URI in Discord Developer Portal
-3. Ensure both URLs match exactly
+1. Check Railway logs for API initialization
+2. Verify PORT environment variable (Railway auto-assigns)
+3. Ensure bot is running without errors
+
+### Problem: "Alternative Login" not working
+**Solution:**
+1. Discord'da `/authlogin setup` ile verified olduğunuzdan emin olun
+2. "Get Verified" butonuna bastığınızı kontrol edin
+3. Railway bot API URL'inin doğru olduğunu kontrol edin
+4. Bot restart olduysa in-memory storage temizlenmiş olabilir
 
 ### Problem: Bot can't assign roles
 **Solution:**
@@ -156,11 +161,12 @@ Warning: Set OAUTH_REDIRECT_URI in Railway for production
 
 - [ ] All required environment variables set in Railway
 - [ ] `NODE_ENV` set to `production`
-- [ ] OAuth redirect URI configured in Discord Developer Portal
 - [ ] Bot has necessary permissions in Discord server
 - [ ] Bot role hierarchy is correct
 - [ ] Test `/authlogin setup` command
-- [ ] Verify role assignment works
+- [ ] Test "Get Verified" button
+- [ ] Test "Alternative Login" in Tauri app
+- [ ] Verify API endpoint responds correctly
 
 ---
 

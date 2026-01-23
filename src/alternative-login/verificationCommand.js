@@ -1,57 +1,21 @@
 /**
  * File: verificationCommand.js
  * Author: Wildflover
- * Description: Handles /authlogin setup command and button interactions
- *              Creates persistent verification panel with OAuth button
+ * Description: Handles /authlogin setup command - Simple verification without OAuth
+ *              Users click button, bot marks them as verified
  * Language: JavaScript (Discord.js)
  */
 
 const { AttachmentBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const path = require('path');
 const logger = require('../utils/logger');
-const { generateState } = require('./verificationManager');
 const { createVerificationEmbed } = require('./verificationEmbed');
 
 /**
- * Load configuration with Railway environment variables support
- * Priority: Railway environment variables > config.json
+ * In-memory verified users storage
+ * Structure: { userId: { verified: true, timestamp: Date.now(), username: string } }
  */
-const fs = require('fs');
-const configPath = path.join(__dirname, '../../config.json');
-let config = {};
-
-if (fs.existsSync(configPath)) {
-  config = require('../../config.json');
-}
-
-/**
- * OAuth configuration from Railway environment variables or config.json
- * Uses CLIENT_ID from Railway variables (same as bot client ID)
- * Default redirect URI points to success page (no app redirect)
- */
-const OAUTH_CONFIG = {
-  clientId: process.env.CLIENT_ID || config.clientId || '',
-  redirectUri: process.env.OAUTH_REDIRECT_URI || 'https://wildflover-discord-bot-production.up.railway.app/oauth-success.html',
-  scope: 'identify guilds',
-  responseType: 'code'
-};
-
-/**
- * Build OAuth authorization URL with state
- * @param {string} state - Secure state token
- * @returns {string} Complete OAuth URL
- */
-function buildOAuthUrl(state) {
-  const params = new URLSearchParams({
-    client_id: OAUTH_CONFIG.clientId,
-    redirect_uri: OAUTH_CONFIG.redirectUri,
-    response_type: OAUTH_CONFIG.responseType,
-    scope: OAUTH_CONFIG.scope,
-    state: state
-  });
-  
-  return `https://discord.com/oauth2/authorize?${params.toString()}`;
-}
+const verifiedUsers = new Map();
 
 /**
  * Handle /authlogin setup command
@@ -61,24 +25,7 @@ async function handleAuthLoginSetup(interaction) {
   try {
     logger.info('AUTHLOGIN-SETUP', `Setup requested by ${interaction.user.tag}`);
     
-    // [VALIDATION] Check if OAuth is configured
-    if (!OAUTH_CONFIG.clientId) {
-      logger.error('AUTHLOGIN-SETUP', 'OAuth client ID not configured');
-      await interaction.reply({
-        content: '❌ Authentication system is not configured. CLIENT_ID is missing in Railway environment variables.',
-        ephemeral: true
-      });
-      return;
-    }
-    
-    if (!OAUTH_CONFIG.redirectUri || OAUTH_CONFIG.redirectUri === 'http://localhost:1420/auth/callback') {
-      logger.info('AUTHLOGIN-SETUP', 'Using Tauri dev server redirect URI');
-    }
-    
-    logger.info('AUTHLOGIN-SETUP', `Using client ID: ${OAUTH_CONFIG.clientId.substring(0, 8)}...`);
-    logger.info('AUTHLOGIN-SETUP', `Redirect URI: ${OAUTH_CONFIG.redirectUri}`);
-    
-    // [EMBED] Create verification embed (without state, will be generated on button click)
+    // [EMBED] Create verification embed
     const { embed } = createVerificationEmbed(null, null);
     
     // [BUTTON] Create persistent verification button
@@ -104,7 +51,7 @@ async function handleAuthLoginSetup(interaction) {
     
     // [CONFIRM] Notify admin
     await interaction.reply({
-      content: '✅ Authentication panel has been set up successfully!',
+      content: 'Authentication panel has been set up successfully!',
       ephemeral: true
     });
     
@@ -114,7 +61,7 @@ async function handleAuthLoginSetup(interaction) {
     logger.error('AUTHLOGIN-SETUP', `Setup error: ${error.message}`);
     
     await interaction.reply({
-      content: '❌ An error occurred while setting up the authentication panel.',
+      content: 'An error occurred while setting up the authentication panel.',
       ephemeral: true
     }).catch(() => {});
   }
@@ -128,45 +75,85 @@ async function handleVerifyButton(interaction) {
   try {
     logger.info('AUTHLOGIN-BUTTON', `Button clicked by ${interaction.user.tag}`);
     
-    // [STATE] Generate secure state token
-    const state = generateState(interaction.user.id);
+    const userId = interaction.user.id;
+    const username = interaction.user.username;
+    const discriminator = interaction.user.discriminator;
+    const avatar = interaction.user.avatar;
     
-    // [URL] Build OAuth authorization URL
-    const authUrl = buildOAuthUrl(state);
+    // [VERIFY] Mark user as verified
+    verifiedUsers.set(userId, {
+      verified: true,
+      timestamp: Date.now(),
+      username: username,
+      discriminator: discriminator,
+      avatar: avatar,
+      globalName: interaction.user.globalName || username
+    });
     
-    // [RESPONSE] Send ephemeral message with OAuth link
+    logger.success('AUTHLOGIN-VERIFY', `User ${username} verified successfully`);
+    
+    // [RESPONSE] Send success message
     await interaction.reply({
-      content: 
-        '**Application Access Verification**\n\n' +
-        'Click the button below to verify your account and gain access to Wildflover application.\n\n' +
-        '⚠️ This link is personal and expires in 10 minutes.',
-      components: [
-        new ActionRowBuilder()
-          .addComponents(
-            new ButtonBuilder()
-              .setLabel('Verify Account')
-              .setStyle(ButtonStyle.Link)
-              .setURL(authUrl)
-              .setEmoji('🔐')
-          )
-      ],
+      embeds: [{
+        color: 0x57F287,
+        title: 'Verification Successful',
+        description: 
+          `Welcome **${interaction.user.globalName || username}**!\n\n` +
+          'Your account has been verified successfully.\n\n' +
+          '**Next Steps:**\n' +
+          '1. Open the Wildflover application\n' +
+          '2. Click the "Alternative Login" button\n' +
+          '3. You will be logged in automatically',
+        footer: {
+          text: 'Wildflover Community • You can now access the application'
+        },
+        timestamp: new Date()
+      }],
       ephemeral: true
     });
     
-    logger.info('AUTHLOGIN-BUTTON', `OAuth link sent to ${interaction.user.tag}`);
+    logger.info('AUTHLOGIN-BUTTON', `Success message sent to ${username}`);
     
   } catch (error) {
     logger.error('AUTHLOGIN-BUTTON', `Button error: ${error.message}`);
     
     await interaction.reply({
-      content: '❌ An error occurred. Please try again later.',
+      content: 'An error occurred. Please try again later.',
       ephemeral: true
     }).catch(() => {});
   }
 }
 
+/**
+ * Check if user is verified
+ * @param {string} userId - Discord user ID
+ * @returns {Object|null} User verification data or null
+ */
+function isUserVerified(userId) {
+  return verifiedUsers.get(userId) || null;
+}
+
+/**
+ * Get all verified users
+ * @returns {Map} Verified users map
+ */
+function getVerifiedUsers() {
+  return verifiedUsers;
+}
+
+/**
+ * Clear user verification
+ * @param {string} userId - Discord user ID
+ */
+function clearUserVerification(userId) {
+  verifiedUsers.delete(userId);
+  logger.info('AUTHLOGIN-CLEAR', `Verification cleared for user ${userId}`);
+}
+
 module.exports = {
   handleAuthLoginSetup,
   handleVerifyButton,
-  buildOAuthUrl
+  isUserVerified,
+  getVerifiedUsers,
+  clearUserVerification
 };

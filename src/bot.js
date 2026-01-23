@@ -19,6 +19,7 @@ const TicketHandler = require('./ticket/ticketHandler');
 const VerifiedHandler = require('./verified/verifiedHandler');
 const { handleAuthLoginSetup, handleVerifyButton } = require('./alternative-login/verificationCommand');
 const { startCleanupTask } = require('./alternative-login/verificationManager');
+const { initializeVerificationAPI } = require('./verification-api');
 
 // Load configuration with fallback to environment variables
 let config;
@@ -100,6 +101,9 @@ class WildfloverBot {
     // [INIT] Start verification state cleanup task
     startCleanupTask();
     logger.info('BOT-INIT', 'Verification system initialized');
+    
+    // [INIT] Start verification API server
+    initializeVerificationAPI();
     
     this.client.user.setPresence({
       activities: [],
