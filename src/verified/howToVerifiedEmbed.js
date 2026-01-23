@@ -22,7 +22,7 @@ class HowToVerifiedEmbed {
       .addFields(
         {
           name: '**STEP 1 - LOCATE VERIFICATION CHANNEL**',
-          value: 'Navigate to the <#1459249995118153873> channel in the server.',
+          value: 'Navigate to the <#1463954145902854295> channel in the server.',
           inline: false
         },
         {
