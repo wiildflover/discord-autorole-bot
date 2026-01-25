@@ -857,6 +857,12 @@ class CommandHandlers {
       const mediafireLink = interaction.options.getString('mediafire');
       const googledriveLink = interaction.options.getString('googledrive');
       const dropboxLink = interaction.options.getString('dropbox');
+      const removeButtons = interaction.options.getString('remove');
+
+      // Parse buttons to remove
+      const buttonsToRemove = removeButtons 
+        ? removeButtons.toLowerCase().split(',').map(b => b.trim()) 
+        : [];
 
       // Fetch the message
       let targetMessage;
@@ -907,88 +913,96 @@ class CommandHandlers {
       const buttons = [];
       
       // Process Directly button
-      if (directlyLink) {
-        buttons.push(
-          new ButtonBuilder()
-            .setLabel('Directly')
-            .setStyle(ButtonStyle.Link)
-            .setURL(directlyLink)
-        );
-      } else {
-        const existingDirectly = existingButtons.find(btn => btn.label === 'Directly');
-        if (existingDirectly) {
+      if (!buttonsToRemove.includes('directly')) {
+        if (directlyLink) {
           buttons.push(
             new ButtonBuilder()
               .setLabel('Directly')
               .setStyle(ButtonStyle.Link)
-              .setURL(existingDirectly.url)
+              .setURL(directlyLink)
           );
+        } else {
+          const existingDirectly = existingButtons.find(btn => btn.label === 'Directly');
+          if (existingDirectly) {
+            buttons.push(
+              new ButtonBuilder()
+                .setLabel('Directly')
+                .setStyle(ButtonStyle.Link)
+                .setURL(existingDirectly.url)
+            );
+          }
         }
       }
       
       // Process MediaFire button
-      if (mediafireLink) {
-        buttons.push(
-          new ButtonBuilder()
-            .setLabel('MediaFire')
-            .setStyle(ButtonStyle.Link)
-            .setURL(mediafireLink)
-        );
-      } else {
-        const existingMediafire = existingButtons.find(btn => btn.label === 'MediaFire');
-        if (existingMediafire) {
+      if (!buttonsToRemove.includes('mediafire')) {
+        if (mediafireLink) {
           buttons.push(
             new ButtonBuilder()
               .setLabel('MediaFire')
               .setStyle(ButtonStyle.Link)
-              .setURL(existingMediafire.url)
+              .setURL(mediafireLink)
           );
+        } else {
+          const existingMediafire = existingButtons.find(btn => btn.label === 'MediaFire');
+          if (existingMediafire) {
+            buttons.push(
+              new ButtonBuilder()
+                .setLabel('MediaFire')
+                .setStyle(ButtonStyle.Link)
+                .setURL(existingMediafire.url)
+            );
+          }
         }
       }
       
       // Process Google Drive button
-      if (googledriveLink) {
-        buttons.push(
-          new ButtonBuilder()
-            .setLabel('Google Drive')
-            .setStyle(ButtonStyle.Link)
-            .setURL(googledriveLink)
-        );
-      } else {
-        const existingGoogleDrive = existingButtons.find(btn => btn.label === 'Google Drive');
-        if (existingGoogleDrive) {
+      if (!buttonsToRemove.includes('googledrive')) {
+        if (googledriveLink) {
           buttons.push(
             new ButtonBuilder()
               .setLabel('Google Drive')
               .setStyle(ButtonStyle.Link)
-              .setURL(existingGoogleDrive.url)
+              .setURL(googledriveLink)
           );
+        } else {
+          const existingGoogleDrive = existingButtons.find(btn => btn.label === 'Google Drive');
+          if (existingGoogleDrive) {
+            buttons.push(
+              new ButtonBuilder()
+                .setLabel('Google Drive')
+                .setStyle(ButtonStyle.Link)
+                .setURL(existingGoogleDrive.url)
+            );
+          }
         }
       }
       
       // Process Dropbox button
-      if (dropboxLink) {
-        buttons.push(
-          new ButtonBuilder()
-            .setLabel('Dropbox')
-            .setStyle(ButtonStyle.Link)
-            .setURL(dropboxLink)
-        );
-      } else {
-        const existingDropbox = existingButtons.find(btn => btn.label === 'Dropbox');
-        if (existingDropbox) {
+      if (!buttonsToRemove.includes('dropbox')) {
+        if (dropboxLink) {
           buttons.push(
             new ButtonBuilder()
               .setLabel('Dropbox')
               .setStyle(ButtonStyle.Link)
-              .setURL(existingDropbox.url)
+              .setURL(dropboxLink)
           );
+        } else {
+          const existingDropbox = existingButtons.find(btn => btn.label === 'Dropbox');
+          if (existingDropbox) {
+            buttons.push(
+              new ButtonBuilder()
+                .setLabel('Dropbox')
+                .setStyle(ButtonStyle.Link)
+                .setURL(existingDropbox.url)
+            );
+          }
         }
       }
 
       if (buttons.length === 0) {
         await interaction.editReply({
-          content: 'No buttons to update. Please provide at least one link or the message must have existing buttons.',
+          content: 'Cannot remove all buttons. At least one button must remain.',
           ephemeral: true
         });
         return;
@@ -1024,6 +1038,9 @@ class CommandHandlers {
       if (mediafireLink) changes.push('MediaFire link updated');
       if (googledriveLink) changes.push('Google Drive link updated');
       if (dropboxLink) changes.push('Dropbox link updated');
+      if (buttonsToRemove.length > 0) {
+        changes.push(`Removed buttons: ${buttonsToRemove.join(', ')}`);
+      }
 
       // Confirm to admin
       await interaction.editReply({

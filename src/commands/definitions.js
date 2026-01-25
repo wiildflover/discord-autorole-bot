@@ -167,6 +167,10 @@ const commands = {
       option.setName('dropbox')
         .setDescription('New Dropbox download link')
         .setRequired(false))
+    .addStringOption(option =>
+      option.setName('remove')
+        .setDescription('Remove buttons (comma-separated: directly,mediafire,googledrive,dropbox)')
+        .setRequired(false))
 };
 
 module.exports = commands;
