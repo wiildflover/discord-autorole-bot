@@ -125,6 +125,7 @@ class WildfloverBot {
       registry.addCommand(commandDefinitions.serverrules);
       registry.addCommand(commandDefinitions.download);
       registry.addCommand(commandDefinitions.delete);
+      registry.addCommand(commandDefinitions.editdownload);
 
       await registry.registerGlobally();
     } catch (error) {
@@ -189,6 +190,9 @@ class WildfloverBot {
           break;
         case 'delete':
           await this.commandHandlers.handleDelete(interaction);
+          break;
+        case 'editdownload':
+          await this.commandHandlers.handleEditDownload(interaction);
           break;
         case 'authlogin':
           await this.commandHandlers.handleAuthLogin(interaction);

@@ -138,7 +138,35 @@ const commands = {
         .setDescription('Number of messages to delete (1-100)')
         .setRequired(true)
         .setMinValue(1)
-        .setMaxValue(100))
+        .setMaxValue(100)),
+
+  editdownload: new SlashCommandBuilder()
+    .setName('editdownload')
+    .setDescription('Edit download links in existing message (Admin only)')
+    .addStringOption(option =>
+      option.setName('messageid')
+        .setDescription('Message ID to edit')
+        .setRequired(true))
+    .addStringOption(option =>
+      option.setName('version')
+        .setDescription('New version number (e.g., 0.0.5)')
+        .setRequired(false))
+    .addStringOption(option =>
+      option.setName('directly')
+        .setDescription('New direct download link')
+        .setRequired(false))
+    .addStringOption(option =>
+      option.setName('mediafire')
+        .setDescription('New MediaFire download link')
+        .setRequired(false))
+    .addStringOption(option =>
+      option.setName('googledrive')
+        .setDescription('New Google Drive download link')
+        .setRequired(false))
+    .addStringOption(option =>
+      option.setName('dropbox')
+        .setDescription('New Dropbox download link')
+        .setRequired(false))
 };
 
 module.exports = commands;

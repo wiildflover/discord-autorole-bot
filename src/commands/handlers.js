@@ -838,6 +838,209 @@ class CommandHandlers {
       }
     }
   }
+
+  async handleEditDownload(interaction) {
+    if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+      await interaction.reply({ 
+        content: 'You need Administrator permission to use this command.', 
+        ephemeral: true 
+      });
+      return;
+    }
+
+    await interaction.deferReply({ ephemeral: true });
+
+    try {
+      const messageId = interaction.options.getString('messageid');
+      const newVersion = interaction.options.getString('version');
+      const directlyLink = interaction.options.getString('directly');
+      const mediafireLink = interaction.options.getString('mediafire');
+      const googledriveLink = interaction.options.getString('googledrive');
+      const dropboxLink = interaction.options.getString('dropbox');
+
+      // Fetch the message
+      let targetMessage;
+      try {
+        targetMessage = await interaction.channel.messages.fetch(messageId);
+      } catch (error) {
+        await interaction.editReply({
+          content: 'Message not found. Make sure the message ID is correct and the message is in this channel.',
+          ephemeral: true
+        });
+        return;
+      }
+
+      // Check if message is from bot
+      if (targetMessage.author.id !== interaction.client.user.id) {
+        await interaction.editReply({
+          content: 'I can only edit my own messages.',
+          ephemeral: true
+        });
+        return;
+      }
+
+      // Check if message has embeds
+      if (!targetMessage.embeds || targetMessage.embeds.length === 0) {
+        await interaction.editReply({
+          content: 'This message does not have an embed to edit.',
+          ephemeral: true
+        });
+        return;
+      }
+
+      const { ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
+      
+      // Get existing embed
+      const existingEmbed = targetMessage.embeds[0];
+      const existingButtons = targetMessage.components[0]?.components || [];
+
+      // Determine version to use
+      let versionToUse = newVersion;
+      if (!versionToUse) {
+        // Extract version from existing embed author name
+        const authorName = existingEmbed.author?.name || '';
+        const versionMatch = authorName.match(/UPDATE\s+([\d.]+)/);
+        versionToUse = versionMatch ? versionMatch[1] : '0.0.0';
+      }
+
+      // Build new buttons based on provided links or keep existing ones
+      const buttons = [];
+      
+      // Process Directly button
+      if (directlyLink) {
+        buttons.push(
+          new ButtonBuilder()
+            .setLabel('Directly')
+            .setStyle(ButtonStyle.Link)
+            .setURL(directlyLink)
+        );
+      } else {
+        const existingDirectly = existingButtons.find(btn => btn.label === 'Directly');
+        if (existingDirectly) {
+          buttons.push(
+            new ButtonBuilder()
+              .setLabel('Directly')
+              .setStyle(ButtonStyle.Link)
+              .setURL(existingDirectly.url)
+          );
+        }
+      }
+      
+      // Process MediaFire button
+      if (mediafireLink) {
+        buttons.push(
+          new ButtonBuilder()
+            .setLabel('MediaFire')
+            .setStyle(ButtonStyle.Link)
+            .setURL(mediafireLink)
+        );
+      } else {
+        const existingMediafire = existingButtons.find(btn => btn.label === 'MediaFire');
+        if (existingMediafire) {
+          buttons.push(
+            new ButtonBuilder()
+              .setLabel('MediaFire')
+              .setStyle(ButtonStyle.Link)
+              .setURL(existingMediafire.url)
+          );
+        }
+      }
+      
+      // Process Google Drive button
+      if (googledriveLink) {
+        buttons.push(
+          new ButtonBuilder()
+            .setLabel('Google Drive')
+            .setStyle(ButtonStyle.Link)
+            .setURL(googledriveLink)
+        );
+      } else {
+        const existingGoogleDrive = existingButtons.find(btn => btn.label === 'Google Drive');
+        if (existingGoogleDrive) {
+          buttons.push(
+            new ButtonBuilder()
+              .setLabel('Google Drive')
+              .setStyle(ButtonStyle.Link)
+              .setURL(existingGoogleDrive.url)
+          );
+        }
+      }
+      
+      // Process Dropbox button
+      if (dropboxLink) {
+        buttons.push(
+          new ButtonBuilder()
+            .setLabel('Dropbox')
+            .setStyle(ButtonStyle.Link)
+            .setURL(dropboxLink)
+        );
+      } else {
+        const existingDropbox = existingButtons.find(btn => btn.label === 'Dropbox');
+        if (existingDropbox) {
+          buttons.push(
+            new ButtonBuilder()
+              .setLabel('Dropbox')
+              .setStyle(ButtonStyle.Link)
+              .setURL(existingDropbox.url)
+          );
+        }
+      }
+
+      if (buttons.length === 0) {
+        await interaction.editReply({
+          content: 'No buttons to update. Please provide at least one link or the message must have existing buttons.',
+          ephemeral: true
+        });
+        return;
+      }
+
+      const row = new ActionRowBuilder().addComponents(buttons);
+
+      // Create updated embed
+      const updatedEmbed = new EmbedBuilder()
+        .setColor(existingEmbed.color || 0xE91E63)
+        .setAuthor({
+          name: `UPDATE ${versionToUse}`,
+          iconURL: existingEmbed.author?.iconURL || 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
+        })
+        .setDescription(existingEmbed.description || 'A new version of Wildflover is now available. Click the buttons below to download and install from your preferred platform.')
+        .setImage(existingEmbed.image?.url || 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/download_banner.png?raw=true&v=' + Date.now())
+        .setFooter({ 
+          text: existingEmbed.footer?.text || 'Wildflover > Windows 10/11',
+          iconURL: existingEmbed.footer?.iconURL || 'https://github.com/wiildflover/wildflover-discord-bot/blob/main/verified_icon.png?raw=true&v=3'
+        })
+        .setTimestamp();
+
+      // Edit the message
+      await targetMessage.edit({ 
+        embeds: [updatedEmbed],
+        components: [row]
+      });
+
+      // Build change summary
+      const changes = [];
+      if (newVersion) changes.push(`Version: ${versionToUse}`);
+      if (directlyLink) changes.push('Directly link updated');
+      if (mediafireLink) changes.push('MediaFire link updated');
+      if (googledriveLink) changes.push('Google Drive link updated');
+      if (dropboxLink) changes.push('Dropbox link updated');
+
+      // Confirm to admin
+      await interaction.editReply({
+        content: `Download message updated successfully.\n\n**Changes:**\n${changes.map(c => `• ${c}`).join('\n')}`,
+        ephemeral: true
+      });
+
+      logger.success('COMMAND-EDITDOWNLOAD', `Message ${messageId} edited by ${interaction.user.tag} - Changes: ${changes.join(', ')}`);
+
+    } catch (error) {
+      logger.error('COMMAND-EDITDOWNLOAD', `Execution failed: ${error.message}`);
+      await interaction.editReply({
+        content: `An error occurred: ${error.message}`,
+        ephemeral: true
+      });
+    }
+  }
 }
 
 module.exports = CommandHandlers;

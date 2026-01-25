@@ -24,7 +24,7 @@ const commands = [
   commandDefinitions.serverrules.toJSON(),
   commandDefinitions.download.toJSON(),
   commandDefinitions.delete.toJSON(),
-  commandDefinitions.authlogin.toJSON()
+  commandDefinitions.editdownload.toJSON()
 ];
 
 const rest = new REST({ version: '10' }).setToken(config.token);
