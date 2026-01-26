@@ -1,32 +1,37 @@
 /**
  * File: definitions.js
  * Author: Wildflover
- * Description: Slash command definitions for Discord bot
+ * Description: Slash command definitions for Discord bot with permission controls
  * Language: JavaScript (Node.js)
  */
 
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 
 const commands = {
   ping: new SlashCommandBuilder()
     .setName('ping')
-    .setDescription('Check bot response time and status'),
+    .setDescription('Check bot response time and status')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   info: new SlashCommandBuilder()
     .setName('info')
-    .setDescription('Display bot information and statistics'),
+    .setDescription('Display bot information and statistics')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   config: new SlashCommandBuilder()
     .setName('config')
-    .setDescription('View current bot configuration (Admin only)'),
+    .setDescription('View current bot configuration (Admin only)')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   help: new SlashCommandBuilder()
     .setName('help')
-    .setDescription('Display available commands and usage information'),
+    .setDescription('Display available commands and usage information')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   tutorial: new SlashCommandBuilder()
     .setName('tutorial')
     .setDescription('Wildflover Skin Manager comprehensive guide')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addStringOption(option =>
       option.setName('topic')
         .setDescription('Select tutorial topic')
@@ -57,6 +62,7 @@ const commands = {
   setwelcome: new SlashCommandBuilder()
     .setName('setwelcome')
     .setDescription('Set welcome/leave message channel (Admin only)')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addChannelOption(option =>
       option.setName('channel')
         .setDescription('Channel for welcome and leave messages')
@@ -65,6 +71,7 @@ const commands = {
   ticket: new SlashCommandBuilder()
     .setName('ticket')
     .setDescription('Ticket system management (Admin only)')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addSubcommand(subcommand =>
       subcommand
         .setName('setup')
@@ -81,6 +88,7 @@ const commands = {
   verified: new SlashCommandBuilder()
     .setName('verified')
     .setDescription('Verification system management (Admin only)')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addSubcommand(subcommand =>
       subcommand
         .setName('setup')
@@ -89,6 +97,7 @@ const commands = {
   howtoverified: new SlashCommandBuilder()
     .setName('howtoverified')
     .setDescription('Verification guide system (Admin only)')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addSubcommand(subcommand =>
       subcommand
         .setName('setup')
@@ -96,11 +105,13 @@ const commands = {
 
   checkguilds: new SlashCommandBuilder()
     .setName('checkguilds')
-    .setDescription('Check members with guild tag and auto-assign verified role (Admin only)'),
+    .setDescription('Check members with guild tag and auto-assign verified role (Admin only)')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   serverrules: new SlashCommandBuilder()
     .setName('serverrules')
     .setDescription('Server rules and disclaimer system (Admin only)')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addSubcommand(subcommand =>
       subcommand
         .setName('setup')
@@ -109,6 +120,7 @@ const commands = {
   download: new SlashCommandBuilder()
     .setName('download')
     .setDescription('Share download links for Wildflover (Admin only)')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addStringOption(option =>
       option.setName('version')
         .setDescription('Version number (e.g., 0.0.4)')
@@ -133,6 +145,7 @@ const commands = {
   delete: new SlashCommandBuilder()
     .setName('delete')
     .setDescription('Bulk delete messages in current channel (Admin only)')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addIntegerOption(option =>
       option.setName('amount')
         .setDescription('Number of messages to delete (1-100)')
@@ -143,6 +156,7 @@ const commands = {
   editdownload: new SlashCommandBuilder()
     .setName('editdownload')
     .setDescription('Edit download links in existing message (Admin only)')
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addStringOption(option =>
       option.setName('messageid')
         .setDescription('Message ID to edit')
