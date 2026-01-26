@@ -400,15 +400,17 @@ class CommandHandlers {
   }
 
   async handleCheckGuilds(interaction) {
-    // Check for specific role ID instead of Administrator permission
-    const requiredRoleId = '1459253807484768451';
+    // Check for Administrator permission OR specific role ID (Managers)
+    const managersRoleId = '1459253807484768451';
+    const hasAdminPermission = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
+    const hasManagersRole = interaction.member.roles.cache.has(managersRoleId);
     
-    if (!interaction.member.roles.cache.has(requiredRoleId)) {
+    if (!hasAdminPermission && !hasManagersRole) {
       await interaction.reply({ 
-        content: 'You do not have permission to use this command. Required role: <@&' + requiredRoleId + '>', 
+        content: 'You do not have permission to use this command. Required: Administrator permission or <@&' + managersRoleId + '> role.', 
         ephemeral: true 
       });
-      logger.warn('COMMAND-CHECKGUILDS', `Access denied for ${interaction.user.tag} - Missing required role`);
+      logger.warn('COMMAND-CHECKGUILDS', `Access denied for ${interaction.user.tag} - Missing Administrator permission or Managers role`);
       return;
     }
 
