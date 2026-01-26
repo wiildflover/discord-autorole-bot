@@ -135,19 +135,11 @@ class CommandHandlers {
   }
 
   async handleHelp(interaction) {
-    // Check for Administrator permission OR Managers role
+    // Check user permissions
     const managersRoleId = '1459253807484768451';
     const hasAdminPermission = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
     const hasManagersRole = interaction.member.roles.cache.has(managersRoleId);
-    
-    if (!hasAdminPermission && !hasManagersRole) {
-      await interaction.reply({ 
-        content: 'You do not have permission to use this command. Required: Administrator permission or <@&' + managersRoleId + '> role.', 
-        ephemeral: true 
-      });
-      logger.warn('COMMAND-HELP', `Access denied for ${interaction.user.tag} - Missing Administrator permission or Managers role`);
-      return;
-    }
+    const isPrivileged = hasAdminPermission || hasManagersRole;
 
     const embed = new EmbedBuilder()
       .setColor(0x9B59B6)
@@ -162,7 +154,12 @@ class CommandHandlers {
                  '> `/help` - Show this command reference\n' +
                  '> `/tutorial` - Interactive Wildflover Skin Manager guide',
           inline: false
-        },
+        }
+      );
+
+    // Add privileged commands only for admins and managers
+    if (isPrivileged) {
+      embed.addFields(
         {
           name: 'Administrator Commands',
           value: '> `/config` - View current bot configuration\n' +
@@ -182,25 +179,29 @@ class CommandHandlers {
                  '> `/serverrules setup` - Setup server rules panel\n' +
                  '> `/checkguilds` - Scan and assign roles based on server tags',
           inline: false
-        },
-        {
-          name: 'Automated Features',
-          value: `> Auto-role assignment via mention system\n` +
-                 `> Welcome card generation for new members\n` +
-                 `> Server tag detection and role management\n` +
-                 `> Multi-language support (EN/TR)`,
-          inline: false
         }
-      )
-      .setImage('https://github.com/wiildflover/wildflover-discord-bot/blob/main/banner.png?raw=true')
-      .setFooter({ 
-        text: 'Wildflover Community Bot | Developed by Wildflover',
-        iconURL: 'https://i.ibb.co/G3WVfdQ/37840d99-6f6d-4a36-8f7d-62306aef89b9.png'
-      })
-      .setTimestamp();
+      );
+    }
+
+    embed.addFields(
+      {
+        name: 'Automated Features',
+        value: `> Auto-role assignment via mention system\n` +
+               `> Welcome card generation for new members\n` +
+               `> Server tag detection and role management\n` +
+               `> Multi-language support (EN/TR)`,
+        inline: false
+      }
+    )
+    .setImage('https://github.com/wiildflover/wildflover-discord-bot/blob/main/banner.png?raw=true')
+    .setFooter({ 
+      text: 'Wildflover Community Bot | Developed by Wildflover',
+      iconURL: 'https://i.ibb.co/G3WVfdQ/37840d99-6f6d-4a36-8f7d-62306aef89b9.png'
+    })
+    .setTimestamp();
 
     await interaction.reply({ embeds: [embed], ephemeral: true });
-    logger.info('COMMAND-HELP', `Executed by ${interaction.user.tag}`);
+    logger.info('COMMAND-HELP', `Executed by ${interaction.user.tag} | Privileged: ${isPrivileged}`);
   }
 
   async handleTutorial(interaction) {

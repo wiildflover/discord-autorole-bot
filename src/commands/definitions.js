@@ -10,13 +10,11 @@ const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const commands = {
   ping: new SlashCommandBuilder()
     .setName('ping')
-    .setDescription('Check bot response time and status')
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    .setDescription('Check bot response time and status'),
 
   info: new SlashCommandBuilder()
     .setName('info')
-    .setDescription('Display bot information and statistics')
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    .setDescription('Display bot information and statistics'),
 
   config: new SlashCommandBuilder()
     .setName('config')
@@ -25,13 +23,11 @@ const commands = {
 
   help: new SlashCommandBuilder()
     .setName('help')
-    .setDescription('Display available commands and usage information')
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    .setDescription('Display available commands and usage information'),
 
   tutorial: new SlashCommandBuilder()
     .setName('tutorial')
     .setDescription('Wildflover Skin Manager comprehensive guide')
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addStringOption(option =>
       option.setName('topic')
         .setDescription('Select tutorial topic')
