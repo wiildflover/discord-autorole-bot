@@ -136,23 +136,53 @@ class CommandHandlers {
 
   async handleHelp(interaction) {
     const embed = new EmbedBuilder()
-      .setColor(0x5865F2)
-      .setTitle('Available Commands')
-      .setDescription('List of all available slash commands')
+      .setColor(0x9B59B6)
+      .setTitle('Command Reference')
+      .setDescription('*Complete list of available bot commands and features*')
+      .setThumbnail('https://i.ibb.co/G3WVfdQ/37840d99-6f6d-4a36-8f7d-62306aef89b9.png')
       .addFields(
-        { name: '/ping', value: 'Check bot response time and status', inline: false },
-        { name: '/info', value: 'Display bot information and statistics', inline: false },
-        { name: '/config', value: 'View current bot configuration (Admin only)', inline: false },
-        { name: '/tutorial', value: 'Complete Wildflover Skin Manager guide with screenshots', inline: false },
-        { name: '/setwelcome', value: 'Set welcome/leave message channel (Admin only)', inline: false },
-        { name: '/help', value: 'Display this help message', inline: false }
+        {
+          name: 'General Commands',
+          value: '> `/ping` - Check bot latency and response time\n' +
+                 '> `/info` - Display bot statistics and server information\n' +
+                 '> `/help` - Show this command reference\n' +
+                 '> `/tutorial` - Interactive Wildflover Skin Manager guide',
+          inline: false
+        },
+        {
+          name: 'Administrator Commands',
+          value: '> `/config` - View current bot configuration\n' +
+                 '> `/setwelcome` - Configure welcome/leave message channel\n' +
+                 '> `/delete` - Bulk delete messages (1-100)\n' +
+                 '> `/download` - Post download links with version info\n' +
+                 '> `/editdownload` - Edit existing download message',
+          inline: false
+        },
+        {
+          name: 'System Management',
+          value: '> `/ticket setup` - Create ticket support panel\n' +
+                 '> `/ticket stats` - View ticket system statistics\n' +
+                 '> `/ticket close` - Force close current ticket\n' +
+                 '> `/verified setup` - Setup verification panel\n' +
+                 '> `/howtoverified setup` - Setup verification guide\n' +
+                 '> `/serverrules setup` - Setup server rules panel\n' +
+                 '> `/checkguilds` - Scan and assign roles based on server tags',
+          inline: false
+        },
+        {
+          name: 'Automated Features',
+          value: `> Auto-role assignment via mention system\n` +
+                 `> Welcome card generation for new members\n` +
+                 `> Server tag detection and role management\n` +
+                 `> Multi-language support (EN/TR)`,
+          inline: false
+        }
       )
-      .addFields({
-        name: 'Auto-Role System',
-        value: `Mention <@${this.bot.config.targetUserId}> in <#${this.bot.config.targetChannelId}> to receive <@&${this.bot.config.roleId}> role automatically.`,
-        inline: false
+      .setImage('https://github.com/wiildflover/wildflover-discord-bot/blob/main/banner.png?raw=true')
+      .setFooter({ 
+        text: 'Wildflover Community Bot | Developed by Wildflover',
+        iconURL: 'https://i.ibb.co/G3WVfdQ/37840d99-6f6d-4a36-8f7d-62306aef89b9.png'
       })
-      .setFooter({ text: 'Bot by Wildflover' })
       .setTimestamp();
 
     await interaction.reply({ embeds: [embed], ephemeral: true });
